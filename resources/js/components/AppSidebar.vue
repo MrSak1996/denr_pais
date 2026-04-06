@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Users, ListCheck } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, Users, ListCheck,ChartArea,Shrub,CalendarCheck,   } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from './AppLogo.vue';
 
@@ -48,15 +48,30 @@ const dashboardHref = computed(() => {
 
 // ✅ Dynamic navigation items (same as header)
 const mainNavItems = computed<NavItem[]>(() => [
+    // {
+    //     title: 'Dashboard',
+    //     href: dashboardHref.value, // 👈 dynamic now
+    //     icon: Users,
+    // },
     {
         title: 'Dashboard',
-        href: dashboardHref.value, // 👈 dynamic now
-        icon: Users,
+        href: '/monitoring/index',
+        icon: ChartArea ,
+    },
+        {
+        title: 'PAMB Minutes',
+        href: '/minutes',
+        icon: Folder ,
     },
     {
-        title: 'PRC Monitoring',
+        title: 'Accomplishment Report',
         href: '/monitoring/index',
-        icon: ListCheck,
+        icon: CalendarCheck  ,
+    },
+    {
+        title: 'BMS Monitoring',
+        href: '/monitoring/index',
+        icon: Shrub  ,
     },
     {
         title: 'Quarterly Reports',

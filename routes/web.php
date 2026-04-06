@@ -40,7 +40,9 @@ Route::middleware(['auth','verified'])->group(function () {
 
     Route::get('/monitoring/index', [ResolutionClearanceController::class,'index'])->name('monitoring.index');
 
-    Route::post('/resolution/store', [ResolutionClearanceController::class,'store'])->name('resolution.store');
+    Route::post('/monitoring/store', [ResolutionClearanceController::class,'store'])->name('monitoring.store');
+
+    
 
     Route::put('/resolution/update/{id}', [ResolutionClearanceController::class,'update'])->name('resolution.update');
 

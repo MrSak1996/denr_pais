@@ -1,28 +1,33 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import Select from 'primevue/select';
-import DatePicker from 'primevue/datepicker';
 import { Input } from '@/components/ui/input';
-import { useAppForm } from '@/composables/useAppForm';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { Info } from 'lucide-vue-next';
+import DatePicker from 'primevue/datepicker';
+import Select from 'primevue/select';
+import FloatLabel from 'primevue/floatlabel';
+import { type BreadcrumbItem } from '@/types';
 
-const { chainsaw_form, chainsaw } = useAppForm();
+const form = useForm({
+    resolution_no: '',
+    type_of_meeting: '',
+    date_of_meeting: '',
+    resolution_title: '',
+    approved_pamb_no: '',
+    documents_submitted: '',
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'List of Approved PAMB Resolution and Clearance',
-        href: '/monitoring/index',
-    },
-    {
-        title: 'Add New Record',
-        href: '/monitoring/form/insert',
-    },
-];
+    status: '',
+    rating: '',
 
-// Status options for dropdown
+    date_received_cdd: '',
+    date_received_focal: '',
+    date_released_focal: '',
+    date_approved_pamb: '',
+    date_emailed_bmb: '',
+    date_submitted_bmb: '',
+});
+
 const statusOptions = [
     { label: 'Pending', value: 'Pending' },
     { label: 'Approved', value: 'Approved' },
@@ -36,106 +41,96 @@ const ratingOptions = [
     { label: 'Poor', value: 'Poor' },
 ];
 
-function submitForm() {
-    console.log('Form submitted:', chainsaw_form);
-    // Add submission logic here
-}
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'List of Approved PAMB Resolution and Clearance',
+        href: '/monitoring/index',
+    },
+    {
+        title: 'Add New Record',
+        href: '/monitoring/form/insert',
+    },
+];
 
-function resetForm() {
-    Object.keys(chainsaw_form).forEach((key) => (chainsaw_form[key] = ''));
+function submitForm() {
+    form.post('/monitoring/store', {
+        onSuccess: () => form.reset(),
+    });
 }
 </script>
-
 <template>
-  <Head title="DENR Online Protected Area Information System" />
 
-  <AppLayout :breadcrumbs="breadcrumbs">
-    <div class="flex flex-col gap-6 rounded-xl p-4">
+    <Head title="Monitoring Form" />
 
-      <div class="box">
-        <h3 class="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-800">
-          <Info /> Resolution Details
-        </h3>
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="p-6 max-w-7xl mx-auto">
 
-        <div class="grid gap-6 md:grid-cols-4">
+            <!-- Header -->
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                <Info /> Add New Resolution
+            </h2>
 
-          <div class="flex flex-col gap-1">
-            <Label for="resolution_no">Resolution No.</Label>
-            <Input id="resolution_no" v-model="chainsaw_form.resolution_no" />
-          </div>
+            <!-- SECTION 1 -->
+            <div class="bg-white shadow rounded-xl p-6 mb-6">
+                <h3 class="font-semibold text-lg mb-4">📌 Basic Information</h3>
 
-          <div class="flex flex-col gap-1">
-            <Label for="type_of_meeting">Types of Meeting</Label>
-            <Input id="type_of_meeting" v-model="chainsaw_form.type_of_meeting" />
-          </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <Input v-model="form.resolution_no" placeholder="Resolution No." />
+                    <Input v-model="form.type_of_meeting" placeholder="Type of Meeting" />
 
-          <div class="flex flex-col gap-1">
-            <Label for="date_of_meeting">Date of Meeting</Label>
-            <DatePicker id="date_of_meeting" v-model="chainsaw_form.date_of_meeting" style="height:39px;" />
-          </div>
+                    <DatePicker v-model="form.date_of_meeting" showIcon placeholder="Date of Meeting" />
+                    <Input v-model="form.resolution_title" placeholder="Resolution Title" />
 
-          <div class="flex flex-col gap-1">
-            <Label for="resolution_title">Resolution Title</Label>
-            <Input id="resolution_title" v-model="chainsaw_form.resolution_title" />
-          </div>
+                    <Input v-model="form.approved_pamb_no" placeholder="Approved PAMB No." />
+                    <Input v-model="form.documents_submitted" placeholder="Reason (if deferred)" />
+                </div>
+            </div>
 
-          <div class="flex flex-col gap-1">
-            <Label for="approved_pamb_no">Approved PAMB Clearance No.</Label>
-            <Input id="approved_pamb_no" v-model="chainsaw_form.approved_pamb_no" />
-          </div>
+            <!-- SECTION 2 -->
+            <div class="bg-white shadow rounded-xl p-6 mb-6">
+                <h3 class="font-semibold text-lg mb-4">📌 Status & Evaluation</h3>
 
-          <div class="flex flex-col gap-1">
-            <Label for="documents_submitted">(If Deferred, State Reason)</Label>
-            <Input id="documents_submitted" v-model="chainsaw_form.documents_submitted" />
-          </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <Select :options="statusOptions" optionLabel="label" optionValue="value" v-model="form.status"
+                        placeholder="Select Status" />
 
-          <div class="flex flex-col gap-1">
-            <Label for="status">Status / Remarks</Label>
-            <Select :options="statusOptions" v-model="chainsaw_form.status" style="height: 39px;border: 1px solid black;" />
-          </div>
+                    <Select :options="ratingOptions" optionLabel="label" optionValue="value" v-model="form.rating"
+                        placeholder="Select Rating" />
+                </div>
+            </div>
 
-          <div class="flex flex-col gap-1">
-            <Label for="rating">Rating (c/o CDD Planning Officer)</Label>
-            <Select :options="ratingOptions" v-model="chainsaw_form.rating" style="height: 39px;border: 1px solid black;" />
-          </div>
-          <div class="flex flex-col gap-1">
-            <Label for="date_submitted_hardcopy">Date Received by CDD</Label>
-            <DatePicker id="date_submitted_hardcopy" v-model="chainsaw_form.date_submitted_hardcopy" style="height:39px;" />
-          </div>
-          <div class="flex flex-col gap-1">
-            <Label for="date_submitted_hardcopy">Date Received by Focal</Label>
-            <DatePicker id="date_submitted_hardcopy" v-model="chainsaw_form.date_submitted_hardcopy" style="height:39px;" />
-          </div>
-          <div class="flex flex-col gap-1">
-            <Label for="date_submitted_hardcopy">Date Submitted/Released by Focal</Label>
-            <DatePicker id="date_submitted_hardcopy" v-model="chainsaw_form.date_submitted_hardcopy" style="height:39px;" />
-          </div>
-          <div class="flex flex-col gap-1">
-            <Label for="date_submitted_hardcopy">Date Approved by the PAMB Chair</Label>
-            <DatePicker id="date_submitted_hardcopy" v-model="chainsaw_form.date_submitted_hardcopy" style="height:39px;" />
-          </div>
+            <!-- SECTION 3 -->
+            <div class="bg-white shadow rounded-xl p-6">
+                <h3 class="font-semibold text-lg mb-4">📌 Timeline Tracking</h3>
 
-          <div class="flex flex-col gap-1">
-            <Label for="date_emailed_bmb">Date emailed (BMB)</Label>
-            <DatePicker id="date_emailed_bmb" v-model="chainsaw_form.date_emailed_bmb" style="height:39px;" />
-          </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <DatePicker v-model="form.date_received_cdd" showIcon placeholder="Received (CDD)" />
+                    <DatePicker v-model="form.date_received_focal" showIcon placeholder="Received (Focal)" />
+                    <DatePicker v-model="form.date_released_focal" showIcon placeholder="Released" />
 
-          <div class="flex flex-col gap-1">
-            <Label for="date_submitted_hardcopy">Date submitted to BMB (Hard copy)</Label>
-            <DatePicker id="date_submitted_hardcopy" v-model="chainsaw_form.date_submitted_hardcopy" style="height:39px;" />
-          </div>
+                    <DatePicker v-model="form.date_approved_pamb" showIcon placeholder="Approved" />
+                    <DatePicker v-model="form.date_emailed_bmb" showIcon placeholder="Emailed (BMB)" />
+                    <DatePicker v-model="form.date_submitted_bmb" showIcon placeholder="Submitted (Hard Copy)" />
+                </div>
+            </div>
 
+            <!-- Errors -->
+            <div v-if="Object.keys(form.errors).length" class="mt-4 text-red-500">
+                <div v-for="(error, key) in form.errors" :key="key">
+                    {{ error }}
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-8 flex justify-end gap-3">
+                <Button variant="outline" @click="form.reset()">
+                    Cancel
+                </Button>
+
+                <Button @click="submitForm" :disabled="form.processing">
+                    Submit
+                </Button>
+            </div>
         </div>
-      </div>
-
-      <!-- Form Actions -->
-      <div class="flex justify-end gap-2">
-        <Button class="p-button-secondary" @click="resetForm">Cancel</Button>
-        <Button class="p-button-primary" @click="submitForm">Submit</Button>
-      </div>
-
-    </div>
-  </AppLayout>
+    </AppLayout>
 </template>
-
-<style scoped src="../../../../css/style.css"></style>

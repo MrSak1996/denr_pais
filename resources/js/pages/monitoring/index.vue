@@ -77,14 +77,10 @@ const chartData = {
         },
     ],
 };
-// const chartOptions = {
-//     responsive: true,
-//     plugins: { legend: { position: 'top' }, title: { display: true, text: 'PAMB Resolutions & Clearances per Protected Area' } },
-//     scales: { y: { beginAtZero: true } },
-// };
-
 const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false, // ⭐ THIS FIXES HEIGHT CONTROL
+
     plugins: {
         legend: {
             position: 'top'
@@ -120,19 +116,19 @@ const chartOptions = {
                             <div class="grid gap-6 md:grid-cols-4">
                                 <div class="flex flex-col gap-1">
                                     <Label for="rating">Year</Label>
-                                    <Select  />
+                                    <Select />
                                 </div>
                                 <div class="flex flex-col gap-1">
                                     <Label for="rating">Month</Label>
-                                    <Select  />
+                                    <Select />
                                 </div>
                                 <div class="flex flex-col gap-1">
                                     <Label for="rating">Quarter</Label>
-                                    <Select  />
+                                    <Select />
                                 </div>
                                 <div class="flex flex-col gap-1">
                                     <Label for="rating">Semestral</Label>
-                                    <Select  />
+                                    <Select />
                                 </div>
                             </div>
 
@@ -170,7 +166,8 @@ const chartOptions = {
 
                             <!-- CHART -->
                             <Fieldset legend="Graphical Comparison">
-                                <div class="mx-auto w-full md:w-4/5" style="height: 300px">
+                           
+                                <div class="mx-auto w-full md:w-4/5" style="height: 500px !important;">
                                     <Chart type="bar" :data="chartData" :options="chartOptions" />
                                 </div>
                             </Fieldset>
