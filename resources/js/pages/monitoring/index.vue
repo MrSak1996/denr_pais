@@ -79,7 +79,7 @@ const chartData = {
 };
 const chartOptions = {
     responsive: true,
-    maintainAspectRatio: false, // ⭐ THIS FIXES HEIGHT CONTROL
+    maintainAspectRatio: true, // ⭐ THIS FIXES HEIGHT CONTROL
 
     plugins: {
         legend: {

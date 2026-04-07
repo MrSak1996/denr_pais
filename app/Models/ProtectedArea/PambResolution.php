@@ -7,6 +7,7 @@ class PambResolution extends Model
 {
     protected $fillable = [
         'resolution_no',
+        'protected_area_id',
         'type_of_meeting',
         'focal_person',
         'resolution_title',

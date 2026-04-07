@@ -15,6 +15,7 @@ use App\Http\Controllers\Dashboard\RegionalExecutiveController;
 
 use App\Http\Controllers\Dashboard\RPSChiefDashboardController; // if you have a controller
 use App\Http\Controllers\ProtectedArea\ResolutionClearanceController;
+use App\Http\Controllers\ProtectedArea\ProtectedAreaList;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
@@ -35,20 +36,27 @@ Route::get('/monitoring/form/insert', function () {
     return Inertia::render('monitoring/form/insert');
 })->middleware(['auth', 'verified'])->name('monitoring.form.insert');
 
+Route::get('/monitoring/form/insert', [ProtectedAreaList::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('monitoring.form.insert');
+
 // RESOLUTION AND CLEARANCES
 Route::middleware(['auth','verified'])->group(function () {
 
     Route::get('/monitoring/index', [ResolutionClearanceController::class,'index'])->name('monitoring.index');
-
     Route::post('/monitoring/store', [ResolutionClearanceController::class,'store'])->name('monitoring.store');
-
-    
-
     Route::put('/resolution/update/{id}', [ResolutionClearanceController::class,'update'])->name('resolution.update');
-
     Route::delete('/resolution/delete/{id}', [ResolutionClearanceController::class,'destroy'])->name('resolution.delete');
 
+
+
+
+    Route::get('/protected-areas', [ProtectedAreaList::class, 'index'])
+    ->name('protected-areas.index');
+
 });
+
+
 
 
 
