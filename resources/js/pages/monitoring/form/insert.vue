@@ -11,7 +11,7 @@ import Textarea from 'primevue/textarea';
 import ToggleSwitch from 'primevue/toggleswitch';
 import { useToast } from 'primevue/usetoast';
 import { computed, ref, watch } from 'vue';
-import { CirclePlus } from 'lucide-vue-next';
+import { CirclePlus, CircleMinus } from 'lucide-vue-next';
 
 const toast = useToast();
 
@@ -41,7 +41,13 @@ const form = useForm({
     focal_person: '',
     alternate_focal: '',
     approved_pamb_clearance_no: '',
-    documents_submitted: '',
+    reason: '',
+    date_received_by_cdd: '',
+    date_received_by_focal: '',
+    date_released_focal: '',
+    date_approved_pamb: '',
+    date_emailed_bmb: '',
+    date_submitted_bmb: '',
     status: '',
     rating: '',
     protected_area_id: '',
@@ -91,12 +97,27 @@ function formatDateOnly(date: any) {
 
 // ✅ SUBMIT
 function submitForm() {
-    form.resolutions = form.resolutions.map((row) => ({
-        ...row,
-        date_of_meeting: formatDateOnly(row.date_of_meeting),
-    }));
+
+    const payload = {
+        ...form,
+
+        // ✅ Fix array formatting
+        resolutions: form.resolutions.map((row) => ({
+            ...row,
+            date_of_meeting: formatDateOnly(row.date_of_meeting),
+        })),
+
+        // ✅ Format global dates correctly
+        date_received_cdd: formatDateOnly(form.date_received_by_cdd),
+        date_received_focal: formatDateOnly(form.date_received_by_focal),
+        date_released_focal: formatDateOnly(form.date_released_focal),
+        date_approved_pamb: formatDateOnly(form.date_approved_pamb),
+        date_emailed_bmb: formatDateOnly(form.date_emailed_bmb),
+        date_submitted_bmb: formatDateOnly(form.date_submitted_bmb),
+    };
 
     form.post('/monitoring/store', {
+        data: payload, // ✅ send clean payload
         onSuccess: () => {
             toast.add({
                 severity: 'success',
@@ -114,7 +135,7 @@ function submitForm() {
 watch(checked, (val) => {
     if (!val) {
         form.approved_pamb_clearance_no = '';
-        form.documents_submitted = '';
+        form.reason = '';
     }
 });
 </script>
@@ -145,7 +166,9 @@ watch(checked, (val) => {
                                 <Input v-model="form.alternate_focal" placeholder="Alternate Focal Person" />
                             </div>
                             <div class="mt-3">
-                                <Button type="button" @click="addRow">+ Add Row</Button>
+                                <Button type="button" @click="addRow">
+                                    <CirclePlus /> Add Row
+                                </Button>
                             </div>
                             <div class="mt-6 grid gap-6 md:grid-cols-1">
                                 <table class="w-full border text-sm">
@@ -180,7 +203,7 @@ watch(checked, (val) => {
 
                                             <td class="px-3 py-2 text-center">
                                                 <Button variant="destructive" @click="removeRow(index)">
-                                                    <CirclePlus />
+                                                    <CircleMinus />
                                                 </Button>
                                             </td>
                                         </tr>
@@ -194,8 +217,7 @@ watch(checked, (val) => {
                                 </div>
                                 <Input v-model="form.approved_pamb_clearance_no"
                                     placeholder="Approved PAMB Clearance No." :disabled="!checked" />
-                                <Input v-model="form.documents_submitted" placeholder="Reason (if deferred)"
-                                    :disabled="!checked" />
+                                <Input v-model="form.reason" placeholder="Reason (if deferred)" :disabled="!checked" />
                             </div>
                         </div>
 
@@ -242,7 +264,7 @@ watch(checked, (val) => {
 
                 <!-- RIGHT: INSTRUCTIONS -->
                 <div class="xl:col-span-1">
-                    <div class="sticky top-6 rounded-xl border border-blue-200 bg-[#81C784] p-5">
+                    <div class="sticky top-6 rounded-xl border border-blue-200 bg-[#C8E6C9] p-5">
                         <h3 class="mb-3 text-lg font-semibold">📘 Instructions</h3>
 
                         <ul class="space-y-3 text-sm text-gray-700">
