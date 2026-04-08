@@ -51,8 +51,9 @@ class ResolutionClearanceController extends Controller
             'resolution_no' => $request->resolution_no,
             'type_of_meeting' => $request->type_of_meeting,
             'focal_person' => $request->focal_person,
+            'alternate_focal' => $request->alternate_focal,
             'resolution_title' => $request->resolution_title,
-            'approved_pamb_no' => $request->approved_pamb_no,
+            'approved_pamb_clearance_no' => $request->approved_pamb_clearance_no,
             'status' => $request->status,
 
             'date_of_meeting' => $request->date_of_meeting,

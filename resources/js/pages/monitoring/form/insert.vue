@@ -1,52 +1,68 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { Button } from '@/components/ui/button';
-import { useToast } from 'primevue/usetoast';
 import { Input } from '@/components/ui/input';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/vue3';
 import { Info } from 'lucide-vue-next';
-import { type BreadcrumbItem } from '@/types';
-
 import DatePicker from 'primevue/datepicker';
-
 import Select from 'primevue/select';
-import FloatLabel from 'primevue/floatlabel';
 import Textarea from 'primevue/textarea';
-import AppLayout from '@/layouts/AppLayout.vue';
+import ToggleSwitch from 'primevue/toggleswitch';
+import { useToast } from 'primevue/usetoast';
+import { computed, ref, watch } from 'vue';
+import { CirclePlus } from 'lucide-vue-next';
 
 const toast = useToast();
 
 const props = defineProps({
-    protectedAreas: Array
+    protectedAreas: Array,
 });
+
 const paOptions = computed(() =>
     (props.protectedAreas || []).map((pa: any) => ({
         label: pa.pa_code,
-        value: pa.id
-    }))
+        value: pa.id,
+    })),
 );
-console.log(props.protectedAreas);
-const form = useForm({
-    resolution_no: '',
-    focal_person: '',
-    type_of_meeting: '',
-    date_of_meeting: '',
-    resolution_title: '',
-    approved_pamb_no: '',
-    documents_submitted: '',
 
+const checked = ref(false);
+
+// ✅ FORM WITH ARRAY
+const form = useForm({
+    resolutions: [
+        {
+            resolution_no: '',
+            type_of_meeting: '',
+            date_of_meeting: '',
+            resolution_title: '',
+        },
+    ],
+    focal_person: '',
+    alternate_focal: '',
+    approved_pamb_clearance_no: '',
+    documents_submitted: '',
     status: '',
     rating: '',
-
     protected_area_id: '',
-
-    date_received_cdd: '',
-    date_received_focal: '',
-    date_released_focal: '',
-    date_approved_pamb: '',
-    date_emailed_bmb: '',
-    date_submitted_bmb: '',
 });
+
+// ✅ ADD ROW
+function addRow() {
+    form.resolutions.push({
+        resolution_no: '',
+        type_of_meeting: '',
+        date_of_meeting: '',
+        resolution_title: '',
+    });
+}
+
+// ✅ REMOVE ROW
+function removeRow(index: number) {
+    if (form.resolutions.length > 1) {
+        form.resolutions.splice(index, 1);
+    }
+}
 
 const statusOptions = [
     { label: 'Pending', value: 'Pending' },
@@ -62,17 +78,24 @@ const ratingOptions = [
 ];
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'List of Approved PAMB Resolution and Clearance',
-        href: '/monitoring/index',
-    },
-    {
-        title: 'Add New Record',
-        href: '/monitoring/form/insert',
-    },
+    { title: 'List of Approved PAMB Resolution and Clearance', href: '/monitoring/index' },
+    { title: 'Add New Record', href: '/monitoring/form/insert' },
 ];
 
+// ✅ FORMAT DATE
+function formatDateOnly(date: any) {
+    if (!date) return null;
+    const d = new Date(date);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+// ✅ SUBMIT
 function submitForm() {
+    form.resolutions = form.resolutions.map((row) => ({
+        ...row,
+        date_of_meeting: formatDateOnly(row.date_of_meeting),
+    }));
+
     form.post('/monitoring/store', {
         onSuccess: () => {
             toast.add({
@@ -83,9 +106,17 @@ function submitForm() {
             });
 
             form.reset();
-        }
+        },
     });
 }
+
+// ✅ CLEAR WHEN TOGGLE OFF
+watch(checked, (val) => {
+    if (!val) {
+        form.approved_pamb_clearance_no = '';
+        form.documents_submitted = '';
+    }
+});
 </script>
 <template>
     <Toast />
@@ -93,46 +124,86 @@ function submitForm() {
     <Head title="Monitoring Form" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="p-6 w-full">
-
-            <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
-
+        <div class="w-full p-6">
+            <div class="grid grid-cols-1 gap-6 xl:grid-cols-4">
                 <!-- LEFT: FORM -->
                 <div class="xl:col-span-3">
                     <div class="w-full">
-
                         <!-- Header -->
-                        <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                        <h2 class="mb-6 flex items-center gap-2 text-2xl font-bold">
                             <Info /> Add New Resolution
                         </h2>
 
                         <!-- SECTION 1 -->
-                        <div class="bg-white shadow rounded-xl p-6 mb-6">
-                            <h3 class="font-semibold text-lg mb-4">📌 Basic Information</h3>
+                        <div class="mb-6 rounded-xl border-gray-300 p-6 shadow">
+                            <h3 class="mb-4 text-lg font-semibold">📌 Basic Information</h3>
 
-                            <div class="grid md:grid-cols-2 gap-6">
+                            <div class="grid gap-6 md:grid-cols-2">
                                 <Select :options="paOptions" optionLabel="label" optionValue="value"
                                     v-model="form.protected_area_id" placeholder="Select Protected Area" />
-                                <Input v-model="form.resolution_no" placeholder="Resolution No." />
                                 <Input v-model="form.focal_person" placeholder="Focal Person" />
-                                <Input v-model="form.type_of_meeting" placeholder="Type of Meeting" />
-                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_of_meeting" showIcon placeholder="Date of Meeting"
-                                    style="height: 40px !important;" />
-
+                                <Input v-model="form.alternate_focal" placeholder="Alternate Focal Person" />
                             </div>
-                            <div class="grid md:grid-cols-1 gap-6 mt-6">
+                            <div class="mt-3">
+                                <Button type="button" @click="addRow">+ Add Row</Button>
+                            </div>
+                            <div class="mt-6 grid gap-6 md:grid-cols-1">
+                                <table class="w-full border text-sm">
+                                    <thead class="bg-blue-900 text-white">
+                                        <tr>
+                                            <th class="px-3 py-2">Resolution No</th>
+                                            <th class="px-3 py-2">Type</th>
+                                            <th class="px-3 py-2">Date</th>
+                                            <th class="px-3 py-2">Title</th>
+                                            <th class="px-3 py-2 text-center">Action</th>
+                                        </tr>
+                                    </thead>
 
-                                <Textarea v-model="form.resolution_title" placeholder="Resolution Title" />
-                                <Input v-model="form.approved_pamb_no" placeholder="Approved PAMB No." />
-                                <Input v-model="form.documents_submitted" placeholder="Reason (if deferred)" />
+                                    <tbody>
+                                        <tr v-for="(row, index) in form.resolutions" :key="index">
+                                            <td class="px-3 py-2">
+                                                <Input v-model="row.resolution_no" />
+                                            </td>
+
+                                            <td class="px-3 py-2">
+                                                <Input v-model="row.type_of_meeting" />
+                                            </td>
+
+                                            <td class="px-3 py-2">
+                                                <DatePicker v-model="row.date_of_meeting" dateFormat="yy-mm-dd"
+                                                    showIcon />
+                                            </td>
+
+                                            <td class="px-3 py-2">
+                                                <Textarea v-model="row.resolution_title" cols="70" />
+                                            </td>
+
+                                            <td class="px-3 py-2 text-center">
+                                                <Button variant="destructive" @click="removeRow(index)">
+                                                    <CirclePlus />
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-6 grid gap-6 md:grid-cols-1">
+                                <div class="flex items-center gap-3">
+                                    <label>Has PAMB Clearance?</label>
+                                    <ToggleSwitch v-model="checked" />
+                                </div>
+                                <Input v-model="form.approved_pamb_clearance_no"
+                                    placeholder="Approved PAMB Clearance No." :disabled="!checked" />
+                                <Input v-model="form.documents_submitted" placeholder="Reason (if deferred)"
+                                    :disabled="!checked" />
                             </div>
                         </div>
 
                         <!-- SECTION 2 -->
-                        <div class="bg-white shadow rounded-xl p-6 mb-6">
-                            <h3 class="font-semibold text-lg mb-4">📌 Status & Evaluation</h3>
+                        <div class="mb-6 rounded-xl bg-white p-6 shadow">
+                            <h3 class="mb-4 text-lg font-semibold">📌 Status & Evaluation</h3>
 
-                            <div class="grid md:grid-cols-2 gap-6">
+                            <div class="grid gap-6 md:grid-cols-2">
                                 <Select :options="statusOptions" optionLabel="label" optionValue="value"
                                     v-model="form.status" placeholder="Select Status" />
 
@@ -142,16 +213,20 @@ function submitForm() {
                         </div>
 
                         <!-- SECTION 3 -->
-                        <div class="bg-white shadow rounded-xl p-6">
-                            <h3 class="font-semibold text-lg mb-4">📌 Timeline Tracking</h3>
+                        <div class="rounded-xl bg-white p-6 shadow">
+                            <h3 class="mb-4 text-lg font-semibold">📌 Timeline Tracking</h3>
 
-                            <div class="grid md:grid-cols-3 gap-6">
-                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_received_cdd" showIcon placeholder="Received (CDD)" />
+                            <div class="grid gap-6 md:grid-cols-3">
+                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_received_cdd" showIcon
+                                    placeholder="Received (CDD)" />
                                 <DatePicker dateFormat="yy-mm-dd" v-model="form.date_received_focal" showIcon
                                     placeholder="Received (Focal)" />
-                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_released_focal" showIcon placeholder="Released" />
-                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_approved_pamb" showIcon placeholder="Approved" />
-                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_emailed_bmb" showIcon placeholder="Emailed (BMB)" />
+                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_released_focal" showIcon
+                                    placeholder="Released" />
+                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_approved_pamb" showIcon
+                                    placeholder="Approved" />
+                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_emailed_bmb" showIcon
+                                    placeholder="Emailed (BMB)" />
                                 <DatePicker dateFormat="yy-mm-dd" v-model="form.date_submitted_bmb" showIcon
                                     placeholder="Submitted (Hard Copy)" />
                             </div>
@@ -167,10 +242,10 @@ function submitForm() {
 
                 <!-- RIGHT: INSTRUCTIONS -->
                 <div class="xl:col-span-1">
-                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 sticky top-6">
-                        <h3 class="font-semibold text-lg mb-3">📘 Instructions</h3>
+                    <div class="sticky top-6 rounded-xl border border-blue-200 bg-[#81C784] p-5">
+                        <h3 class="mb-3 text-lg font-semibold">📘 Instructions</h3>
 
-                        <ul class="text-sm text-gray-700 space-y-3">
+                        <ul class="space-y-3 text-sm text-gray-700">
                             <li>
                                 <strong>Resolution No.</strong><br />
                                 Use official format (e.g., 2026-001).
@@ -201,13 +276,10 @@ function submitForm() {
                                 Fill only if applicable. Leave blank if not yet available.
                             </li>
 
-                            <li class="text-red-500">
-                                ⚠ Ensure all required fields are filled before submitting.
-                            </li>
+                            <li class="text-red-500">⚠ Ensure all required fields are filled before submitting.</li>
                         </ul>
                     </div>
                 </div>
-
             </div>
         </div>
     </AppLayout>
