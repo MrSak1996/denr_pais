@@ -87,7 +87,7 @@ onMounted(async () => {
         formData.value.i_province = Number(formData.value.i_province)
 
         const { data: cities } = await axios.get(
-            `http://10.201.10.135:8000/api/provinces/${formData.value.i_province}/cities`
+            `http://localhost:8000/api/provinces/${formData.value.i_province}/cities`
         )
 
         city_mun_opts.value = cities.map(c => ({
@@ -102,7 +102,7 @@ onMounted(async () => {
         formData.value.i_city_mun = Number(formData.value.i_city_mun)
 
         const { data: barangays } = await axios.get(
-            `http://10.201.10.135:8000/api/barangays`,
+            `http://localhost:8000/api/barangays`,
             {
                 params: {
                     reg_code: formData.value.i_region,
@@ -137,7 +137,7 @@ watch(() => formData.value.i_province, async (newProvince) => {
     }
 
     const { data } = await axios.get(
-        `http://10.201.10.135:8000/api/provinces/${newProvince}/cities`
+        `http://localhost:8000/api/provinces/${newProvince}/cities`
     )
 
     city_mun_opts.value = data.map(c => ({
@@ -162,7 +162,7 @@ watch(() => formData.value.i_city_mun, async (newCity) => {
     }
 
     const { data } = await axios.get(
-        `http://10.201.10.135:8000/api/barangays`,
+        `http://localhost:8000/api/barangays`,
         {
             params: {
                 reg_code: formData.value.i_region,

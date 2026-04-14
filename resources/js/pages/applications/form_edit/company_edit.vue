@@ -831,7 +831,7 @@ const filesByTab = ref({
 // const getApplicantFile = async (id) => {
 //     try {
 //         const response = await axios.get(
-//             `http://10.201.10.135:8000/api/getApplicantFile/${id}`
+//             `http://localhost:8000/api/getApplicantFile/${id}`
 //         )
 
 //         if (response.data.status && Array.isArray(response.data.data)) {
@@ -865,11 +865,11 @@ const filesByTab = ref({
 const getApplicantFile = async (application_id) => {
     try {
         const checklistRes = await axios.get(
-            `http://10.201.10.135:8000/api/getChecklistEntries/${application_id}`
+            `http://localhost:8000/api/getChecklistEntries/${application_id}`
         );
 
         const attachmentsRes = await axios.get(
-            `http://10.201.10.135:8000/api/getApplicantFile/${application_id}`
+            `http://localhost:8000/api/getApplicantFile/${application_id}`
         );
 
         if (checklistRes.data.status && attachmentsRes.data.status) {
@@ -966,8 +966,8 @@ const loadBrands = async () => {
     }
 
     const res = await axios.get(
-        // `http://10.201.10.135:8000/api/chainsaw/${applicationId}/brands`
-        `http://10.201.10.135:8000/api/chainsaw/${applicationId}/supplier`
+        // `http://localhost:8000/api/chainsaw/${applicationId}/brands`
+        `http://localhost:8000/api/chainsaw/${applicationId}/supplier`
 
     )
 
@@ -982,7 +982,7 @@ const getDocumentaryRequirements = async () => {
     if (!applicationId) return;
 
     try {
-        const response = await axios.get(`http://10.201.10.135:8000/api/getApplicantFile/${applicationId}`);
+        const response = await axios.get(`http://localhost:8000/api/getApplicantFile/${applicationId}`);
         if (response.data.status && Array.isArray(response.data.data)) {
             files.value = response.data.data.map((file: any) => ({
                 name: file.file_name,
@@ -1008,7 +1008,7 @@ const getDocumentaryRequirements = async () => {
 //     if (!applicationId) return;
 
 //     try {
-//         const response = await axios.get(`http://10.201.10.135:8000/api/getApplicantFile/${applicationId}`);
+//         const response = await axios.get(`http://localhost:8000/api/getApplicantFile/${applicationId}`);
 //         if (response.data.status && Array.isArray(response.data.data)) {
 //             files.value = response.data.data.map((file) => ({
 //                 name: file.file_name,
@@ -1048,7 +1048,7 @@ const handleFileUpdate = async (event) => {
         formData.append('attachment_id', selectedFileToUpdate.value.attachment_id)
         formData.append('name', selectedFileToUpdate.value.name)
 
-        const response = await axios.post('http://10.201.10.135:8000/api/files/update', formData, {
+        const response = await axios.post('http://localhost:8000/api/files/update', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         })
 

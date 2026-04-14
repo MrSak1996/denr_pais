@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Models\ProtectedArea;
+
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ProtectedArea\ProtectedAreaList;
 
 class PambResolution extends Model
 {
@@ -23,4 +25,9 @@ class PambResolution extends Model
         'date_emailed_bmb',
         'date_submitted_to_bmb_hardcopy'
     ];
+
+    public function protectedArea()
+    {
+        return $this->belongsTo(ProtectedAreaList::class, 'protected_area_id', 'id');
+    }
 }

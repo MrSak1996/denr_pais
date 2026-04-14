@@ -4,14 +4,15 @@ import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/vue3';
-import { Info } from 'lucide-vue-next';
+import { CircleMinus, CirclePlus, Info } from 'lucide-vue-next';
 import DatePicker from 'primevue/datepicker';
 import Select from 'primevue/select';
 import Textarea from 'primevue/textarea';
 import ToggleSwitch from 'primevue/toggleswitch';
+import Panel from 'primevue/panel';
 import { useToast } from 'primevue/usetoast';
 import { computed, ref, watch } from 'vue';
-import { CirclePlus, CircleMinus } from 'lucide-vue-next';
+import axios from 'axios';
 
 const toast = useToast();
 
@@ -44,6 +45,7 @@ const form = useForm({
     reason: '',
     date_received_by_cdd: '',
     date_received_by_focal: '',
+    date_received_by_oardts: '',
     date_released_focal: '',
     date_approved_pamb: '',
     date_emailed_bmb: '',
@@ -89,46 +91,68 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 // ✅ FORMAT DATE
-function formatDateOnly(date: any) {
-    if (!date) return null;
-    const d = new Date(date);
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+function normalizeDate(val) {
+    if (!val) return '0000-00-00';
+
+    const d = new Date(val);
+
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
 }
 
 // ✅ SUBMIT
-function submitForm() {
 
+async function submitForm() {
     const payload = {
-        ...form,
-
-        // ✅ Fix array formatting
-        resolutions: form.resolutions.map((row) => ({
+        resolutions: form.resolutions.map((row: any) => ({
             ...row,
-            date_of_meeting: formatDateOnly(row.date_of_meeting),
+            date_of_meeting: normalizeDate(row.date_of_meeting),
         })),
 
-        // ✅ Format global dates correctly
-        date_received_cdd: formatDateOnly(form.date_received_by_cdd),
-        date_received_focal: formatDateOnly(form.date_received_by_focal),
-        date_released_focal: formatDateOnly(form.date_released_focal),
-        date_approved_pamb: formatDateOnly(form.date_approved_pamb),
-        date_emailed_bmb: formatDateOnly(form.date_emailed_bmb),
-        date_submitted_bmb: formatDateOnly(form.date_submitted_bmb),
-    };
+        focal_person: form.focal_person,
+        alternate_focal: form.alternate_focal,
+        approved_pamb_clearance_no: form.approved_pamb_clearance_no,
+        status: form.status,
+        rating: form.rating,
+        protected_area_id: form.protected_area_id,
 
-    form.post('/monitoring/store', {
-        data: payload, // ✅ send clean payload
-        onSuccess: () => {
-            toast.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: 'Resolution created successfully',
-                life: 3000,
-            });
+        date_received_cdd: normalizeDate(form.date_received_by_cdd),
+        date_received_focal: normalizeDate(form.date_received_by_focal),
+        date_received_by_oardts: normalizeDate(form.date_received_by_oardts),
+        date_released_focal: normalizeDate(form.date_released_focal),
+        date_approved_pamb: normalizeDate(form.date_approved_pamb),
+        date_emailed_bmb: normalizeDate(form.date_emailed_bmb),
+        date_submitted_bmb: normalizeDate(form.date_submitted_bmb),
+    }
 
-            form.reset();
-        },
-    });
+    console.log('FINAL PAYLOAD:', payload)
+
+    try {
+        const response = await axios.post('/monitoring/store', payload)
+
+        console.log('SUCCESS:', response.data)
+
+        toast.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Saved successfully',
+            life: 3000,
+        })
+
+        form.reset()
+    } catch (error: any) {
+        console.error('ERROR:', error.response?.data || error.message)
+
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to save record',
+            life: 3000,
+        })
+    }
 }
 
 // ✅ CLEAR WHEN TOGGLE OFF
@@ -151,24 +175,28 @@ watch(checked, (val) => {
                 <div class="xl:col-span-3">
                     <div class="w-full">
                         <!-- Header -->
-                        <h2 class="mb-6 flex items-center gap-2 text-2xl font-bold">
-                            <Info /> Add New Resolution
-                        </h2>
+                        <h2 class="mb-6 flex items-center gap-2 text-2xl font-bold"><Info /> Add New Resolution</h2>
 
                         <!-- SECTION 1 -->
+                         <Panel>
+
                         <div class="mb-6 rounded-xl border-gray-300 p-6 shadow">
                             <h3 class="mb-4 text-lg font-semibold">📌 Basic Information</h3>
 
                             <div class="grid gap-6 md:grid-cols-2">
-                                <Select :options="paOptions" optionLabel="label" optionValue="value"
-                                    v-model="form.protected_area_id" placeholder="Select Protected Area" />
+                                <Select
+                                    :filter="true"
+                                    :options="paOptions"
+                                    optionLabel="label"
+                                    optionValue="value"
+                                    v-model="form.protected_area_id"
+                                    placeholder="Select Protected Area"
+                                />
                                 <Input v-model="form.focal_person" placeholder="Focal Person" />
                                 <Input v-model="form.alternate_focal" placeholder="Alternate Focal Person" />
                             </div>
                             <div class="mt-3">
-                                <Button type="button" @click="addRow">
-                                    <CirclePlus /> Add Row
-                                </Button>
+                                <Button type="button" @click="addRow"> <CirclePlus /> Add Row </Button>
                             </div>
                             <div class="mt-6 grid gap-6 md:grid-cols-1">
                                 <table class="w-full border text-sm">
@@ -193,8 +221,7 @@ watch(checked, (val) => {
                                             </td>
 
                                             <td class="px-3 py-2">
-                                                <DatePicker v-model="row.date_of_meeting" dateFormat="yy-mm-dd"
-                                                    showIcon />
+                                                <DatePicker v-model="row.date_of_meeting" dateFormat="yy-mm-dd" showIcon />
                                             </td>
 
                                             <td class="px-3 py-2">
@@ -215,22 +242,32 @@ watch(checked, (val) => {
                                     <label>Has PAMB Clearance?</label>
                                     <ToggleSwitch v-model="checked" />
                                 </div>
-                                <Input v-model="form.approved_pamb_clearance_no"
-                                    placeholder="Approved PAMB Clearance No." :disabled="!checked" />
+                                <Input v-model="form.approved_pamb_clearance_no" placeholder="Approved PAMB Clearance No." :disabled="!checked" />
                                 <Input v-model="form.reason" placeholder="Reason (if deferred)" :disabled="!checked" />
                             </div>
                         </div>
+                        </Panel>
 
                         <!-- SECTION 2 -->
                         <div class="mb-6 rounded-xl bg-white p-6 shadow">
                             <h3 class="mb-4 text-lg font-semibold">📌 Status & Evaluation</h3>
 
                             <div class="grid gap-6 md:grid-cols-2">
-                                <Select :options="statusOptions" optionLabel="label" optionValue="value"
-                                    v-model="form.status" placeholder="Select Status" />
+                                <Select
+                                    :options="statusOptions"
+                                    optionLabel="label"
+                                    optionValue="value"
+                                    v-model="form.status"
+                                    placeholder="Select Status"
+                                />
 
-                                <Select :options="ratingOptions" optionLabel="label" optionValue="value"
-                                    v-model="form.rating" placeholder="Select Rating" />
+                                <Select
+                                    :options="ratingOptions"
+                                    optionLabel="label"
+                                    optionValue="value"
+                                    v-model="form.rating"
+                                    placeholder="Select Rating"
+                                />
                             </div>
                         </div>
 
@@ -239,18 +276,13 @@ watch(checked, (val) => {
                             <h3 class="mb-4 text-lg font-semibold">📌 Timeline Tracking</h3>
 
                             <div class="grid gap-6 md:grid-cols-3">
-                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_received_cdd" showIcon
-                                    placeholder="Received (CDD)" />
-                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_received_focal" showIcon
-                                    placeholder="Received (Focal)" />
-                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_released_focal" showIcon
-                                    placeholder="Released" />
-                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_approved_pamb" showIcon
-                                    placeholder="Approved" />
-                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_emailed_bmb" showIcon
-                                    placeholder="Emailed (BMB)" />
-                                <DatePicker dateFormat="yy-mm-dd" v-model="form.date_submitted_bmb" showIcon
-                                    placeholder="Submitted (Hard Copy)" />
+                                <DatePicker v-model="form.date_received_by_cdd" showIcon placeholder="Received (CDD)" />
+                                <DatePicker v-model="form.date_received_by_focal" showIcon placeholder="Received (Focal)" />
+                                <DatePicker v-model="form.date_released_focal" showIcon placeholder="Released" />
+                                <DatePicker v-model="form.date_received_by_oardts" showIcon placeholder="Received (OARDTS)" />
+                                <DatePicker v-model="form.date_approved_pamb" showIcon placeholder="Approved" />
+                                <DatePicker v-model="form.date_emailed_bmb" showIcon placeholder="Emailed (BMB)" />
+                                <DatePicker v-model="form.date_submitted_bmb" showIcon placeholder="Submitted (Hard Copy)" />
                             </div>
                         </div>
 

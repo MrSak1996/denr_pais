@@ -66,7 +66,7 @@ const handleSupplierSave = async (data) => {
     try {
 
         const response = await axios.post(
-            'http://10.201.10.135:8000/api/chainsaw-permit/store',
+            'http://localhost:8000/api/chainsaw-permit/store',
             {
                 suppliers: data
             }
@@ -196,8 +196,8 @@ const loadBrands = async () => {
     }
 
     const res = await axios.get(
-        // `http://10.201.10.135:8000/api/chainsaw/${applicationId}/brands`
-        `http://10.201.10.135:8000/api/chainsaw/${applicationId}/supplier`
+        // `http://localhost:8000/api/chainsaw/${applicationId}/brands`
+        `http://localhost:8000/api/chainsaw/${applicationId}/supplier`
     )
 
     // If data exists, overwrite
@@ -464,7 +464,7 @@ const saveCompanyApplication = async () => {
     formData.append('soc_certificate', company_form.soc_certificate);
 
     try {
-        const response = await insertFormData('http://10.201.10.135:8000/api/chainsaw/company_apply', {
+        const response = await insertFormData('http://localhost:8000/api/chainsaw/company_apply', {
             ...company_form,
             ...formData,
             encoded_by: userId,
@@ -528,7 +528,7 @@ const submitChainsawForm = async () => {
             })
 
         const response = await axios.post(
-            'http://10.201.10.135:8000/api/chainsaw/insertChainsawInfo',
+            'http://localhost:8000/api/chainsaw/insertChainsawInfo',
             formData
         )
         const newApplicationId = response.data.application_id
@@ -563,7 +563,7 @@ const submitORPayment = async () => {
     formData.append('uploaded_by', userId);
 
     try {
-        const response = await axios.post('http://10.201.10.135:8000/api/chainsaw/insert_payment', formData, {
+        const response = await axios.post('http://localhost:8000/api/chainsaw/insert_payment', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
 
@@ -606,7 +606,7 @@ const getApplicationDetails = async () => {
 
 
     try {
-        const response = await axios.get(`http://10.201.10.135:8000/api/getApplicationDetails/${applicationId}`);
+        const response = await axios.get(`http://localhost:8000/api/getApplicationDetails/${applicationId}`);
         applicationData.value = response.data.data || [];
     } catch (error) {
         errorMessage.value = error.message || 'Error fetching application data.';
@@ -620,7 +620,7 @@ const getApplicantFile = async () => {
     if (!applicationId) return;
 
     try {
-        const response = await axios.get(`http://10.201.10.135:8000/api/getApplicantFile/${applicationId}`);
+        const response = await axios.get(`http://localhost:8000/api/getApplicantFile/${applicationId}`);
         if (response.data.status && Array.isArray(response.data.data)) {
             files.value = response.data.data.map((file) => ({
                 name: file.file_name,

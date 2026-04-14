@@ -17,7 +17,8 @@ class ResolutionClearanceController extends Controller
      */
     public function index()
     {
-        $resolutions = PambResolution::latest()->get();
+        $resolutions = PambResolution::with('protectedArea')
+            ->get();
 
         return Inertia::render('monitoring/index', [
             'resolutions' => $resolutions
@@ -29,47 +30,56 @@ class ResolutionClearanceController extends Controller
      */
 
 
-   public function store(Request $request)
-{
-    $request->validate([
-        'resolutions' => 'required|array|min:1',
-        'resolutions.*.resolution_no' => 'required|string|max:100',
-        'status' => 'required|string',
-    ]);
-
-    foreach ($request->resolutions as $row) {
-
-        PambResolution::create([
-            'protected_area_id' => $request->protected_area_id,
-
-            // 👇 FROM ARRAY
-            'resolution_no' => $row['resolution_no'],
-            'type_of_meeting' => $row['type_of_meeting'] ?? null,
-            'resolution_title' => $row['resolution_title'] ?? null,
-            'date_of_meeting' => $row['date_of_meeting'] ?? null,
-
-            // 👇 FROM MAIN FORM
-            'focal_person' => $request->focal_person,
-            'alternate_focal' => $request->alternate_focal,
-            'approved_pamb_clearance_no' => $request->approved_pamb_clearance_no,
-            'status' => $request->status,
-
-            // 👇 TIMELINE
-        
-            'date_of_meeting' => $request->date_of_meeting,
-            'date_received_by_cdd' => $request->date_received_cdd,
-            'date_received_by_focal' => $request->date_received_focal,
-            'date_submitted_released_by_focal' => $request->date_released_focal,
-            'date_received_by_oardts' => $request->date_received_by_oardts,
-            'date_approved_by_pamb_chair' => $request->date_approved_pamb,
-            'date_emailed_bmb' => $request->date_emailed_bmb,
-            'date_submitted_to_bmb_hardcopy' => $request->date_submitted_bmb,
+    public function store(Request $request)
+    {
+        print_r($request->all());
+        $request->validate([
+            'resolutions' => 'required|array|min:1',
+            'resolutions.*.resolution_no' => 'required|string|max:100',
+            'status' => 'required|string',
         ]);
+
+        foreach ($request->resolutions as $row) {
+
+            PambResolution::create([
+                'protected_area_id' => $request->protected_area_id,
+
+                // array data
+                'resolution_no' => $row['resolution_no'],
+                'type_of_meeting' => $row['type_of_meeting'] ?? null,
+                'resolution_title' => $row['resolution_title'] ?? null,
+                'date_of_meeting' => $row['date_of_meeting'] ?? null,
+
+                // main form
+                'focal_person' => $request->focal_person,
+                'alternate_focal' => $request->alternate_focal,
+                'approved_pamb_clearance_no' => $request->approved_pamb_clearance_no,
+                'status' => $request->status,
+
+                // TIMELINE (FORCED FORMAT FIX)
+                'date_received_by_cdd' => $this->cleanDate($request->date_received_cdd),
+                'date_received_by_focal' => $this->cleanDate($request->date_received_focal),
+                'date_submitted_released_by_focal' => $this->cleanDate($request->date_released_focal),
+                'date_received_by_oardts' => $this->cleanDate($request->date_received_by_oardts),
+                'date_approved_by_pamb_chair' => $this->cleanDate($request->date_approved_pamb),
+                'date_emailed_bmb' => $this->cleanDate($request->date_emailed_bmb),
+                'date_submitted_to_bmb_hardcopy' => $this->cleanDate($request->date_submitted_bmb),
+            ]);
+        }
+
+        // return redirect()->route('monitoring.index')
+        //     ->with('success', 'Resolutions created successfully.');
     }
 
-    return redirect()->route('monitoring.index')
-        ->with('success', 'Resolutions created successfully.');
-}
+    /**
+     * Force YYYY-MM-DD format
+     */
+    private function cleanDate($date)
+    {
+        if (!$date || $date === '0000-00-00') return null;
+
+        return date('Y-m-d', strtotime($date));
+    }
 
     /**
      * Show single resolution

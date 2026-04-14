@@ -100,7 +100,7 @@ return [
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),
-            'host' => env('DB_HOST', '10.201.10.135'),
+            'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'laravel'),
             'username' => env('DB_USERNAME', 'root'),

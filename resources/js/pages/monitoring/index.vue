@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAppForm } from '@/composables/useAppForm';
+import { ref } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
@@ -13,8 +14,9 @@ import TabPanels from 'primevue/tabpanels';
 import Tabs from 'primevue/tabs';
 import Select from 'primevue/select';
 import prc_table from './table/reso_tbl.vue';
-
-const { chainsaw_form, chainsaw } = useAppForm();
+import FloatLabel from 'primevue/floatlabel';
+import Column from 'primevue/column';
+import DataTable from 'primevue/datatable';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'List of Approved PAMB Resolution and Clearance',
@@ -96,6 +98,260 @@ const chartOptions = {
         }
     }
 };
+const data = ref([
+    {
+        pa: 'APLS',
+        focal: 'Julie/Kath',
+        jan: 0,
+        feb: 0,
+        mar: 5,
+        april: 2,
+        may: 35,
+        june: 6,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+        approved_resolutions: 5,
+        approved_clearances: 0,
+        received: 7,
+        pamb_minutes: 1
+    },
+    {
+        pa: 'CPLS',
+        focal: 'Julie/Mich',
+         jan: 0,
+        feb: 0,
+        mar: 5,
+        april: 2,
+        may: 35,
+        june: 6,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+        approved_resolutions: 1,
+        approved_clearances: 2,
+        received: 3,
+        pamb_minutes: 1
+    },
+    {
+        pa: 'TVPL',
+        focal: 'Cj/Den',
+         jan: 0,
+        feb: 0,
+        mar: 5,
+        april: 2,
+        may: 35,
+        june: 6,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+        approved_resolutions: 9,
+        approved_clearances: 5,
+        received: 9,
+        pamb_minutes: 1
+    },
+     {
+        pa: 'TVPL',
+        focal: 'Cj/Den',
+         jan: 0,
+        feb: 0,
+        mar: 5,
+        april: 2,
+        may: 35,
+        june: 6,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+        approved_resolutions: 9,
+        approved_clearances: 5,
+        received: 9,
+        pamb_minutes: 1
+    },
+     {
+        pa: 'TVPL',
+        focal: 'Cj/Den',
+         jan: 0,
+        feb: 0,
+        mar: 5,
+        april: 2,
+        may: 35,
+        june: 6,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+        approved_resolutions: 9,
+        approved_clearances: 5,
+        received: 9,
+        pamb_minutes: 1
+    },
+     {
+        pa: 'TVPL',
+        focal: 'Cj/Den',
+         jan: 0,
+        feb: 0,
+        mar: 5,
+        april: 2,
+        may: 35,
+        june: 6,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+        approved_resolutions: 9,
+        approved_clearances: 5,
+        received: 9,
+        pamb_minutes: 1
+    },
+     {
+        pa: 'TVPL',
+        focal: 'Cj/Den',
+         jan: 0,
+        feb: 0,
+        mar: 5,
+        april: 2,
+        may: 35,
+        june: 6,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+        approved_resolutions: 9,
+        approved_clearances: 5,
+        received: 9,
+        pamb_minutes: 1
+    },
+     {
+        pa: 'TVPL',
+        focal: 'Cj/Den',
+         jan: 0,
+        feb: 0,
+        mar: 5,
+        april: 2,
+        may: 35,
+        june: 6,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+        approved_resolutions: 9,
+        approved_clearances: 5,
+        received: 9,
+        pamb_minutes: 1
+    },
+     {
+        pa: 'TVPL',
+        focal: 'Cj/Den',
+         jan: 0,
+        feb: 0,
+        mar: 5,
+        april: 2,
+        may: 35,
+        june: 6,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+        approved_resolutions: 9,
+        approved_clearances: 5,
+        received: 9,
+        pamb_minutes: 1
+    },
+     {
+        pa: 'TVPL',
+        focal: 'Cj/Den',
+         jan: 0,
+        feb: 0,
+        mar: 5,
+        april: 2,
+        may: 35,
+        june: 6,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+        approved_resolutions: 9,
+        approved_clearances: 5,
+        received: 9,
+        pamb_minutes: 1
+    },
+     {
+        pa: 'TVPL',
+        focal: 'Cj/Den',
+         jan: 0,
+        feb: 0,
+        mar: 5,
+        april: 2,
+        may: 35,
+        june: 6,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+        approved_resolutions: 9,
+        approved_clearances: 5,
+        received: 9,
+        pamb_minutes: 1
+    },
+     {
+        pa: 'TVPL',
+        focal: 'Cj/Den',
+         jan: 0,
+        feb: 0,
+        mar: 5,
+        april: 2,
+        may: 35,
+        june: 6,
+        july: 0,
+        august: 0,
+        september: 0,
+        october: 0,
+        november: 0,
+        december: 0,
+        approved_resolutions: 9,
+        approved_clearances: 5,
+        received: 9,
+        pamb_minutes: 1
+    },
+    
+    // 👉 add the rest of your data here
+]);
+
+const totals = {
+    jan: 0,
+    feb: 0,
+    mar: 55,
+    approved_resolutions: 55,
+    approved_clearances: 43,
+    received: 104,
+    pamb_minutes: 15
+};
 </script>
 
 <template>
@@ -115,19 +371,19 @@ const chartOptions = {
                         <TabPanel value="0">
                             <div class="grid gap-6 md:grid-cols-4">
                                 <div class="flex flex-col gap-1">
-                                    <Label for="rating">Year</Label>
+                                    <FloatLabel for="rating">Year</FloatLabel>
                                     <Select />
                                 </div>
                                 <div class="flex flex-col gap-1">
-                                    <Label for="rating">Month</Label>
+                                    <FloatLabel for="rating">Month</FloatLabel>
                                     <Select />
                                 </div>
                                 <div class="flex flex-col gap-1">
-                                    <Label for="rating">Quarter</Label>
+                                    <FloatLabel for="rating">Quarter</FloatLabel>
                                     <Select />
                                 </div>
                                 <div class="flex flex-col gap-1">
-                                    <Label for="rating">Semestral</Label>
+                                    <FloatLabel for="rating">Semestral</FloatLabel>
                                     <Select />
                                 </div>
                             </div>
@@ -163,14 +419,85 @@ const chartOptions = {
                                     </Card>
                                 </div>
                             </Fieldset>
+                            <Fieldset>
+                                <DataTable :value="data" stripedRows showGridlines responsiveLayout="scroll"
+                                    class="p-datatable-sm rounded-xl shadow-md">
+                                    <!-- PA -->
+                                    <Column field="pa" header="PA" frozen class="font-semibold" />
 
+                                    <!-- FOCAL -->
+                                    <Column field="focal" header="Focal/Alternate" />
+
+                                    <!-- MONTHS -->
+                                    <Column field="jan" header="Jan" class="text-center" />
+                                    <Column field="feb" header="Feb" class="text-center" />
+                                    <Column field="mar" header="Mar" class="text-center" />
+                                    <Column field="apr" header="Apr" class="text-center" />
+                                    <Column field="may" header="May" class="text-center" />
+                                    <Column field="jun" header="June" class="text-center" />
+                                    <Column field="jul" header="Jul" class="text-center" />
+                                    <Column field="aug" header="Aug" class="text-center" />
+                                    <Column field="sep" header="Sept" class="text-center" />
+                                    <Column field="oct" header="Oct" class="text-center" />
+                                    <Column field="nov" header="Nov" class="text-center" />
+                                    <Column field="dec" header="Dec" class="text-center" />
+
+                                    <!-- SUMMARY -->
+                                    <Column field="approved_resolutions" header="Approved Resolutions">
+                                        <template #body="slotProps">
+                                            <span class="font-bold text-blue-600">
+                                                {{ slotProps.data.approved_resolutions }}
+                                            </span>
+                                        </template>
+                                    </Column>
+
+                                    <Column field="approved_clearances" header="Approved Clearances">
+                                        <template #body="slotProps">
+                                            <span class="font-bold text-green-600">
+                                                {{ slotProps.data.approved_clearances }}
+                                            </span>
+                                        </template>
+                                    </Column>
+
+                                    <Column field="received" header="Resolutions Received">
+                                        <template #body="slotProps">
+                                            <span class="font-bold text-orange-500">
+                                                {{ slotProps.data.received }}
+                                            </span>
+                                        </template>
+                                    </Column>
+
+                                    <Column field="pamb_minutes" header="PAMB Minutes">
+                                        <template #body="slotProps">
+                                            <span class="font-bold text-purple-600">
+                                                {{ slotProps.data.pamb_minutes }}
+                                            </span>
+                                        </template>
+                                    </Column>
+
+                                    <!-- FOOTER TOTAL -->
+                                    <template #footer>
+                                        <tr class="bg-gray-100 font-bold">
+                                            <td colspan="2">Total</td>
+                                            <td class="text-center">{{ totals.jan }}</td>
+                                            <td class="text-center">{{ totals.feb }}</td>
+                                            <td class="text-center">{{ totals.mar }}</td>
+                                            <td class="text-blue-600 text-center">{{ totals.approved_resolutions }}</td>
+                                            <td class="text-green-600 text-center">{{ totals.approved_clearances }}</td>
+                                            <td class="text-orange-500 text-center">{{ totals.received }}</td>
+                                            <td class="text-purple-600 text-center">{{ totals.pamb_minutes }}</td>
+                                        </tr>
+                                    </template>
+                                </DataTable>
+                            </Fieldset>
                             <!-- CHART -->
                             <Fieldset legend="Graphical Comparison">
-                           
+
                                 <div class="mx-auto w-full md:w-4/5" style="height: 500px !important;">
                                     <Chart type="bar" :data="chartData" :options="chartOptions" />
                                 </div>
                             </Fieldset>
+
                         </TabPanel>
                         <TabPanel value="1">
                             <prc_table />
@@ -183,3 +510,13 @@ const chartOptions = {
     </AppLayout>
 </template>
 <style scoped src="../../../css/style.css"></style>
+<style lang="css" scoped>
+.p-datatable th {
+    background: #f8fafc;
+    font-weight: 600;
+}
+
+.p-datatable td {
+    padding: 10px;
+}
+</style>
