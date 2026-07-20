@@ -9,8 +9,13 @@ export function useApi() {
         id: number;
         prov_name: string;
     }
+    interface ProtectedArea{
+        id:number;
+        pa_name:string;
+    }
 
     const prov_name = ref<Option[]>([]);
+    const protected_areas = ref<Option[]>([]);
     const application_no = ref<string>('');
 
     const getApplicationNumber = async (form:{ application_no: string}, chainsaw_form:{application_no: string}): Promise<void> => {
@@ -34,7 +39,7 @@ export function useApi() {
 
     const getProvinceCode = async (): Promise<void> => {
         try {
-            const res = await axios.get<Province[]>('http://127.0.0.1:8000/api/getProvinces');
+            const res = await axios.get<Province[]>('http://localhost:8000/api/getProvinces');
             prov_name.value = res.data.map((item) => ({
                 id: Number(item.prov_code),
                 name: item.prov_name,
@@ -44,13 +49,25 @@ export function useApi() {
         }
     };
 
+    const getProtectedAreas = async (): Promise<void> => {
+        try {
+            const res = await axios.get<ProtectedArea[]>('http://localhost:8000/api/getProtectedAreas');
+            protected_areas.value = res.data.map((item) => ({
+                id: Number(item.id),
+                name: item.pa_code,
+            }));
+        } catch (error) {
+            console.error('Error fetching protected areas:', error);
+        }
+    };
+
     
 
 
     return {
         application_no,
         prov_name,
-        getApplicationNumber,
-        getProvinceCode,
+        protected_areas,
+        getProtectedAreas,
     };
 }

@@ -127,6 +127,16 @@ class LogEntry extends \Google\Collection
   protected $operationType = LogEntryOperation::class;
   protected $operationDataType = '';
   /**
+   * Optional. The structured OpenTelemetry protocol payload. Contains the
+   * OpenTelemetry Resource, Instrumentation Scope, and Entities attributes for
+   * this log as they are defined in the OTLP specification, and any other
+   * fields that do not have a direct analog in the LogEntry. See
+   * https://opentelemetry.io/docs/specs/otel/logs/data-model/
+   *
+   * @var array[]
+   */
+  public $otel;
+  /**
    * The log entry payload, represented as a protocol buffer. Some Google Cloud
    * Platform services use this field for their log entry payloads.The following
    * protocol buffer types are supported; user-defined types are not
@@ -189,11 +199,7 @@ class LogEntry extends \Google\Collection
    * period. If this field is omitted in a new log entry, then Logging assigns
    * it the current time. Timestamps have nanosecond accuracy, but trailing
    * zeros in the fractional seconds might be omitted when the timestamp is
-   * displayed.Incoming log entries must have timestamps that don't exceed the
-   * logs retention period
-   * (https://cloud.google.com/logging/quotas#logs_retention_periods) in the
-   * past, and that don't exceed 24 hours in the future. Log entries outside
-   * those time boundaries are rejected by Logging.
+   * displayed.
    *
    * @var string
    */
@@ -282,10 +288,13 @@ class LogEntry extends \Google\Collection
   /**
    * Output only. The Error Reporting (https://cloud.google.com/error-reporting)
    * error groups associated with this LogEntry. Error Reporting sets the values
-   * for this field during error group creation.For more information, see View
-   * error details( https://cloud.google.com/error-reporting/docs/viewing-
-   * errors#view_error_details)This field isn't available during log routing
-   * (https://cloud.google.com/logging/docs/routing/overview)
+   * for this field during error group creation.This field is populated only
+   * when log entries are stored in Cloud Logging storage (Logs Explorer and
+   * Observability Analytics). It is not available for use in log sink filters,
+   * log-based metrics, or log-based alerts, and it is excluded from log exports
+   * (Cloud Storage, BigQuery, and Pub/Sub).For more information, see View error
+   * details( https://cloud.google.com/error-reporting/docs/viewing-
+   * errors#view_error_details)
    *
    * @param LogErrorGroup[] $errorGroups
    */
@@ -447,6 +456,26 @@ class LogEntry extends \Google\Collection
   public function getOperation()
   {
     return $this->operation;
+  }
+  /**
+   * Optional. The structured OpenTelemetry protocol payload. Contains the
+   * OpenTelemetry Resource, Instrumentation Scope, and Entities attributes for
+   * this log as they are defined in the OTLP specification, and any other
+   * fields that do not have a direct analog in the LogEntry. See
+   * https://opentelemetry.io/docs/specs/otel/logs/data-model/
+   *
+   * @param array[] $otel
+   */
+  public function setOtel($otel)
+  {
+    $this->otel = $otel;
+  }
+  /**
+   * @return array[]
+   */
+  public function getOtel()
+  {
+    return $this->otel;
   }
   /**
    * The log entry payload, represented as a protocol buffer. Some Google Cloud
@@ -611,11 +640,7 @@ class LogEntry extends \Google\Collection
    * period. If this field is omitted in a new log entry, then Logging assigns
    * it the current time. Timestamps have nanosecond accuracy, but trailing
    * zeros in the fractional seconds might be omitted when the timestamp is
-   * displayed.Incoming log entries must have timestamps that don't exceed the
-   * logs retention period
-   * (https://cloud.google.com/logging/quotas#logs_retention_periods) in the
-   * past, and that don't exceed 24 hours in the future. Log entries outside
-   * those time boundaries are rejected by Logging.
+   * displayed.
    *
    * @param string $timestamp
    */

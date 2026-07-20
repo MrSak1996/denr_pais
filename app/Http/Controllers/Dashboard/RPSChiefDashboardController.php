@@ -13,23 +13,6 @@ class RPSChiefDashboardController extends Controller
 {
     // Define status constants
 
-    const STATUS_ENDORSED_CENRO_CHIEF = 3;
-    const STATUS_ENDORSED_RPS_CHIEF = 4;
-    const STATUS_ENDORSED_TSD_CHIEF = 5;
-    const STATUS_ENDORSED_PENRO = 6;
-    const STATUS_ENDORSED_LPDD_FUS = 7;
-    const STATUS_RECEIVED_CENRO_CHIEF = 10;
-    const STATUS_RECEIVED_TSD_CHIEF = 12;
-    const STATUS_RECEIVED_PENRO_CHIEF = 13;
-    const STATUS_RECEIVED_FUS = 14;
-    const STATUS_RETURN_TO_CENRO_CHIEF = 17;
-    const STATUS_RETURN_TO_RPS_CHIEF = 18;
-    const STATUS_RETURN_TO_TSD_CHIEF = 19;
-    const STATUS_RETURN_TO_PENRO = 20;
-    const STATUS_RETURN_TO_LPDD_FUS = 21;
-    const STATUS_RETURN_TO_ARDTS = 22;
-    const STATUS_RETURN_TO_RED = 23;
-    const STATUS_RETURN_TO_TECHNICAL_STAFF = 24;
 
 
 
@@ -115,11 +98,21 @@ class RPSChiefDashboardController extends Controller
         ]);
 
         $office_id = (int) $request->input('office_id');
+        $role_id = (int) $request->input('role_id');
         $status = (int) $request->input('status');
         $statusFilter = [$status];
         switch ($office_id) {
             case 2:
-                $officeFilter = [2,6];
+                $officeFilter = [2, 6];
+                break;
+            case 3:
+                $officeFilter = [3, 7, 8];
+                break;
+            case 5:
+                $officeFilter = [5, 9, 10, 11, 12];
+                break;
+            case 6:
+                $officeFilter = [6];
                 break;
             case 13:
                 $officeFilter = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]; // if region show all offices
@@ -130,6 +123,18 @@ class RPSChiefDashboardController extends Controller
                 break;
         }
         switch ($status) {
+            case 1:
+                $statusFilter = [
+                    self::STATUS_DRAFT,
+                    self::STATUS_APPROVED_BY_RED,
+                    self::STATUS_FOR_REVIEW_EVALUATION,
+                    self::STATUS_ENDORSED_CENRO_RPS_CHIEF,
+                    self::STATUS_ENDORSED_CENRO_OFFICER,
+                    self::STATUS_RETURNED_TO_CENRO_TECHNICAL,
+                    self::STATUS_RECEIVED_CENRO_RPS_CHIEF,
+                    self::STATUS_RECEIVED_CENRO_OFFICER
+                ];
+                break;
             case 3:
                 $statusFilter = [
                     self::STATUS_ENDORSED_CENRO_RPS_CHIEF,
@@ -180,9 +185,16 @@ class RPSChiefDashboardController extends Controller
 
             case 5:
                 $statusFilter = [
+                      self::STATUS_DRAFT,
+                    self::STATUS_ENDORSED_PENRO_CHIEF_RPS,
                     self::STATUS_ENDORSED_PENRO_TECHNICAL,
                     self::STATUS_RECEIVED_PENRO_TECHNICAL,
                     self::STATUS_RETURNED_TO_PENRO_TECHNICAL,
+                    self::STATUS_ENDORSED_RED,
+                    self::STATUS_RECEIVED_RED,
+                    self::STATUS_ENDORSED_ARDTS,
+                    self::STATUS_RECEIVED_ARDTS,
+                    self::STATUS_APPROVED_BY_RED,
                 ];
                 break;
             case 6:
@@ -209,12 +221,19 @@ class RPSChiefDashboardController extends Controller
                 break;
             case 9:
                 $statusFilter = [
+					self::STATUS_RECEIVED_FUS_CHIEF,
+					self::STATUS_RECEIVED_LPDD_CHIEF,
+					self::STATUS_RECEIVED_ARDTS,
                     self::STATUS_ENDORSED_REGIONAL_TECHNICAL_STAFF,
+                    self::STATUS_ENDORSED_FUS_CHIEF,
+                    self::STATUS_ENDORSED_LPDD_CHIEF,
+                    self::STATUS_ENDORSED_ARDTS,
                     self::STATUS_RECEIVED_REGIONAL_TECHNICAL_STAFF,
-                    self::STATUS_RETURNED_TO_REGIONAL_TECHNICAL
+                    self::STATUS_RETURNED_TO_REGIONAL_TECHNICAL,
+                    self::STATUS_APPROVED_BY_RED
                 ];
                 break;
-              case 10:
+            case 10:
                 $statusFilter = [
                     self::STATUS_ENDORSED_FUS_CHIEF,
                     self::STATUS_RECEIVED_FUS_CHIEF,
@@ -233,16 +252,16 @@ class RPSChiefDashboardController extends Controller
                     self::STATUS_RECEIVED_ARDTS,
                 ];
                 break;
-             case 13:
+            case 13:
                 $statusFilter = [
                     self::STATUS_ENDORSED_RED,
                     self::STATUS_RECEIVED_RED,
                     self::STATUS_APPROVED_BY_RED
                 ];
                 break;
-            
+
                 break;
-             case 20:
+            case 20:
                 $statusFilter = [
                     self::STATUS_ENDORSED_REGIONAL_TECHNICAL_STAFF,
                     self::STATUS_RECEIVED_REGIONAL_TECHNICAL_STAFF,
@@ -282,8 +301,7 @@ class RPSChiefDashboardController extends Controller
                 $statusFilter = [
                     self::STATUS_RECEIVED_RED,   // 16
                     self::STATUS_APPROVED_BY_RED,   // 9
-                    self::STATUS_RETURN_TO_RED,  // 23
-                    self::STATUS_RETURN_TO_ARDTS,
+                    self::STATUS_RETURNED_TO_REGIONAL_TECHNICAL,  // 23
                     25
 
                 ];
@@ -296,19 +314,30 @@ class RPSChiefDashboardController extends Controller
 
 
 
-        // }
-
         $applicationDetails = DB::table('tbl_application_checklist as ac')
             ->leftJoin('tbl_chainsaw_information as ci', 'ci.application_id', '=', 'ac.id')
             ->leftJoin('tbl_application_payment as ap', 'ap.application_id', '=', 'ac.id')
             ->leftJoin('tbl_status as s', 'ac.application_status', '=', 's.id')
             ->leftJoin('users as u', 'u.id', '=', 'ac.encoded_by')
+            ->leftJoin('users as updater', 'updater.id', '=', 'ac.updated_by')
             ->leftJoin('tbl_office as o', 'o.id', '=', 'u.office_id')
+
             ->select(
+                DB::raw("
+            CONCAT(
+                ac.applicant_lastname, ', ',
+                ac.applicant_firstname, ' ',
+                IFNULL(ac.applicant_middlename, '')
+            ) AS applicant_name
+        "),
+                'o.office_title',
+                'ac.authorized_representative',
                 'ac.id',
                 'ac.return_reason',
                 'u.name as encoded_by',
+                'updater.name as updated_by',
                 'u.office_id',
+                'u.role_id',
                 's.status_title',
                 'ac.application_status',
                 'ac.application_type',
@@ -333,18 +362,64 @@ class RPSChiefDashboardController extends Controller
                 'ac.created_at',
                 'ac.date_applied'
             )
-            ->whereIn('ac.application_status', $statusFilter)
-            ->whereIn('u.office_id', $officeFilter)
+
+			 // ✅ ALWAYS APPLY STATUS FILTER
+        ->when(
+            $office_id == 13,
+            fn ($query) => $query->whereIn('ac.application_status',$statusFilter)
+        )
+
+            // ✅ OFFICE FILTER FOR NON-REGIONAL
+            ->when($office_id != 13, function ($query) use ($officeFilter) {
+                return $query->whereIn('u.office_id', $officeFilter);
+            })
+
+            // ✅ SPECIAL ROLE FILTER
+            ->when($role_id == 12, function ($query) use ($officeFilter) {
+                return $query->whereIn('u.office_id', $officeFilter);
+            })
+
+            // ✅ REGIONAL ACCESS
+            ->when(
+                $office_id == 13 && in_array($role_id, [8, 9, 10]),
+                function ($query) {
+                    return $query->whereIn('u.office_id', [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13
+                    ]);
+                }
+            )
+
             ->orderBy('ac.id', 'desc')
             ->get()
 
             ->map(function ($item) {
-                // ✅ Format date fields
-                foreach (['created_at', 'date_applied', 'date_of_payment', 'permit_validity'] as $field) {
+
+                foreach (
+                    [
+                        'created_at',
+                        'date_applied',
+                        'date_of_payment',
+                        'permit_validity'
+                    ] as $field
+                ) {
+
                     $item->$field = $item->$field
                         ? Carbon::parse($item->$field)->format('F d, Y')
                         : null;
                 }
+
                 return $item;
             });
 
@@ -368,7 +443,7 @@ class RPSChiefDashboardController extends Controller
         }
 
         return response()->json([
-            'status' => $status,
+            'status' => $statusFilter,
             'office_id' => $office_id,
             'status_labels' => array_map(function ($code) {
                 return $this->statusMap[$code] ?? 'Unknown Status';
@@ -525,7 +600,7 @@ class RPSChiefDashboardController extends Controller
 
             // 2️⃣ Update application status
             $app->update([
-                'application_status' => self::STATUS_ENDORSED_TSD_CHIEF,
+                'application_status' => self::STATUS_ENDORSED_CENRO_RPS_CHIEF,
                 'date_endorsed_rps_chief' => now(),
             ]);
 

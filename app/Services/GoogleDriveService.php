@@ -9,103 +9,6 @@ use App\Models\Chainsaw\ChainsawInformation;
 
 class GoogleDriveService
 {
-    // public function storeAttachments($application_no,$request, $applicationId, $folderStructure, $filesToUpload)
-    // {
-    //     $results = [];
-
-    //     foreach ($filesToUpload as $input => $folderType) {
-    //         try {
-    //             if (!$request->hasFile($input)) {
-    //                 $results[$input] = [
-    //                     'error' => "No file provided for: {$input}"
-    //                 ];
-    //                 continue;
-    //             }
-
-    //             $file = $request->file($input);
-
-    //             // 📁 Build folder path (e.g., CHAINSAW_PERMITTING/.../permit)
-    //             $folderPath = "{$folderStructure}/{$folderType}";
-    //             $this->ensureFolderExists($folderPath);
-
-
-    //             $originalExt = $file->getClientOriginalExtension();
-    //             $timestamp = now()->format('Ymd_His');
-    //             $applicationNo = $application_no;
-
-    //             if ($input === 'permit') {
-    //                 $fileName = "permit_{$applicationNo}.{$originalExt}";
-    //             } else if ($input === 'mayors') {
-    //                 $fileName = "mayors_{$applicationNo}.{$originalExt}";
-    //             } else if ($input === 'notarized') {
-    //                 $fileName = "notarized_{$applicationNo}.{$originalExt}";
-    //             } else if ($input === 'official') {
-    //                 $fileName = "official_{$applicationNo}.{$originalExt}";
-    //             } else if ($input === 'request') {
-    //                 $fileName = "request_{$applicationNo}.{$originalExt}";
-    //             } else if ($input === 'secretary') {
-    //                 $fileName = "secretary_{$applicationNo}.{$originalExt}";
-    //             } else {
-    //                 $filePrefix = str_replace(' ', '_', strtolower($folderType));
-    //                 $originalName = $file->getClientOriginalName();
-    //                 $fileName = "{$filePrefix}";
-    //             }
-
-    //             // Final file path
-    //             $filePath = "{$folderPath}/{$fileName}";
-
-
-    //             // 🚀 Upload to Google Drive
-    //             Log::info("Uploading file: {$fileName} to: {$filePath}");
-    //             $fileId = $this->uploadToDriveAndGetFileId($file, $filePath);
-    //             if (!$fileId) {
-    //                 throw new \Exception("Unable to retrieve file ID for: {$fileName}");
-    //             }
-
-    //             $fileUrl = "https://drive.google.com/file/d/{$fileId}/preview";
-
-    //             // 💾 Save attachment record
-    //             $uploadedFile = AttachmentsModel::create([
-    //                 'application_id' => $applicationId,
-    //                 'file_id' => $fileId,
-    //                 'file_name' => $fileName,
-    //                 'file_url' => $fileUrl,
-    //             ]);
-
-    //             // 🛠 Optional: Associate with ChainsawInfo (confirm logic)
-    //             $chainsaw = ChainsawInformation::where('application_id', $applicationId)->first();
-    //             if ($chainsaw) {
-    //                 $chainsaw->update([
-    //                     'application_attachment_id' => $uploadedFile->id,
-    //                 ]);
-    //             }
-
-    //             // ✅ Collect result
-    //             $results[$input] = [
-    //                 'file_id' => $fileId,
-    //                 'file_name' => $fileName,
-    //                 'file_url' => $fileUrl,
-    //                 'db_record' => $uploadedFile,
-    //                 'chainsaw_info' => $chainsaw,
-    //             ];
-    //         } catch (\Exception $e) {
-    //             Log::error("Attachment upload error", [
-    //                 'input' => $input,
-    //                 'error' => $e->getMessage()
-    //             ]);
-
-    //             $results[$input] = [
-    //                 'error' => $e->getMessage(),
-    //             ];
-    //         }
-    //     }
-
-    //     // return response()->json([
-    //     //     'status' => true,
-    //     //     'message' => 'Files processed.',
-    //     //     'results' => $results,
-    //     // ], 200, [], JSON_UNESCAPED_SLASHES);
-    // }
 
     public function storeSingleAttachment($applicationNo, $uploadedBy, $file, $applicationId, $folderStructure, $folderType, $checklistEntryId)
     {
@@ -331,14 +234,6 @@ class GoogleDriveService
     }
 
 
-
-
-
-
-
-
-
-
     /**
      * Get full Google Drive file path by fileId
      */
@@ -369,7 +264,87 @@ class GoogleDriveService
             return null;
         }
     }
+    public function storeIECCEPA($path, $folderPath, $folderName)
+    {
+        try {
 
+            $this->ensureFolderExists($folderPath);
+
+            $fullPath = Storage::path($path);
+
+            $extension = pathinfo($fullPath, PATHINFO_EXTENSION);
+
+            $fileName = strtolower(str_replace(' ', '_', $folderName))
+                . '_' . now()->format('YmdHis')
+                . '.' . $extension;
+
+            $drivePath = "{$folderPath}/{$fileName}";
+
+            $fileId = $this->uploadToDriveAndGetFileId(
+                $fullPath,
+                $drivePath
+            );
+
+            if (!$fileId) {
+                throw new \Exception('Unable to retrieve Google Drive file ID.');
+            }
+
+            return [
+                'status'    => true,
+                'file_id'   => $fileId,
+                'file_name' => $fileName,
+                'file_url'  => "https://drive.google.com/file/d/{$fileId}/preview",
+            ];
+        } catch (\Exception $e) {
+
+            Log::error($e);
+
+            return [
+                'status' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+    // public function storeIECCEPA($file, $folderPath, $folderName)
+    // {
+    //     try {
+
+    //         // Ensure folder exists
+    //         $this->ensureFolderExists($folderPath);
+         
+
+    //         $extension = $file->getClientOriginalExtension();
+
+    //         $fileName = strtolower(str_replace(' ', '_', $folderName))
+    //             . '_' . now()->format('YmdHis')
+    //             . '.' . $extension;
+
+    //         $filePath = "{$folderPath}/{$fileName}";
+          
+
+    //         // Upload to Google Drive
+    //         $fileId = $this->uploadToDriveAndGetFileId($file, $filePath);
+
+    //         if (!$fileId) {
+    //             throw new \Exception('Unable to retrieve Google Drive file ID.');
+    //         }
+
+    //         return [
+    //             'status'    => true,
+    //             'file_id'   => $fileId,
+    //             'file_name' => $fileName,
+    //             'file_url'  => "https://drive.google.com/file/d/{$fileId}/preview",
+    //         ];
+    //     } catch (\Exception $e) {
+
+    //         Log::error('IEC Upload Error: ' . $e->getMessage());
+
+    //         return [
+    //             'status' => false,
+    //             'error'  => $e->getMessage(),
+    //         ];
+    //     }
+    // }
 
 
 

@@ -116,9 +116,11 @@ class GoogleCloudDiscoveryengineV1WidgetConfigUiSettings extends \Google\Collect
    * `prompt-gallery` * `model-selector` * `notebook-lm` * `people-search` *
    * `people-search-org-chart` * `bi-directional-audio` * `feedback` * `session-
    * sharing` * `personalization-memory` * `personalization-suggested-
-   * highlights` * `disable-agent-sharing` * `disable-image-generation` *
-   * `disable-video-generation` * `disable-onedrive-upload` * `disable-talk-to-
-   * content` * `disable-google-drive-upload` * `disable-welcome-emails`
+   * highlights` * `disable-mobile-app-access` * `disable-agent-sharing` *
+   * `disable-image-generation` * `disable-video-generation` * `disable-
+   * onedrive-upload` * `disable-talk-to-content` * `disable-google-drive-
+   * upload` * `disable-welcome-emails` * `disable-canvas` * `disable-canvas-
+   * workspace` * `disable-skills` * `enable-end-user-sharing-with-groups`
    *
    * @var string[]
    */
@@ -322,9 +324,11 @@ class GoogleCloudDiscoveryengineV1WidgetConfigUiSettings extends \Google\Collect
    * `prompt-gallery` * `model-selector` * `notebook-lm` * `people-search` *
    * `people-search-org-chart` * `bi-directional-audio` * `feedback` * `session-
    * sharing` * `personalization-memory` * `personalization-suggested-
-   * highlights` * `disable-agent-sharing` * `disable-image-generation` *
-   * `disable-video-generation` * `disable-onedrive-upload` * `disable-talk-to-
-   * content` * `disable-google-drive-upload` * `disable-welcome-emails`
+   * highlights` * `disable-mobile-app-access` * `disable-agent-sharing` *
+   * `disable-image-generation` * `disable-video-generation` * `disable-
+   * onedrive-upload` * `disable-talk-to-content` * `disable-google-drive-
+   * upload` * `disable-welcome-emails` * `disable-canvas` * `disable-canvas-
+   * workspace` * `disable-skills` * `enable-end-user-sharing-with-groups`
    *
    * @param string[] $features
    */

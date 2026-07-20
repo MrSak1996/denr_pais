@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ProtectedArea\DashboardController;
 use App\Http\Controllers\Application\ApplicationController;
 use App\Http\Controllers\Assessment\AssessmentController;
 use App\Http\Controllers\Chainsaw\ChainsawController;
@@ -15,7 +16,10 @@ use App\Http\Controllers\Dashboard\RegionalExecutiveController;
 
 use App\Http\Controllers\Dashboard\RPSChiefDashboardController; // if you have a controller
 use App\Http\Controllers\ProtectedArea\ResolutionClearanceController;
+use App\Http\Controllers\HiredStaff\AccomplishmentReportController;
 use App\Http\Controllers\ProtectedArea\ProtectedAreaList;
+use App\Http\Controllers\ProtectedArea\LawinPatrolController;
+use App\Http\Controllers\GoogleDrive\GoogleDriveController;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
@@ -23,7 +27,8 @@ use Illuminate\Support\Facades\Response;
 // Route::get('/generateApplicationNumber', [ApplicationController::class, 'generateApplicationNumber']);
 
 // web.php
-Route::middleware('auth')->get('/generateApplicationNumber',
+Route::middleware('auth')->get(
+    '/generateApplicationNumber',
     [ApplicationController::class, 'generateApplicationNumber']
 );
 
@@ -32,30 +37,58 @@ Route::get('monitoring/index', function () {
     return Inertia::render('monitoring/index');
 })->middleware(['auth', 'verified'])->name('monitoring.index');
 
+Route::get('lawin_monitoring/index', function () {
+    return Inertia::render('lawin_monitoring/index');
+})->middleware(['auth', 'verified'])->name('lawin_monitoring.index');
+
+Route::get('iec_cepa/index', function () {
+    return Inertia::render('iec_cepa/index');
+})->middleware(['auth', 'verified'])->name('iec_cepa.index');
+
+
+Route::get('hired_staff/index', function () {
+    return Inertia::render('hired_staff/index');
+})->middleware(['auth', 'verified'])->name('hired_staff.index');
+
 Route::get('/monitoring/form/insert', function () {
     return Inertia::render('monitoring/form/insert');
 })->middleware(['auth', 'verified'])->name('monitoring.form.insert');
 
-Route::get('/monitoring/form/insert', [ProtectedAreaList::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('monitoring.form.insert');
+
+
+
 
 // RESOLUTION AND CLEARANCES
-Route::middleware(['auth','verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/monitoring/index', [ResolutionClearanceController::class,'index'])->name('monitoring.index');
-    Route::post('/monitoring/store', [ResolutionClearanceController::class,'store'])->name('monitoring.store');
-    Route::put('/resolution/update/{id}', [ResolutionClearanceController::class,'update'])->name('resolution.update');
-    Route::delete('/resolution/delete/{id}', [ResolutionClearanceController::class,'destroy'])->name('resolution.delete');
-
-
+    Route::get('/monitoring/index', [ResolutionClearanceController::class, 'index'])->name('monitoring.index');
+    Route::get('/monitoring/pending', [DashboardController::class, 'pendingMinutes'])->name('monitoring.pending');
+    Route::get('/monitoring/completed', [DashboardController::class, 'completedMinutes'])->name('monitoring.completed');
+    Route::get('/hired_staff/index', [AccomplishmentReportController::class, 'index'])->name('hired_staff.index');
+    Route::get('/monitoring/form/insert', [ProtectedAreaList::class, 'index'])->name('monitoring.form.insert');
+    Route::post('/monitoring/store', [ResolutionClearanceController::class, 'store'])->name('monitoring.store');
+    Route::post('/pa-staff', [AccomplishmentReportController::class, 'insertPAStaff']) ->name('pa_staff.store');
+    Route::put('/resolution/update/{id}', [ResolutionClearanceController::class, 'update'])->name('resolution.update');
+    Route::delete('/resolution/delete/{id}', [ResolutionClearanceController::class, 'destroy'])->name('resolution.delete');
+    Route::get('/hired_staff/accomplishment/{id}/edit', [AccomplishmentReportController::class, 'edit'])->name('hired_staff/accomplishment.edit');
 
 
     Route::get('/protected-areas', [ProtectedAreaList::class, 'index'])
-    ->name('protected-areas.index');
+        ->name('protected-areas.index');
 
+    Route::post('/hired_staff/store', [ProtectedAreaList::class, 'insert_pa_ar'])
+        ->name('hired_staff.store');
+
+    Route::put('/hired_staff/accomplishment/{id}',[AccomplishmentReportController::class, 'update']
+        )->name('hired_staff.accomplishment.update');
+
+    Route::post('/lawin_monitoring/store', [LawinPatrolController::class, 'store'])
+        ->name('lawin_monitoring.store');
+
+
+    Route::post('/iec-cepa/store', [GoogleDriveController::class, 'upload_iec'])
+        ->name('iec_cepa.store');
 });
-
 
 
 
@@ -101,8 +134,10 @@ Route::get('/signature/boss', function () {
 Route::get('/chainsaw-permit/{id}/word', [PDFController::class, 'generatePermitDocx'])
     ->name('chainsaw.permit.word');
 
-Route::get('/chainsaw-permit-multiple-brands-models/{id}/word', 
-    [PDFController::class, 'generatePermitDocxMultipleBrandsModels'])
+Route::get(
+    '/chainsaw-permit-multiple-brands-models/{id}/word',
+    [PDFController::class, 'generatePermitDocxMultipleBrandsModels']
+)
     ->name('chainsaw.permit.multiple.word');
 
 
@@ -238,7 +273,7 @@ Route::post('/applications/receivedByPENROTSDChief', [AssessmentController::clas
 
 
 
-    
+
 
 
 Route::post('/applications/rps/return', [AssessmentController::class, 'return'])
@@ -276,7 +311,7 @@ Route::post('/applications/ardts/return', [ARDTSController::class, 'returnApplic
 Route::post('/applications/red/return', [RegionalExecutiveController::class, 'returnApplication'])
     ->name('applications.red.return');
 
-    Route::post('/applications/technical/endorse', [ChainsawController::class, 'endorseApplication'])
+Route::post('/applications/technical/endorse', [ChainsawController::class, 'endorseApplication'])
     ->name('applications.technical.endorse');
 
 
@@ -305,19 +340,19 @@ Route::post('/applications/fus/receive', [AssessmentController::class, 'receive'
     ->name('applications.fus.receive');
 
 
-    // ======================== LPDD ================================
-    Route::post('/applications/lpdd/receive', [AssessmentController::class, 'receive'])
+// ======================== LPDD ================================
+Route::post('/applications/lpdd/receive', [AssessmentController::class, 'receive'])
     ->name('applications.lpdd.receive');
 
 
-    Route::post('/applications/ardts/receive', [AssessmentController::class, 'receive'])
+Route::post('/applications/ardts/receive', [AssessmentController::class, 'receive'])
     ->name('applications.ardts.receive');
 
 
-    Route::post('/applications/red/receive', [AssessmentController::class, 'receive'])
+Route::post('/applications/red/receive', [AssessmentController::class, 'receive'])
     ->name('applications.red.receive');
-    
-  
+
+
 
 
 // ====================== ENDORSED TO LPDD_FUS ===================================================

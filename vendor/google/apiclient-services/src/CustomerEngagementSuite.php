@@ -27,7 +27,7 @@ use Google\Client;
  *
  * <p>
  * For more information about this service, see the API
- * <a href="https://cloud.google.com/customer-engagement-ai/conversational-agents/ps/reference" target="_blank">Documentation</a>
+ * <a href="https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps" target="_blank">Documentation</a>
  * </p>
  *
  * @author Google, Inc.
@@ -49,6 +49,7 @@ class CustomerEngagementSuite extends \Google\Service
   public $projects_locations_apps_deployments;
   public $projects_locations_apps_examples;
   public $projects_locations_apps_guardrails;
+  public $projects_locations_apps_message;
   public $projects_locations_apps_sessions;
   public $projects_locations_apps_tools;
   public $projects_locations_apps_toolsets;
@@ -730,6 +731,26 @@ class CustomerEngagementSuite extends \Google\Service
           ]
         ]
     );
+    $this->projects_locations_apps_message = new CustomerEngagementSuite\Resource\ProjectsLocationsAppsMessage(
+        $this,
+        $this->serviceName,
+        'message',
+        [
+          'methods' => [
+            'send' => [
+              'path' => 'v1/{+tenant}/message:send',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'tenant' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],
+          ]
+        ]
+    );
     $this->projects_locations_apps_sessions = new CustomerEngagementSuite\Resource\ProjectsLocationsAppsSessions(
         $this,
         $this->serviceName,
@@ -748,6 +769,16 @@ class CustomerEngagementSuite extends \Google\Service
               ],
             ],'runSession' => [
               'path' => 'v1/{+session}:runSession',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'session' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'streamRunSession' => [
+              'path' => 'v1/{+session}:streamRunSession',
               'httpMethod' => 'POST',
               'parameters' => [
                 'session' => [

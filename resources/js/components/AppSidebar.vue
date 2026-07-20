@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Users, ListCheck,ChartArea,Shrub,CalendarCheck,   } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, Users, ListCheck,ChartArea,Shrub,CalendarCheck   } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from './AppLogo.vue';
 
@@ -13,38 +13,38 @@ const page = usePage();
 const auth = computed(() => page.props.auth);
 
 // ✅ Role-based dashboard link
-const dashboardHref = computed(() => {
-    const roleId = auth.value.user?.role_id;
+// const dashboardHref = computed(() => {
+//     const roleId = auth.value.user?.role_id;
 
-    switch (roleId) {
-        case 1:
-            return '/applications/pending_application';
-        case 2:
-            return '/rps-chief-dashboard';
-        case 3:
-            return '/cenro-dashboard';
-        case 4:
-            return '/penro-technical-dashboard';
-        case 5:
-            return '/penro-rps-chief-dashboard';
-        case 6:
-            return '/penro-tsd-chief-dashboard';
-        case 7:
-            return '/penro-dashboard';
-        case 8:
-            return '/rts-dashboard';
-        case 9:
-            return '/fus-dashboard';
-        case 10:
-            return '/lpdd-chief-dashboard';
-        case 11:
-            return '/ardts-dashboard';
-        case 12:
-            return '/regional-executive-dashboard';
-        default:
-            return '/dashboard';
-    }
-});
+//     switch (roleId) {
+//         case 1:
+//             return '/applications/pending_application';
+//         case 2:
+//             return '/rps-chief-dashboard';
+//         case 3:
+//             return '/cenro-dashboard';
+//         case 4:
+//             return '/penro-technical-dashboard';
+//         case 5:
+//             return '/penro-rps-chief-dashboard';
+//         case 6:
+//             return '/penro-tsd-chief-dashboard';
+//         case 7:
+//             return '/penro-dashboard';
+//         case 8:
+//             return '/rts-dashboard';
+//         case 9:
+//             return '/fus-dashboard';
+//         case 10:
+//             return '/lpdd-chief-dashboard';
+//         case 11:
+//             return '/ardts-dashboard';
+//         case 12:
+//             return '/regional-executive-dashboard';
+//         default:
+//             return '/dashboard';
+//     }
+// });
 
 // ✅ Dynamic navigation items (same as header)
 const mainNavItems = computed<NavItem[]>(() => [
@@ -58,21 +58,29 @@ const mainNavItems = computed<NavItem[]>(() => [
         href: '/monitoring/index',
         icon: ChartArea ,
     },
+     {
+        title: 'LAWIN Patrol Monitoring',
+        href: '/lawin_monitoring/index',
+        icon: Shrub ,
+    },
+    {
+        title: 'Hired Staff Monitoring',
+        href: '/hired_staff/index',
+        icon: CalendarCheck  ,
+    },
+    {
+        title: 'IEC/CEPA',
+        href: '/iec_cepa/index',
+        icon: Shrub ,
+    },
+      
         {
         title: 'PAMB Minutes',
         href: '/minutes',
         icon: Folder ,
     },
-    {
-        title: 'Accomplishment Report',
-        href: '/monitoring/index',
-        icon: CalendarCheck  ,
-    },
-    {
-        title: 'BMS Monitoring',
-        href: '/monitoring/index',
-        icon: Shrub  ,
-    },
+  
+    
     {
         title: 'Quarterly Reports',
         href: '/reports/index',

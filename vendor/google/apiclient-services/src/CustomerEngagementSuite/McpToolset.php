@@ -17,10 +17,21 @@
 
 namespace Google\Service\CustomerEngagementSuite;
 
-class McpToolset extends \Google\Model
+class McpToolset extends \Google\Collection
 {
+  protected $collection_key = 'toolOverrides';
   protected $apiAuthenticationType = ApiAuthentication::class;
   protected $apiAuthenticationDataType = '';
+  /**
+   * Optional. The custom headers to send in the request to the MCP server. The
+   * values must be in the format `$context.variables.` and can be set in the
+   * session variables. See https://docs.cloud.google.com/customer-engagement-
+   * ai/conversational-agents/ps/tool/open-api#openapi-injection for more
+   * details.
+   *
+   * @var string[]
+   */
+  public $customHeaders;
   /**
    * Required. The address of the MCP server, for example,
    * "https://example.com/mcp/". If the server is built with the MCP SDK, the
@@ -35,6 +46,8 @@ class McpToolset extends \Google\Model
   protected $serviceDirectoryConfigDataType = '';
   protected $tlsConfigType = TlsConfig::class;
   protected $tlsConfigDataType = '';
+  protected $toolOverridesType = McpToolOverride::class;
+  protected $toolOverridesDataType = 'array';
 
   /**
    * Optional. Authentication information required to access tools and execute a
@@ -54,6 +67,26 @@ class McpToolset extends \Google\Model
   public function getApiAuthentication()
   {
     return $this->apiAuthentication;
+  }
+  /**
+   * Optional. The custom headers to send in the request to the MCP server. The
+   * values must be in the format `$context.variables.` and can be set in the
+   * session variables. See https://docs.cloud.google.com/customer-engagement-
+   * ai/conversational-agents/ps/tool/open-api#openapi-injection for more
+   * details.
+   *
+   * @param string[] $customHeaders
+   */
+  public function setCustomHeaders($customHeaders)
+  {
+    $this->customHeaders = $customHeaders;
+  }
+  /**
+   * @return string[]
+   */
+  public function getCustomHeaders()
+  {
+    return $this->customHeaders;
   }
   /**
    * Required. The address of the MCP server, for example,
@@ -108,6 +141,24 @@ class McpToolset extends \Google\Model
   public function getTlsConfig()
   {
     return $this->tlsConfig;
+  }
+  /**
+   * Optional. Overrides for individual tools within this toolset. This allows
+   * overriding specific details like descriptions, names, or pinning the tools'
+   * states so they aren't fully dynamic.
+   *
+   * @param McpToolOverride[] $toolOverrides
+   */
+  public function setToolOverrides($toolOverrides)
+  {
+    $this->toolOverrides = $toolOverrides;
+  }
+  /**
+   * @return McpToolOverride[]
+   */
+  public function getToolOverrides()
+  {
+    return $this->toolOverrides;
   }
 }
 

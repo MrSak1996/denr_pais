@@ -27,6 +27,8 @@ const paOptions = computed(() =>
     })),
 );
 
+// console.log('protectedAreas:', props.protectedAreas);
+// console.log('paOptions:', paOptions.value);
 const checked = ref(false);
 
 // ✅ FORM WITH ARRAY

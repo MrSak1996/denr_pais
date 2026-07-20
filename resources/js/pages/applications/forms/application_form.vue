@@ -165,7 +165,7 @@ const handleFileUpdate = async (event) => {
         formData.append('attachment_id', selectedFileToUpdate.value.attachment_id)
         formData.append('name', selectedFileToUpdate.value.name)
 
-        const response = await axios.post('http://10.201.11.16:8000/api/files/update', formData, {
+        const response = await axios.post('http://localhost:8000/api/files/update', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         })
 
@@ -272,7 +272,7 @@ const saveIndividualApplication = async () => {
     isLoading.value = true;
 
     try {
-        const response = await insertFormData('http://10.201.11.16:8000/api/chainsaw/apply', { ...individual_form, encoded_by: userId });
+        const response = await insertFormData('http://localhost:8000/api/chainsaw/apply', { ...individual_form, encoded_by: userId });
 
         // ⚡ Change URL WITHOUT RELOAD
         router.get(route('applications.index', {
@@ -335,7 +335,7 @@ const submitChainsawForm = async () => {
             })
 
         const response = await axios.post(
-            'http://10.201.11.16:8000/api/chainsaw/insertChainsawInfo',
+            'http://localhost:8000/api/chainsaw/insertChainsawInfo',
             formData
         )
         const newApplicationId = response.data.application_id
@@ -371,7 +371,7 @@ const submitORPayment = async () => {
     formData.append('applicant_type', applicantType);
     formData.append('application_id', applicationId);
     try {
-        const response = await axios.post('http://10.201.11.16:8000/api/chainsaw/insert_payment', formData, {
+        const response = await axios.post('http://localhost:8000/api/chainsaw/insert_payment', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
 
@@ -431,7 +431,7 @@ const getApplicationDetails = async () => {
         return;
     }
     try {
-        const response = await axios.get(`http://10.201.11.16:8000/api/getApplicationDetails/${applicationId}`);
+        const response = await axios.get(`http://localhost:8000/api/getApplicationDetails/${applicationId}`);
         // applicationData.value = response.data.data || [];
         Object.assign(individual_form, response.data.data);
         applicationData.value = response.data.data;
@@ -448,7 +448,7 @@ const getApplicantFile = async () => {
     if (!applicationId) return;
 
     try {
-        const response = await axios.get(`http://10.201.11.16:8000/api/getApplicantFile/${applicationId}`);
+        const response = await axios.get(`http://localhost:8000/api/getApplicantFile/${applicationId}`);
         if (response.data.status && Array.isArray(response.data.data)) {
             files.value = response.data.data.map((file) => ({
                 name: file.file_name,
@@ -479,7 +479,7 @@ const loadBrands = async () => {
     }
 
     const res = await axios.get(
-        `http://10.201.11.16:8000/api/chainsaw/${applicationId}/brands`
+        `http://localhost:8000/api/chainsaw/${applicationId}/brands`
     )
 
     // If data exists, overwrite
@@ -614,20 +614,40 @@ const purposeOptions = [
     'Other Supporting Documents',
 ];
 
-
 onMounted(() => {
     if (props.mode === 'view') {
-        currentStep.value = 4; // Jump to last step
+        currentStep.value = 4;
     }
+
     const urlParams = new URLSearchParams(window.location.search);
     currentStep.value = Number(urlParams.get('step')) || 1;
-    getApplicationNumber(individual_form, chainsaw_form);
-    getApplicationDetails();
-    loadBrands()
 
+    const applicationId = getApplicationIdFromUrl();
+
+    // ✅ ALWAYS SAFE CALLS
+    getApplicationNumber(individual_form, chainsaw_form);
     getProvinceCode();
-    getApplicantFile();
+
+    // 🚨 ONLY CALL IF ID EXISTS
+    if (applicationId) {
+        getApplicationDetails();
+        loadBrands();
+        getApplicantFile();
+    }
 });
+// onMounted(() => {
+//     if (props.mode === 'view') {
+//         currentStep.value = 4; // Jump to last step
+//     }
+//     const urlParams = new URLSearchParams(window.location.search);
+//     currentStep.value = Number(urlParams.get('step')) || 1;
+//     getApplicationNumber(individual_form, chainsaw_form);
+//     getApplicationDetails();
+//     loadBrands()
+
+//     getProvinceCode();
+//     getApplicantFile();
+// });
 </script>
 
 <template>

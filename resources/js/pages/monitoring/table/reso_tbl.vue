@@ -19,6 +19,17 @@ import approved_icon from '../../../../images/icons/approved.png';
 import reject_icon from '../../../../images/icons/reject.png';
 import review_icon from '../../../../images/icons/review.png';
 import ReusableConfirmDialog from '../modal/endorsed_modal.vue';
+
+import { useDashboardStats } from '../../../composables/useDashboardStat'
+const {
+    dashboardData,
+    loading,
+    fetchDashboardData,
+    totalApplications,
+    totalApproved,
+    totalDeferred,
+    totalPending
+} = useDashboardStats()
 interface Resolution {
     id: number;
     resolution_no: string;
@@ -55,6 +66,7 @@ const onRowCollapse = (event?: { originalEvent: Event; data: Customer }) => {
         expandedRows.value = {};
     }
 };
+
 const goToInsert = () => {
     router.visit('/monitoring/form/insert');
 };
@@ -68,7 +80,9 @@ const resolutions = ref(
         pa_code: r.protected_area?.pa_code ?? null,
     })),
 );
-onMounted(() => { });
+onMounted(() => {
+        fetchDashboardData();
+     });
 </script>
 
 <template>
@@ -79,13 +93,13 @@ onMounted(() => { });
                 <!-- TOTAL -->
 
                 <!-- TOTAL -->
-                <Card class="overflow-hidden rounded-2xl text-white shadow-lg" style="background-color: #1A237E;">
+                <Card class="overflow-hidden rounded-2xl text-white shadow-lg" style="background-color: #004D40;">
                     <template #content>
                         <div class="relative flex items-center justify-between">
                             <!-- TEXT -->
                             <div class="z-10 p-4">
                                 <p class="text-sm opacity-90 text-white">Total Applications</p>
-                                <h2 class="text-3xl font-bold text-white">12</h2>
+                                <h2 class="text-3xl font-bold text-white">{{ totalApplications }}</h2>
                             </div>
 
                             <!-- IMAGE -->
@@ -104,7 +118,7 @@ onMounted(() => { });
                             <!-- TEXT -->
                             <div class="z-10 p-4">
                                 <p class="text-sm opacity-90">For Review</p>
-                                <h2 class="text-3xl font-bold">34</h2>
+                                <h2 class="text-3xl font-bold">{{ totalPending }}</h2>
                             </div>
 
                             <!-- IMAGE -->
@@ -117,13 +131,13 @@ onMounted(() => { });
                 <!-- APPROVED -->
                 <Card
                     class="overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg"
-                    style="background-color: #BF360C !important;color:#fff;">
+                    style="background-color: #004D40 !important;color:#fff;">
                     <template #content>
                         <div class="relative flex items-center justify-between">
                             <!-- TEXT -->
                             <div class="z-10 p-4">
                                 <p class="text-sm opacity-90">Approved</p>
-                                <h2 class="text-3xl font-bold">34</h2>
+                                <h2 class="text-3xl font-bold">{{ totalApproved }}</h2>
                             </div>
 
                             <!-- IMAGE -->
@@ -134,13 +148,13 @@ onMounted(() => { });
                 </Card>
 
                 <Card class="overflow-hidden rounded-2xl bg-blue-700 text-white shadow-lg"
-                    style="background-color: #FFEB3B !important;color:#F57F17;">
+                    style="background-color: #004D40 !important;color:#fff;">
                     <template #content>
                         <div class="relative flex items-center justify-between">
                             <!-- TEXT -->
                             <div class="z-10 p-4">
                                 <p class="text-sm opacity-90">Deferred</p>
-                                <h2 class="text-3xl font-bold">432</h2>
+                                <h2 class="text-3xl font-bold">{{ totalDeferred }}</h2>
                             </div>
 
                             <!-- IMAGE -->
@@ -191,7 +205,17 @@ onMounted(() => { });
 
                     <!-- RIGHT: Action Button -->
                     <div class="flex justify-end">
-                        <Button @click="goToInsert" icon="pi pi-plus" label="Add Data" class="w-full md:w-auto" />
+                        <Button @click="goToInsert"
+                            class="flex items-center gap-2 bg-[#1a6b45] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#145c3b] transition h-[32px]">
+
+                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white"
+                                stroke-width="2.5">
+
+                                <path d="M12 5v14M5 12h14"></path>
+                            </svg>
+
+                            <span>Add / Insert</span>
+                        </Button>
                     </div>
                 </div>
             </template>
@@ -200,13 +224,13 @@ onMounted(() => { });
                 <template #body="slotProps">
                     <div data-v-46ac47fe=""
                         style="display: flex; gap: 4px; align-items: center; justify-content: center; flex-wrap: wrap">
-                        <Button class="bg-[#1B5E20]">
+                        <Button class="bg-[#1B5E20] hover:bg-[#2E7D32]">
                             <Info />
                         </Button>
-                        <Button class="bg-[#BF360C]">
+                        <Button class="bg-[#BF360C] hover:bg-[#D81B60]">
                             <FileCogIcon />
                         </Button>
-                        <Button class="bg-[#0D47A1]">
+                        <Button class="bg-[#0D47A1] hover:bg-[#1565C0]">
                             <PrinterCheck />
                         </Button>
                     </div>

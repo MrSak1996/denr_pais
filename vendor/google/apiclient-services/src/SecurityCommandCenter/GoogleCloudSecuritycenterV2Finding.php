@@ -71,6 +71,11 @@ class GoogleCloudSecuritycenterV2Finding extends \Google\Collection
    */
   public const FINDING_CLASS_EXTERNAL_EXPOSURE = 'EXTERNAL_EXPOSURE';
   /**
+   * Describes a potential security risk due to plaintext credentials, keys, or
+   * tokens being exposed in an asset or workload.
+   */
+  public const FINDING_CLASS_SECRET = 'SECRET';
+  /**
    * Unspecified.
    */
   public const MUTE_MUTE_UNSPECIFIED = 'MUTE_UNSPECIFIED';
@@ -153,6 +158,8 @@ class GoogleCloudSecuritycenterV2Finding extends \Google\Collection
   protected $accessDataType = '';
   protected $affectedResourcesType = GoogleCloudSecuritycenterV2AffectedResources::class;
   protected $affectedResourcesDataType = '';
+  protected $agentDataAccessEventsType = GoogleCloudSecuritycenterV2AgentDataAccessEvent::class;
+  protected $agentDataAccessEventsDataType = 'array';
   protected $aiModelType = GoogleCloudSecuritycenterV2AiModel::class;
   protected $aiModelDataType = '';
   protected $applicationType = GoogleCloudSecuritycenterV2Application::class;
@@ -228,6 +235,8 @@ class GoogleCloudSecuritycenterV2Finding extends \Google\Collection
    * @var string
    */
   public $description;
+  protected $discoveredWorkloadType = GoogleCloudSecuritycenterV2DiscoveredWorkload::class;
+  protected $discoveredWorkloadDataType = '';
   protected $diskType = GoogleCloudSecuritycenterV2Disk::class;
   protected $diskDataType = '';
   /**
@@ -367,6 +376,8 @@ class GoogleCloudSecuritycenterV2Finding extends \Google\Collection
    * @var string
    */
   public $parentDisplayName;
+  protected $policyViolationSummaryType = GoogleCloudSecuritycenterV2PolicyViolationSummary::class;
+  protected $policyViolationSummaryDataType = '';
   protected $processesType = GoogleCloudSecuritycenterV2Process::class;
   protected $processesDataType = 'array';
   /**
@@ -446,6 +457,22 @@ class GoogleCloudSecuritycenterV2Finding extends \Google\Collection
   public function getAffectedResources()
   {
     return $this->affectedResources;
+  }
+  /**
+   * Agent data access events associated with the finding.
+   *
+   * @param GoogleCloudSecuritycenterV2AgentDataAccessEvent[] $agentDataAccessEvents
+   */
+  public function setAgentDataAccessEvents($agentDataAccessEvents)
+  {
+    $this->agentDataAccessEvents = $agentDataAccessEvents;
+  }
+  /**
+   * @return GoogleCloudSecuritycenterV2AgentDataAccessEvent[]
+   */
+  public function getAgentDataAccessEvents()
+  {
+    return $this->agentDataAccessEvents;
   }
   /**
    * The AI model associated with the finding.
@@ -837,6 +864,22 @@ class GoogleCloudSecuritycenterV2Finding extends \Google\Collection
     return $this->description;
   }
   /**
+   * DiscoveredWorkload associated with the finding.
+   *
+   * @param GoogleCloudSecuritycenterV2DiscoveredWorkload $discoveredWorkload
+   */
+  public function setDiscoveredWorkload(GoogleCloudSecuritycenterV2DiscoveredWorkload $discoveredWorkload)
+  {
+    $this->discoveredWorkload = $discoveredWorkload;
+  }
+  /**
+   * @return GoogleCloudSecuritycenterV2DiscoveredWorkload
+   */
+  public function getDiscoveredWorkload()
+  {
+    return $this->discoveredWorkload;
+  }
+  /**
    * Disk associated with the finding.
    *
    * @param GoogleCloudSecuritycenterV2Disk $disk
@@ -962,7 +1005,8 @@ class GoogleCloudSecuritycenterV2Finding extends \Google\Collection
    *
    * Accepted values: FINDING_CLASS_UNSPECIFIED, THREAT, VULNERABILITY,
    * MISCONFIGURATION, OBSERVATION, SCC_ERROR, POSTURE_VIOLATION,
-   * TOXIC_COMBINATION, SENSITIVE_DATA_RISK, CHOKEPOINT, EXTERNAL_EXPOSURE
+   * TOXIC_COMBINATION, SENSITIVE_DATA_RISK, CHOKEPOINT, EXTERNAL_EXPOSURE,
+   * SECRET
    *
    * @param self::FINDING_CLASS_* $findingClass
    */
@@ -1364,6 +1408,22 @@ class GoogleCloudSecuritycenterV2Finding extends \Google\Collection
   public function getParentDisplayName()
   {
     return $this->parentDisplayName;
+  }
+  /**
+   * PolicyViolationSummary associated with the finding.
+   *
+   * @param GoogleCloudSecuritycenterV2PolicyViolationSummary $policyViolationSummary
+   */
+  public function setPolicyViolationSummary(GoogleCloudSecuritycenterV2PolicyViolationSummary $policyViolationSummary)
+  {
+    $this->policyViolationSummary = $policyViolationSummary;
+  }
+  /**
+   * @return GoogleCloudSecuritycenterV2PolicyViolationSummary
+   */
+  public function getPolicyViolationSummary()
+  {
+    return $this->policyViolationSummary;
   }
   /**
    * Represents operating system processes associated with the Finding.

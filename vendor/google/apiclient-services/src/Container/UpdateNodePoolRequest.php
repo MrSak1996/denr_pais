@@ -81,6 +81,20 @@ class UpdateNodePoolRequest extends \Google\Collection
   protected $gvnicType = VirtualNIC::class;
   protected $gvnicDataType = '';
   /**
+   * The desired name of the image name to use for this node. This is used to
+   * create clusters using a custom image.
+   *
+   * @var string
+   */
+  public $image;
+  /**
+   * The project containing the desired image to use for this node pool. This is
+   * used to create clusters using a custom image.
+   *
+   * @var string
+   */
+  public $imageProject;
+  /**
    * Required. The desired image type for the node pool. Please see
    * https://cloud.google.com/kubernetes-engine/docs/concepts/node-images for
    * available image types.
@@ -184,6 +198,8 @@ class UpdateNodePoolRequest extends \Google\Collection
   public $storagePools;
   protected $tagsType = NetworkTags::class;
   protected $tagsDataType = '';
+  protected $taintConfigType = TaintConfig::class;
+  protected $taintConfigDataType = '';
   protected $taintsType = NodeTaints::class;
   protected $taintsDataType = '';
   protected $upgradeSettingsType = UpgradeSettings::class;
@@ -427,6 +443,40 @@ class UpdateNodePoolRequest extends \Google\Collection
   public function getGvnic()
   {
     return $this->gvnic;
+  }
+  /**
+   * The desired name of the image name to use for this node. This is used to
+   * create clusters using a custom image.
+   *
+   * @param string $image
+   */
+  public function setImage($image)
+  {
+    $this->image = $image;
+  }
+  /**
+   * @return string
+   */
+  public function getImage()
+  {
+    return $this->image;
+  }
+  /**
+   * The project containing the desired image to use for this node pool. This is
+   * used to create clusters using a custom image.
+   *
+   * @param string $imageProject
+   */
+  public function setImageProject($imageProject)
+  {
+    $this->imageProject = $imageProject;
+  }
+  /**
+   * @return string
+   */
+  public function getImageProject()
+  {
+    return $this->imageProject;
   }
   /**
    * Required. The desired image type for the node pool. Please see
@@ -770,6 +820,22 @@ class UpdateNodePoolRequest extends \Google\Collection
   public function getTags()
   {
     return $this->tags;
+  }
+  /**
+   * The taint configuration for the node pool.
+   *
+   * @param TaintConfig $taintConfig
+   */
+  public function setTaintConfig(TaintConfig $taintConfig)
+  {
+    $this->taintConfig = $taintConfig;
+  }
+  /**
+   * @return TaintConfig
+   */
+  public function getTaintConfig()
+  {
+    return $this->taintConfig;
   }
   /**
    * The desired node taints to be applied to all nodes in the node pool. If

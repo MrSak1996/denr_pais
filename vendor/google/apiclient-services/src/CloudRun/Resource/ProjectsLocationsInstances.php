@@ -21,6 +21,10 @@ use Google\Service\CloudRun\GoogleCloudRunV2Instance;
 use Google\Service\CloudRun\GoogleCloudRunV2ListInstancesResponse;
 use Google\Service\CloudRun\GoogleCloudRunV2StartInstanceRequest;
 use Google\Service\CloudRun\GoogleCloudRunV2StopInstanceRequest;
+use Google\Service\CloudRun\GoogleIamV1Policy;
+use Google\Service\CloudRun\GoogleIamV1SetIamPolicyRequest;
+use Google\Service\CloudRun\GoogleIamV1TestIamPermissionsRequest;
+use Google\Service\CloudRun\GoogleIamV1TestIamPermissionsResponse;
 use Google\Service\CloudRun\GoogleLongrunningOperation;
 
 /**
@@ -92,6 +96,38 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     return $this->call('get', [$params], GoogleCloudRunV2Instance::class);
   }
   /**
+   * Gets the IAM Access Control policy currently in effect for the given
+   * Instance. This result does not include any inherited policies.
+   * (instances.getIamPolicy)
+   *
+   * @param string $resource REQUIRED: The resource for which the policy is being
+   * requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
+   * version that will be used to format the policy. Valid values are 0, 1, and 3.
+   * Requests specifying an invalid value will be rejected. Requests for policies
+   * with any conditional role bindings must specify version 3. Policies with no
+   * conditional role bindings may specify any valid value or leave the field
+   * unset. The policy in the response might use the policy version that you
+   * specified, or it might use a lower policy version. For example, if you
+   * specify version 3, but the policy has no conditional role bindings, the
+   * response uses version 1. To learn which resources support conditions in their
+   * IAM policies, see the [IAM
+   * documentation](https://cloud.google.com/iam/help/conditions/resource-
+   * policies).
+   * @return GoogleIamV1Policy
+   * @throws \Google\Service\Exception
+   */
+  public function getIamPolicy($resource, $optParams = [])
+  {
+    $params = ['resource' => $resource];
+    $params = array_merge($params, $optParams);
+    return $this->call('getIamPolicy', [$params], GoogleIamV1Policy::class);
+  }
+  /**
    * Lists Instances. Results are sorted by creation time, descending.
    * (instances.listProjectsLocationsInstances)
    *
@@ -114,6 +150,52 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     $params = ['parent' => $parent];
     $params = array_merge($params, $optParams);
     return $this->call('list', [$params], GoogleCloudRunV2ListInstancesResponse::class);
+  }
+  /**
+   * Updates an Instance. (instances.patch)
+   *
+   * @param string $name The fully qualified name of this Instance. In
+   * CreateInstanceRequest, this field is ignored, and instead composed from
+   * CreateInstanceRequest.parent and CreateInstanceRequest.instance_id. Format:
+   * projects/{project}/locations/{location}/instances/{instance_id}
+   * @param GoogleCloudRunV2Instance $postBody
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param bool allowMissing Optional. If set to true, and if the Instance
+   * does not exist, it will create a new one. The caller must have
+   * 'run.instances.create' permissions if this is set to true and the Instance
+   * does not exist.
+   * @opt_param string updateMask Optional. The list of fields to be updated.
+   * @opt_param bool validateOnly Optional. Indicates that the request should be
+   * validated and default values populated, without persisting the request or
+   * updating any resources.
+   * @return GoogleLongrunningOperation
+   * @throws \Google\Service\Exception
+   */
+  public function patch($name, GoogleCloudRunV2Instance $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('patch', [$params], GoogleLongrunningOperation::class);
+  }
+  /**
+   * Sets the IAM Access control policy for the specified Instance. Overwrites any
+   * existing policy. (instances.setIamPolicy)
+   *
+   * @param string $resource REQUIRED: The resource for which the policy is being
+   * specified. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
+   * @param GoogleIamV1SetIamPolicyRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return GoogleIamV1Policy
+   * @throws \Google\Service\Exception
+   */
+  public function setIamPolicy($resource, GoogleIamV1SetIamPolicyRequest $postBody, $optParams = [])
+  {
+    $params = ['resource' => $resource, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('setIamPolicy', [$params], GoogleIamV1Policy::class);
   }
   /**
    * Starts an Instance. (instances.start)
@@ -148,6 +230,25 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
     $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('stop', [$params], GoogleLongrunningOperation::class);
+  }
+  /**
+   * Returns permissions that a caller has on the specified Project. There are no
+   * permissions required for making this API call. (instances.testIamPermissions)
+   *
+   * @param string $resource REQUIRED: The resource for which the policy detail is
+   * being requested. See [Resource
+   * names](https://cloud.google.com/apis/design/resource_names) for the
+   * appropriate value for this field.
+   * @param GoogleIamV1TestIamPermissionsRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return GoogleIamV1TestIamPermissionsResponse
+   * @throws \Google\Service\Exception
+   */
+  public function testIamPermissions($resource, GoogleIamV1TestIamPermissionsRequest $postBody, $optParams = [])
+  {
+    $params = ['resource' => $resource, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('testIamPermissions', [$params], GoogleIamV1TestIamPermissionsResponse::class);
   }
 }
 

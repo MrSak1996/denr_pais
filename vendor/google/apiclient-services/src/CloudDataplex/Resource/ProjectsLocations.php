@@ -18,7 +18,10 @@
 namespace Google\Service\CloudDataplex\Resource;
 
 use Google\Service\CloudDataplex\GoogleCloudDataplexV1Entry;
+use Google\Service\CloudDataplex\GoogleCloudDataplexV1LookupContextRequest;
+use Google\Service\CloudDataplex\GoogleCloudDataplexV1LookupContextResponse;
 use Google\Service\CloudDataplex\GoogleCloudDataplexV1LookupEntryLinksResponse;
+use Google\Service\CloudDataplex\GoogleCloudDataplexV1ModifyEntryRequest;
 use Google\Service\CloudDataplex\GoogleCloudDataplexV1SearchEntriesResponse;
 use Google\Service\CloudDataplex\GoogleCloudLocationListLocationsResponse;
 use Google\Service\CloudDataplex\GoogleCloudLocationLocation;
@@ -48,20 +51,24 @@ class ProjectsLocations extends \Google\Service\Resource
     return $this->call('get', [$params], GoogleCloudLocationLocation::class);
   }
   /**
-   * Lists information about the supported locations for this service. This method
-   * can be called in two ways: List all public locations: Use the path GET
-   * /v1/locations. List project-visible locations: Use the path GET
-   * /v1/projects/{project_id}/locations. This may include public locations as
-   * well as private or other locations specifically visible to the project.
+   * Lists information about the supported locations for this service.This method
+   * lists locations based on the resource scope provided in the
+   * ListLocationsRequest.name field: Global locations: If name is empty, the
+   * method lists the public locations available to all projects. Project-specific
+   * locations: If name follows the format projects/{project}, the method lists
+   * locations visible to that specific project. This includes public, private, or
+   * other project-specific locations enabled for the project.For gRPC and client
+   * library implementations, the resource name is passed as the name field. For
+   * direct service calls, the resource name is incorporated into the request path
+   * based on the specific service implementation and version.
    * (locations.listProjectsLocations)
    *
    * @param string $name The resource that owns the locations collection, if
    * applicable.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string extraLocationTypes Optional. Do not use this field. It is
-   * unsupported and is ignored unless explicitly documented otherwise. This is
-   * primarily for internal usage.
+   * @opt_param string extraLocationTypes Optional. Do not use this field unless
+   * explicitly documented otherwise. This is primarily for internal usage.
    * @opt_param string filter A filter to narrow down results to a preferred
    * subset. The filtering language accepts strings like "displayName=tokyo", and
    * is documented in more detail in AIP-160 (https://google.aip.dev/160).
@@ -79,6 +86,22 @@ class ProjectsLocations extends \Google\Service\Resource
     return $this->call('list', [$params], GoogleCloudLocationListLocationsResponse::class);
   }
   /**
+   * Looks up LLM Context for the specified resources. (locations.lookupContext)
+   *
+   * @param string $name Required. The project to which the request should be
+   * attributed in the following form: projects/{project}/locations/{location}.
+   * @param GoogleCloudDataplexV1LookupContextRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return GoogleCloudDataplexV1LookupContextResponse
+   * @throws \Google\Service\Exception
+   */
+  public function lookupContext($name, GoogleCloudDataplexV1LookupContextRequest $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('lookupContext', [$params], GoogleCloudDataplexV1LookupContextResponse::class);
+  }
+  /**
    * Looks up an entry by name using the permission on the source system.
    * (locations.lookupEntry)
    *
@@ -94,7 +117,9 @@ class ProjectsLocations extends \Google\Service\Resource
    * associated with the provided paths within the Entry. It only works for CUSTOM
    * view.
    * @opt_param string view Optional. View to control which parts of an entry the
-   * service should return.
+   * service should return. Please check the limitations on returned aspects in
+   * the Entry view documentation. Amount of returned aspects depends on the
+   * selected Entry View.
    * @return GoogleCloudDataplexV1Entry
    * @throws \Google\Service\Exception
    */
@@ -136,6 +161,23 @@ class ProjectsLocations extends \Google\Service\Resource
     $params = ['name' => $name];
     $params = array_merge($params, $optParams);
     return $this->call('lookupEntryLinks', [$params], GoogleCloudDataplexV1LookupEntryLinksResponse::class);
+  }
+  /**
+   * Modifies an entry using the permission on the source system.
+   * (locations.modifyEntry)
+   *
+   * @param string $name Required. The project to which the request should be
+   * attributed in the following form: projects/{project}/locations/{location}.
+   * @param GoogleCloudDataplexV1ModifyEntryRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return GoogleCloudDataplexV1Entry
+   * @throws \Google\Service\Exception
+   */
+  public function modifyEntry($name, GoogleCloudDataplexV1ModifyEntryRequest $postBody, $optParams = [])
+  {
+    $params = ['name' => $name, 'postBody' => $postBody];
+    $params = array_merge($params, $optParams);
+    return $this->call('modifyEntry', [$params], GoogleCloudDataplexV1Entry::class);
   }
   /**
    * Searches for Entries matching the given query and scope.

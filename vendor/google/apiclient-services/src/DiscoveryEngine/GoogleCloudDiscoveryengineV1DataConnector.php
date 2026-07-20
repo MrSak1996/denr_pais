@@ -239,6 +239,8 @@ class GoogleCloudDiscoveryengineV1DataConnector extends \Google\Collection
    * @var string[]
    */
   public $blockingReasons;
+  protected $cliConfigType = GoogleCloudDiscoveryengineV1CliConfig::class;
+  protected $cliConfigDataType = '';
   /**
    * Optional. The modes enabled for this connector. Default state is
    * CONNECTOR_MODE_UNSPECIFIED.
@@ -246,6 +248,13 @@ class GoogleCloudDiscoveryengineV1DataConnector extends \Google\Collection
    * @var string[]
    */
   public $connectorModes;
+  /**
+   * Optional. If set, this value instead of `data_source` is used to fetch the
+   * corresponding connector source.
+   *
+   * @var string
+   */
+  public $connectorSourceId;
   /**
    * Output only. The type of connector. Each source can only map to one type.
    * For example, salesforce, confluence and jira have THIRD_PARTY connector
@@ -267,20 +276,32 @@ class GoogleCloudDiscoveryengineV1DataConnector extends \Google\Collection
    */
   public $createTime;
   /**
-   * Required. The name of the data source. Supported values: `salesforce`,
-   * `jira`, `confluence`, `bigquery`.
+   * Required. The identifier for the data source. This is a partial list of
+   * supported connectors. Please refer to the [documentation](https://docs.clou
+   * d.google.com/gemini/enterprise/docs/connectors/introduction-to-connectors-
+   * and-data-stores) for the full list of connectors. Supported first-party
+   * connectors include: * `gcs` * `bigquery` * `gcp_fhir` * `google_mail` *
+   * `google_drive` * `google_calendar` * `google_chat` Supported third-party
+   * connectors include: Generally available (GA) connectors: * `onedrive` *
+   * `outlook` * `confluence` * `jira` * `servicenow` * `sharepoint` Preview
+   * connectors: * `asana` * `azure_active_directory` * `box` * `canva` *
+   * `confluence_server` * `custom_connector` * `docusign` * `dropbox` *
+   * `dynamics365` * `github` * `gitlab` * `hubspot` * `jira_server` * `linear`
+   * * `native_cloud_identity` * `notion` * `okta` * `pagerduty` * `peoplesoft`
+   * * `salesforce` * `shopify` * `slack` * `snowflake` * `teams` * `trello` *
+   * `workday` * `zendesk`
    *
    * @var string
    */
   public $dataSource;
   protected $destinationConfigsType = GoogleCloudDiscoveryengineV1DestinationConfig::class;
   protected $destinationConfigsDataType = 'array';
+  protected $dynamicToolsType = GoogleCloudDiscoveryengineV1DynamicTool::class;
+  protected $dynamicToolsDataType = 'array';
   /**
    * Output only. The list of FQDNs of the data connector can egress to. This
    * includes both FQDN derived from the customer provided instance URL and
-   * default per connector type FQDNs. Note: This field is derived from both the
-   * DataConnector.params, and connector source spec. It should only be used for
-   * CAIS and Org Policy evaluation purposes.
+   * default per connector type FQDNs.
    *
    * @var string[]
    */
@@ -368,7 +389,7 @@ class GoogleCloudDiscoveryengineV1DataConnector extends \Google\Collection
    */
   public $latestPauseTime;
   /**
-   * Output only. The full resource name of the Data Connector. Format:
+   * Identifier. The full resource name of the Data Connector. Format:
    * `projects/locations/collections/dataConnector`.
    *
    * @var string
@@ -449,8 +470,7 @@ class GoogleCloudDiscoveryengineV1DataConnector extends \Google\Collection
    */
   public $updateTime;
   /**
-   * Output only. Whether the connector is created with VPC-SC enabled. This is
-   * only used for CuOP evaluation purpose.
+   * Output only. Whether the connector is created with VPC-SC enabled.
    *
    * @var bool
    */
@@ -578,6 +598,22 @@ class GoogleCloudDiscoveryengineV1DataConnector extends \Google\Collection
     return $this->blockingReasons;
   }
   /**
+   * Optional. The configuration for establishing a CLI connection.
+   *
+   * @param GoogleCloudDiscoveryengineV1CliConfig $cliConfig
+   */
+  public function setCliConfig(GoogleCloudDiscoveryengineV1CliConfig $cliConfig)
+  {
+    $this->cliConfig = $cliConfig;
+  }
+  /**
+   * @return GoogleCloudDiscoveryengineV1CliConfig
+   */
+  public function getCliConfig()
+  {
+    return $this->cliConfig;
+  }
+  /**
    * Optional. The modes enabled for this connector. Default state is
    * CONNECTOR_MODE_UNSPECIFIED.
    *
@@ -593,6 +629,23 @@ class GoogleCloudDiscoveryengineV1DataConnector extends \Google\Collection
   public function getConnectorModes()
   {
     return $this->connectorModes;
+  }
+  /**
+   * Optional. If set, this value instead of `data_source` is used to fetch the
+   * corresponding connector source.
+   *
+   * @param string $connectorSourceId
+   */
+  public function setConnectorSourceId($connectorSourceId)
+  {
+    $this->connectorSourceId = $connectorSourceId;
+  }
+  /**
+   * @return string
+   */
+  public function getConnectorSourceId()
+  {
+    return $this->connectorSourceId;
   }
   /**
    * Output only. The type of connector. Each source can only map to one type.
@@ -650,8 +703,20 @@ class GoogleCloudDiscoveryengineV1DataConnector extends \Google\Collection
     return $this->createTime;
   }
   /**
-   * Required. The name of the data source. Supported values: `salesforce`,
-   * `jira`, `confluence`, `bigquery`.
+   * Required. The identifier for the data source. This is a partial list of
+   * supported connectors. Please refer to the [documentation](https://docs.clou
+   * d.google.com/gemini/enterprise/docs/connectors/introduction-to-connectors-
+   * and-data-stores) for the full list of connectors. Supported first-party
+   * connectors include: * `gcs` * `bigquery` * `gcp_fhir` * `google_mail` *
+   * `google_drive` * `google_calendar` * `google_chat` Supported third-party
+   * connectors include: Generally available (GA) connectors: * `onedrive` *
+   * `outlook` * `confluence` * `jira` * `servicenow` * `sharepoint` Preview
+   * connectors: * `asana` * `azure_active_directory` * `box` * `canva` *
+   * `confluence_server` * `custom_connector` * `docusign` * `dropbox` *
+   * `dynamics365` * `github` * `gitlab` * `hubspot` * `jira_server` * `linear`
+   * * `native_cloud_identity` * `notion` * `okta` * `pagerduty` * `peoplesoft`
+   * * `salesforce` * `shopify` * `slack` * `snowflake` * `teams` * `trello` *
+   * `workday` * `zendesk`
    *
    * @param string $dataSource
    */
@@ -683,11 +748,25 @@ class GoogleCloudDiscoveryengineV1DataConnector extends \Google\Collection
     return $this->destinationConfigs;
   }
   /**
+   * Output only. The dynamic tools fetched for this connector.
+   *
+   * @param GoogleCloudDiscoveryengineV1DynamicTool[] $dynamicTools
+   */
+  public function setDynamicTools($dynamicTools)
+  {
+    $this->dynamicTools = $dynamicTools;
+  }
+  /**
+   * @return GoogleCloudDiscoveryengineV1DynamicTool[]
+   */
+  public function getDynamicTools()
+  {
+    return $this->dynamicTools;
+  }
+  /**
    * Output only. The list of FQDNs of the data connector can egress to. This
    * includes both FQDN derived from the customer provided instance URL and
-   * default per connector type FQDNs. Note: This field is derived from both the
-   * DataConnector.params, and connector source spec. It should only be used for
-   * CAIS and Org Policy evaluation purposes.
+   * default per connector type FQDNs.
    *
    * @param string[] $egressFqdns
    */
@@ -941,7 +1020,7 @@ class GoogleCloudDiscoveryengineV1DataConnector extends \Google\Collection
     return $this->latestPauseTime;
   }
   /**
-   * Output only. The full resource name of the Data Connector. Format:
+   * Identifier. The full resource name of the Data Connector. Format:
    * `projects/locations/collections/dataConnector`.
    *
    * @param string $name
@@ -1173,8 +1252,7 @@ class GoogleCloudDiscoveryengineV1DataConnector extends \Google\Collection
     return $this->updateTime;
   }
   /**
-   * Output only. Whether the connector is created with VPC-SC enabled. This is
-   * only used for CuOP evaluation purpose.
+   * Output only. Whether the connector is created with VPC-SC enabled.
    *
    * @param bool $vpcscEnabled
    */

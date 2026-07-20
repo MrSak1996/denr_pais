@@ -136,6 +136,18 @@ class StorageDatabasecenterPartnerapiV1mainDatabaseResourceMetadata extends \Goo
    */
   public const INSTANCE_TYPE_SUB_RESOURCE_TYPE_EXTERNAL_PRIMARY = 'SUB_RESOURCE_TYPE_EXTERNAL_PRIMARY';
   /**
+   * An instance acting as Read Pool.
+   */
+  public const INSTANCE_TYPE_SUB_RESOURCE_TYPE_READ_POOL = 'SUB_RESOURCE_TYPE_READ_POOL';
+  /**
+   * Represents a reservation resource.
+   */
+  public const INSTANCE_TYPE_SUB_RESOURCE_TYPE_RESERVATION = 'SUB_RESOURCE_TYPE_RESERVATION';
+  /**
+   * Represents a dataset resource.
+   */
+  public const INSTANCE_TYPE_SUB_RESOURCE_TYPE_DATASET = 'SUB_RESOURCE_TYPE_DATASET';
+  /**
    * For rest of the other categories.
    */
   public const INSTANCE_TYPE_SUB_RESOURCE_TYPE_OTHER = 'SUB_RESOURCE_TYPE_OTHER';
@@ -168,6 +180,12 @@ class StorageDatabasecenterPartnerapiV1mainDatabaseResourceMetadata extends \Goo
    */
   public const SUSPENSION_REASON_REPLICATED_CLUSTER_ENCRYPTION_KEY_INACCESSIBLE = 'REPLICATED_CLUSTER_ENCRYPTION_KEY_INACCESSIBLE';
   protected $collection_key = 'resourceFlags';
+  /**
+   * Field to ingest additional metadata whichd does not support proto format.
+   *
+   * @var array[]
+   */
+  public $additionalMetadata;
   protected $availabilityConfigurationType = StorageDatabasecenterPartnerapiV1mainAvailabilityConfiguration::class;
   protected $availabilityConfigurationDataType = '';
   protected $backupConfigurationType = StorageDatabasecenterPartnerapiV1mainBackupConfiguration::class;
@@ -220,6 +238,14 @@ class StorageDatabasecenterPartnerapiV1mainDatabaseResourceMetadata extends \Goo
    */
   public $instanceType;
   /**
+   * Field to ingest additional metadata which support proto format.
+   *
+   * @var array[]
+   */
+  public $internalAdditionalMetadata;
+  protected $ipAddressType = StorageDatabasecenterPartnerapiV1mainIpAddress::class;
+  protected $ipAddressDataType = '';
+  /**
    * Optional. Whether deletion protection is enabled for this resource.
    *
    * @var bool
@@ -235,6 +261,12 @@ class StorageDatabasecenterPartnerapiV1mainDatabaseResourceMetadata extends \Goo
   protected $machineConfigurationDataType = '';
   protected $maintenanceInfoType = StorageDatabasecenterPartnerapiV1mainResourceMaintenanceInfo::class;
   protected $maintenanceInfoDataType = '';
+  /**
+   * Optional. The modes of the database resource.
+   *
+   * @var string[]
+   */
+  public $modes;
   protected $primaryResourceIdType = StorageDatabasecenterPartnerapiV1mainDatabaseResourceId::class;
   protected $primaryResourceIdDataType = '';
   /**
@@ -291,6 +323,22 @@ class StorageDatabasecenterPartnerapiV1mainDatabaseResourceMetadata extends \Goo
    */
   public $zone;
 
+  /**
+   * Field to ingest additional metadata whichd does not support proto format.
+   *
+   * @param array[] $additionalMetadata
+   */
+  public function setAdditionalMetadata($additionalMetadata)
+  {
+    $this->additionalMetadata = $additionalMetadata;
+  }
+  /**
+   * @return array[]
+   */
+  public function getAdditionalMetadata()
+  {
+    return $this->additionalMetadata;
+  }
   /**
    * Availability configuration for this instance
    *
@@ -505,7 +553,9 @@ class StorageDatabasecenterPartnerapiV1mainDatabaseResourceMetadata extends \Goo
    * Accepted values: INSTANCE_TYPE_UNSPECIFIED, SUB_RESOURCE_TYPE_UNSPECIFIED,
    * PRIMARY, SECONDARY, READ_REPLICA, OTHER, SUB_RESOURCE_TYPE_PRIMARY,
    * SUB_RESOURCE_TYPE_SECONDARY, SUB_RESOURCE_TYPE_READ_REPLICA,
-   * SUB_RESOURCE_TYPE_EXTERNAL_PRIMARY, SUB_RESOURCE_TYPE_OTHER
+   * SUB_RESOURCE_TYPE_EXTERNAL_PRIMARY, SUB_RESOURCE_TYPE_READ_POOL,
+   * SUB_RESOURCE_TYPE_RESERVATION, SUB_RESOURCE_TYPE_DATASET,
+   * SUB_RESOURCE_TYPE_OTHER
    *
    * @param self::INSTANCE_TYPE_* $instanceType
    */
@@ -519,6 +569,38 @@ class StorageDatabasecenterPartnerapiV1mainDatabaseResourceMetadata extends \Goo
   public function getInstanceType()
   {
     return $this->instanceType;
+  }
+  /**
+   * Field to ingest additional metadata which support proto format.
+   *
+   * @param array[] $internalAdditionalMetadata
+   */
+  public function setInternalAdditionalMetadata($internalAdditionalMetadata)
+  {
+    $this->internalAdditionalMetadata = $internalAdditionalMetadata;
+  }
+  /**
+   * @return array[]
+   */
+  public function getInternalAdditionalMetadata()
+  {
+    return $this->internalAdditionalMetadata;
+  }
+  /**
+   * Optional. Private and public IP address of the resource.
+   *
+   * @param StorageDatabasecenterPartnerapiV1mainIpAddress $ipAddress
+   */
+  public function setIpAddress(StorageDatabasecenterPartnerapiV1mainIpAddress $ipAddress)
+  {
+    $this->ipAddress = $ipAddress;
+  }
+  /**
+   * @return StorageDatabasecenterPartnerapiV1mainIpAddress
+   */
+  public function getIpAddress()
+  {
+    return $this->ipAddress;
   }
   /**
    * Optional. Whether deletion protection is enabled for this resource.
@@ -583,6 +665,22 @@ class StorageDatabasecenterPartnerapiV1mainDatabaseResourceMetadata extends \Goo
   public function getMaintenanceInfo()
   {
     return $this->maintenanceInfo;
+  }
+  /**
+   * Optional. The modes of the database resource.
+   *
+   * @param string[] $modes
+   */
+  public function setModes($modes)
+  {
+    $this->modes = $modes;
+  }
+  /**
+   * @return string[]
+   */
+  public function getModes()
+  {
+    return $this->modes;
   }
   /**
    * Identifier for this resource's immediate parent/primary resource if the

@@ -88,6 +88,8 @@ class Cluster extends \Google\Collection
   protected $conditionsDataType = 'array';
   protected $confidentialNodesType = ConfidentialNodes::class;
   protected $confidentialNodesDataType = '';
+  protected $controlPlaneEgressType = ControlPlaneEgress::class;
+  protected $controlPlaneEgressDataType = '';
   protected $controlPlaneEndpointsConfigType = ControlPlaneEndpointsConfig::class;
   protected $controlPlaneEndpointsConfigDataType = '';
   protected $costManagementConfigType = CostManagementConfig::class;
@@ -280,6 +282,8 @@ class Cluster extends \Google\Collection
   public $loggingService;
   protected $maintenancePolicyType = MaintenancePolicy::class;
   protected $maintenancePolicyDataType = '';
+  protected $managedMachineLearningDiagnosticsConfigType = ManagedMachineLearningDiagnosticsConfig::class;
+  protected $managedMachineLearningDiagnosticsConfigDataType = '';
   protected $managedOpentelemetryConfigType = ManagedOpenTelemetryConfig::class;
   protected $managedOpentelemetryConfigDataType = '';
   protected $masterAuthType = MasterAuth::class;
@@ -327,6 +331,8 @@ class Cluster extends \Google\Collection
   protected $networkPolicyDataType = '';
   protected $nodeConfigType = NodeConfig::class;
   protected $nodeConfigDataType = '';
+  protected $nodeCreationConfigType = NodeCreationConfig::class;
+  protected $nodeCreationConfigDataType = '';
   /**
    * Output only. The size of the address space on each node for hosting
    * containers. This is provisioned from within the `container_ipv4_cidr`
@@ -375,8 +381,12 @@ class Cluster extends \Google\Collection
    * @var bool
    */
   public $satisfiesPzs;
+  protected $scheduleUpgradeConfigType = ScheduleUpgradeConfig::class;
+  protected $scheduleUpgradeConfigDataType = '';
   protected $secretManagerConfigType = SecretManagerConfig::class;
   protected $secretManagerConfigDataType = '';
+  protected $secretSyncConfigType = SecretSyncConfig::class;
+  protected $secretSyncConfigDataType = '';
   protected $securityPostureConfigType = SecurityPostureConfig::class;
   protected $securityPostureConfigDataType = '';
   /**
@@ -631,6 +641,22 @@ class Cluster extends \Google\Collection
   public function getConfidentialNodes()
   {
     return $this->confidentialNodes;
+  }
+  /**
+   * Configuration for control plane egress control.
+   *
+   * @param ControlPlaneEgress $controlPlaneEgress
+   */
+  public function setControlPlaneEgress(ControlPlaneEgress $controlPlaneEgress)
+  {
+    $this->controlPlaneEgress = $controlPlaneEgress;
+  }
+  /**
+   * @return ControlPlaneEgress
+   */
+  public function getControlPlaneEgress()
+  {
+    return $this->controlPlaneEgress;
   }
   /**
    * Configuration for all cluster's control plane endpoints.
@@ -1197,6 +1223,22 @@ class Cluster extends \Google\Collection
     return $this->maintenancePolicy;
   }
   /**
+   * Configuration for Managed Machine Learning Diagnostics.
+   *
+   * @param ManagedMachineLearningDiagnosticsConfig $managedMachineLearningDiagnosticsConfig
+   */
+  public function setManagedMachineLearningDiagnosticsConfig(ManagedMachineLearningDiagnosticsConfig $managedMachineLearningDiagnosticsConfig)
+  {
+    $this->managedMachineLearningDiagnosticsConfig = $managedMachineLearningDiagnosticsConfig;
+  }
+  /**
+   * @return ManagedMachineLearningDiagnosticsConfig
+   */
+  public function getManagedMachineLearningDiagnosticsConfig()
+  {
+    return $this->managedMachineLearningDiagnosticsConfig;
+  }
+  /**
    * Configuration for Managed OpenTelemetry pipeline.
    *
    * @param ManagedOpenTelemetryConfig $managedOpentelemetryConfig
@@ -1402,6 +1444,22 @@ class Cluster extends \Google\Collection
   public function getNodeConfig()
   {
     return $this->nodeConfig;
+  }
+  /**
+   * Optional. Configuration for Node Creation Mode.
+   *
+   * @param NodeCreationConfig $nodeCreationConfig
+   */
+  public function setNodeCreationConfig(NodeCreationConfig $nodeCreationConfig)
+  {
+    $this->nodeCreationConfig = $nodeCreationConfig;
+  }
+  /**
+   * @return NodeCreationConfig
+   */
+  public function getNodeCreationConfig()
+  {
+    return $this->nodeCreationConfig;
   }
   /**
    * Output only. The size of the address space on each node for hosting
@@ -1644,6 +1702,22 @@ class Cluster extends \Google\Collection
     return $this->satisfiesPzs;
   }
   /**
+   * Optional. Configuration for scheduled upgrades.
+   *
+   * @param ScheduleUpgradeConfig $scheduleUpgradeConfig
+   */
+  public function setScheduleUpgradeConfig(ScheduleUpgradeConfig $scheduleUpgradeConfig)
+  {
+    $this->scheduleUpgradeConfig = $scheduleUpgradeConfig;
+  }
+  /**
+   * @return ScheduleUpgradeConfig
+   */
+  public function getScheduleUpgradeConfig()
+  {
+    return $this->scheduleUpgradeConfig;
+  }
+  /**
    * Secret CSI driver configuration.
    *
    * @param SecretManagerConfig $secretManagerConfig
@@ -1658,6 +1732,22 @@ class Cluster extends \Google\Collection
   public function getSecretManagerConfig()
   {
     return $this->secretManagerConfig;
+  }
+  /**
+   * Configuration for sync Secret Manager secrets as k8s secrets.
+   *
+   * @param SecretSyncConfig $secretSyncConfig
+   */
+  public function setSecretSyncConfig(SecretSyncConfig $secretSyncConfig)
+  {
+    $this->secretSyncConfig = $secretSyncConfig;
+  }
+  /**
+   * @return SecretSyncConfig
+   */
+  public function getSecretSyncConfig()
+  {
+    return $this->secretSyncConfig;
   }
   /**
    * Optional. Enable/Disable Security Posture API features for the cluster.

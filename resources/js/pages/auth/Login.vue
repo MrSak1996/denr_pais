@@ -42,45 +42,28 @@ const submit = () => {
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
-            <div class="grid gap-6">
-                <div class="grid gap-2">
-                    <Label for="uname">Username</Label>
-                    <Input id="uname" type="text" required autofocus :tabindex="1" autocomplete="email"
-                        v-model="form.uname" placeholder="Username" name="uname" />
-                    <InputError :message="form.errors.uname" />
-                </div>
 
-                <div class="grid gap-2">
-                    <div class="flex items-center justify-between">
-                        <Label for="password">Password</Label>
-                        <TextLink v-if="canResetPassword" :href="route('password.request')" class="text-sm"
-                            :tabindex="5">
-                            Forgot password?
-                        </TextLink>
-                    </div>
-                    <Input id="password" type="password" required :tabindex="2" autocomplete="current-password"
-                        v-model="form.password" placeholder="Password" />
-                    <InputError :message="form.errors.password" />
-                </div>
-
-                <div class="flex items-center justify-between">
-                    <Label for="remember" class="flex items-center space-x-3">
-                        <Checkbox id="remember" v-model="form.remember" :tabindex="3" />
-                        <span>Remember me</span>
-                    </Label>
-                </div>
-
-                <Button type="submit" class="mt-4 w-full" :tabindex="4" :disabled="form.processing">
-                    <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                    Log in
-                </Button>
+        <form @submit.prevent="submit" class="space-y-5 text-white">
+            <div>
+                <Label class="text-green-100 text-xs tracking-widest uppercase">
+                    Username
+                </Label> <Input v-model="form.uname"
+                    class="bg-white/10 border-white/20 text-white placeholder:text-green-200"
+                    placeholder="Enter your username" />
             </div>
 
-            <div class="text-center text-sm text-muted-foreground">
-                Don't have an account?
-                <TextLink :href="route('register')" :tabindex="5">Sign up</TextLink>
+            <div>
+                <Label class="text-green-100 text-xs tracking-widest uppercase">
+                    Password
+                </Label> <Input type="password" v-model="form.password"
+                    class="bg-white/10 border-white/20 text-white placeholder:text-green-200"
+                    placeholder="Enter your password" />
             </div>
+
+            <Button class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold">
+                SIGN IN
+            </Button>
+
         </form>
     </AuthBase>
 </template>

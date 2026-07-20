@@ -20,9 +20,9 @@ export default defineConfig({
                 },
             },
         }),
-    ],
+    ],  
       server: {
-    host: 'localhost', // Allow connections from any IP address
+    host: '10.201.10.60', // Allow connections from any IP address
     port: 8080, // You can change the port if needed
     disableHostCheck: true, // If you face any host check issues
   },

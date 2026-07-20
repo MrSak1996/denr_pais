@@ -97,12 +97,24 @@ class GoogleCloudDiscoveryengineV1betaSearchRequest extends \Google\Collection
   protected $contentSearchSpecDataType = '';
   protected $crowdingSpecsType = GoogleCloudDiscoveryengineV1betaSearchRequestCrowdingSpec::class;
   protected $crowdingSpecsDataType = 'array';
+  protected $customRankingParamsType = GoogleCloudDiscoveryengineV1betaSearchRequestCustomRankingParams::class;
+  protected $customRankingParamsDataType = '';
   protected $dataStoreSpecsType = GoogleCloudDiscoveryengineV1betaSearchRequestDataStoreSpec::class;
   protected $dataStoreSpecsDataType = 'array';
   protected $displaySpecType = GoogleCloudDiscoveryengineV1betaSearchRequestDisplaySpec::class;
   protected $displaySpecDataType = '';
   protected $embeddingSpecType = GoogleCloudDiscoveryengineV1betaSearchRequestEmbeddingSpec::class;
   protected $embeddingSpecDataType = '';
+  /**
+   * Optional. The entity for customers that may run multiple different
+   * entities, domains, sites or regions, for example, "Google US", "Google
+   * Ads", "Waymo", "google.com", "youtube.com", etc. If this is set, it should
+   * be exactly matched with UserEvent.entity to get search results boosted by
+   * entity.
+   *
+   * @var string
+   */
+  public $entity;
   protected $facetSpecsType = GoogleCloudDiscoveryengineV1betaSearchRequestFacetSpec::class;
   protected $facetSpecsDataType = 'array';
   /**
@@ -289,7 +301,15 @@ class GoogleCloudDiscoveryengineV1betaSearchRequest extends \Google\Collection
    * updated, a floating-point number (e.g., 0.25 means 15 minutes). *
    * `topicality_rank`: topicality adjustment as a rank. Uses proprietary Google
    * model to determine the keyword-based overlap between the query and the
-   * document. * `base_rank`: the default rank of the result
+   * document. * `base_rank`: the default rank of the result *
+   * `media_actor_match`: whether the media actor matches the query *
+   * `media_director_match`: whether the media director matches the query *
+   * `media_genre_match`: whether the media genre matches the query *
+   * `media_language_match`: whether the media language matches the query *
+   * `media_title_match`: whether the media title matches the query *
+   * `media_prefix_similarity_rank`: prefix similarity rank for media results *
+   * `media_semantic_similarity_rank`: semantic similarity rank for media
+   * results
    *
    * @var string
    */
@@ -356,9 +376,7 @@ class GoogleCloudDiscoveryengineV1betaSearchRequest extends \Google\Collection
    * Example #2 (coordination between /search API calls and /answer API calls):
    * Call /answer API with the session ID generated in the first call. Here, the
    * answer generation happens in the context of the search results from the
-   * first search call. Multi-turn Search feature is currently at private GA
-   * stage. Please use v1alpha or v1beta version instead before we launch this
-   * feature to public GA. Or ask for allowlisting through Google Support team.
+   * first search call.
    *
    * @var string
    */
@@ -501,6 +519,22 @@ class GoogleCloudDiscoveryengineV1betaSearchRequest extends \Google\Collection
     return $this->crowdingSpecs;
   }
   /**
+   * Optional. Optional configuration for the Custom Ranking feature.
+   *
+   * @param GoogleCloudDiscoveryengineV1betaSearchRequestCustomRankingParams $customRankingParams
+   */
+  public function setCustomRankingParams(GoogleCloudDiscoveryengineV1betaSearchRequestCustomRankingParams $customRankingParams)
+  {
+    $this->customRankingParams = $customRankingParams;
+  }
+  /**
+   * @return GoogleCloudDiscoveryengineV1betaSearchRequestCustomRankingParams
+   */
+  public function getCustomRankingParams()
+  {
+    return $this->customRankingParams;
+  }
+  /**
    * Specifications that define the specific DataStores to be searched, along
    * with configurations for those data stores. This is only considered for
    * Engines with multiple data stores. For engines with a single data store,
@@ -557,6 +591,26 @@ class GoogleCloudDiscoveryengineV1betaSearchRequest extends \Google\Collection
   public function getEmbeddingSpec()
   {
     return $this->embeddingSpec;
+  }
+  /**
+   * Optional. The entity for customers that may run multiple different
+   * entities, domains, sites or regions, for example, "Google US", "Google
+   * Ads", "Waymo", "google.com", "youtube.com", etc. If this is set, it should
+   * be exactly matched with UserEvent.entity to get search results boosted by
+   * entity.
+   *
+   * @param string $entity
+   */
+  public function setEntity($entity)
+  {
+    $this->entity = $entity;
+  }
+  /**
+   * @return string
+   */
+  public function getEntity()
+  {
+    return $this->entity;
   }
   /**
    * Facet specifications for faceted search. If empty, no facets are returned.
@@ -935,7 +989,15 @@ class GoogleCloudDiscoveryengineV1betaSearchRequest extends \Google\Collection
    * updated, a floating-point number (e.g., 0.25 means 15 minutes). *
    * `topicality_rank`: topicality adjustment as a rank. Uses proprietary Google
    * model to determine the keyword-based overlap between the query and the
-   * document. * `base_rank`: the default rank of the result
+   * document. * `base_rank`: the default rank of the result *
+   * `media_actor_match`: whether the media actor matches the query *
+   * `media_director_match`: whether the media director matches the query *
+   * `media_genre_match`: whether the media genre matches the query *
+   * `media_language_match`: whether the media language matches the query *
+   * `media_title_match`: whether the media title matches the query *
+   * `media_prefix_similarity_rank`: prefix similarity rank for media results *
+   * `media_semantic_similarity_rank`: semantic similarity rank for media
+   * results
    *
    * @param string $rankingExpression
    */
@@ -1129,9 +1191,7 @@ class GoogleCloudDiscoveryengineV1betaSearchRequest extends \Google\Collection
    * Example #2 (coordination between /search API calls and /answer API calls):
    * Call /answer API with the session ID generated in the first call. Here, the
    * answer generation happens in the context of the search results from the
-   * first search call. Multi-turn Search feature is currently at private GA
-   * stage. Please use v1alpha or v1beta version instead before we launch this
-   * feature to public GA. Or ask for allowlisting through Google Support team.
+   * first search call.
    *
    * @param string $session
    */

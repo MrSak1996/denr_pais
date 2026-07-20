@@ -19,8 +19,35 @@ namespace Google\Service\CustomerEngagementSuite;
 
 class McpTool extends \Google\Model
 {
+  /**
+   * Default state.
+   */
+  public const STATE_STATE_UNSPECIFIED = 'STATE_UNSPECIFIED';
+  /**
+   * The tool is available and actively offered by the server.
+   */
+  public const STATE_ACTIVE = 'ACTIVE';
+  /**
+   * The tool is configured or pinned, but currently not offered by the server.
+   */
+  public const STATE_INACTIVE = 'INACTIVE';
+  /**
+   * The tool exists on the server, but does not match the version on the
+   * server.
+   */
+  public const STATE_STALE = 'STALE';
   protected $apiAuthenticationType = ApiAuthentication::class;
   protected $apiAuthenticationDataType = '';
+  /**
+   * Optional. The custom headers to send in the request to the MCP server. The
+   * values must be in the format `$context.variables.` and can be set in the
+   * session variables. See https://docs.cloud.google.com/customer-engagement-
+   * ai/conversational-agents/ps/tool/open-api#openapi-injection for more
+   * details.
+   *
+   * @var string[]
+   */
+  public $customHeaders;
   /**
    * Optional. The description of the MCP tool.
    *
@@ -35,6 +62,13 @@ class McpTool extends \Google\Model
    * @var string
    */
   public $name;
+  /**
+   * Optional. The name override of the MCP tool. This is populated if the name
+   * was overridden by a Toolset override.
+   *
+   * @var string
+   */
+  public $nameOverride;
   protected $outputSchemaType = Schema::class;
   protected $outputSchemaDataType = '';
   /**
@@ -50,6 +84,13 @@ class McpTool extends \Google\Model
   public $serverAddress;
   protected $serviceDirectoryConfigType = ServiceDirectoryConfig::class;
   protected $serviceDirectoryConfigDataType = '';
+  /**
+   * Output only. The dynamic availability state of the tool on the external
+   * server.
+   *
+   * @var string
+   */
+  public $state;
   protected $tlsConfigType = TlsConfig::class;
   protected $tlsConfigDataType = '';
 
@@ -71,6 +112,26 @@ class McpTool extends \Google\Model
   public function getApiAuthentication()
   {
     return $this->apiAuthentication;
+  }
+  /**
+   * Optional. The custom headers to send in the request to the MCP server. The
+   * values must be in the format `$context.variables.` and can be set in the
+   * session variables. See https://docs.cloud.google.com/customer-engagement-
+   * ai/conversational-agents/ps/tool/open-api#openapi-injection for more
+   * details.
+   *
+   * @param string[] $customHeaders
+   */
+  public function setCustomHeaders($customHeaders)
+  {
+    $this->customHeaders = $customHeaders;
+  }
+  /**
+   * @return string[]
+   */
+  public function getCustomHeaders()
+  {
+    return $this->customHeaders;
   }
   /**
    * Optional. The description of the MCP tool.
@@ -119,6 +180,23 @@ class McpTool extends \Google\Model
   public function getName()
   {
     return $this->name;
+  }
+  /**
+   * Optional. The name override of the MCP tool. This is populated if the name
+   * was overridden by a Toolset override.
+   *
+   * @param string $nameOverride
+   */
+  public function setNameOverride($nameOverride)
+  {
+    $this->nameOverride = $nameOverride;
+  }
+  /**
+   * @return string
+   */
+  public function getNameOverride()
+  {
+    return $this->nameOverride;
   }
   /**
    * Optional. The schema of the output arguments of the MCP tool.
@@ -173,6 +251,25 @@ class McpTool extends \Google\Model
   public function getServiceDirectoryConfig()
   {
     return $this->serviceDirectoryConfig;
+  }
+  /**
+   * Output only. The dynamic availability state of the tool on the external
+   * server.
+   *
+   * Accepted values: STATE_UNSPECIFIED, ACTIVE, INACTIVE, STALE
+   *
+   * @param self::STATE_* $state
+   */
+  public function setState($state)
+  {
+    $this->state = $state;
+  }
+  /**
+   * @return self::STATE_*
+   */
+  public function getState()
+  {
+    return $this->state;
   }
   /**
    * Optional. The TLS configuration. Includes the custom server certificates
