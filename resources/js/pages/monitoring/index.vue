@@ -292,21 +292,93 @@ const chartDataRoutedToPie = computed(() => {
 
     const map: Record<string, number> = {};
 
+    const summary = {
+        MKS: { SIMPLE: 0, COMPLEX: 0, TOTAL: 0, MATCHED_RECORDS: 0 },
+        CRCH: { SIMPLE: 0, COMPLEX: 0, TOTAL: 0, MATCHED_RECORDS: 0 }
+    };
+
     datsData.value.forEach((item: any) => {
 
         const date = new Date(item["DATE ENCODED"]);
         if (isNaN(date.getTime())) return;
-        if (date.getFullYear() !== 2026) return;
+
+        const year = date.getFullYear();
+        const month = date.getMonth();
+
+        // January to June 2026 only
+        if (year !== 2026 || month < 0 || month > 5) return;
 
         const routedRaw = (item["ROUTED TO"] || "").toString();
+        const complexity = (item["LEVEL OF COMPLEXITY"] || "")
+            .toString()
+            .trim()
+            .toUpperCase();
 
-        routedRaw.split("/").forEach((r) => {
-            const key = r.trim().toUpperCase();
-            if (!key) return;
+        // Split and remove duplicates
+        const routedList = [...new Set(
+            routedRaw
+                .split("/")
+                .map((r: string) => r.trim().toUpperCase())
+                .filter(Boolean)
+        )];
 
+        // Pie chart counts
+        routedList.forEach((key) => {
             map[key] = (map[key] || 0) + 1;
         });
+
+        // ===== MKS =====
+        if (routedList.includes("MKS")) {
+
+            // Counts records like:
+            // MKS
+            // MKS/AHP
+            // CRCH/MKS
+            // MKS/CRCH/AHP
+            summary.MKS.MATCHED_RECORDS++;
+
+            summary.MKS.TOTAL++;
+
+            if (complexity === "SIMPLE") {
+                summary.MKS.SIMPLE++;
+            } else if (complexity === "COMPLEX") {
+                summary.MKS.COMPLEX++;
+            }
+        }
+
+        // ===== CRCH =====
+        if (routedList.includes("CRCH")) {
+
+            summary.CRCH.MATCHED_RECORDS++;
+
+            summary.CRCH.TOTAL++;
+
+            if (complexity === "SIMPLE") {
+                summary.CRCH.SIMPLE++;
+            } else if (complexity === "COMPLEX") {
+                summary.CRCH.COMPLEX++;
+            }
+        }
     });
+
+    console.log("=== JANUARY TO JUNE 2026 SUMMARY ===");
+
+    console.table([
+        {
+            ROUTED_TO: "MKS",
+            MATCHED_RECORDS: summary.MKS.MATCHED_RECORDS,
+            SIMPLE: summary.MKS.SIMPLE,
+            COMPLEX: summary.MKS.COMPLEX,
+            TOTAL: summary.MKS.TOTAL
+        },
+        {
+            ROUTED_TO: "CRCH",
+            MATCHED_RECORDS: summary.CRCH.MATCHED_RECORDS,
+            SIMPLE: summary.CRCH.SIMPLE,
+            COMPLEX: summary.CRCH.COMPLEX,
+            TOTAL: summary.CRCH.TOTAL
+        }
+    ]);
 
     return {
         labels: Object.keys(map),
@@ -390,7 +462,7 @@ const chartMonthOptions = {
                             <!-- NAVIGATION BUTTONS -->
                             <div class="flex flex-wrap gap-3">
                                 <Button label="DATS Dashboard" icon="pi pi-dashboard"
-                                    :severity="activeView === 'dashboard' ? 'info' : 'secondary'"
+                                    :severity="activeView === 'dashboard' ? '#004d40' : 'secondary'"
                                     @click="activeView = 'dashboard'" />
                                  <Button label="Calendar of Activities" icon="pi pi-calendar"
                                     :severity="activeView === 'calendar' ? 'primary' : 'secondary'"

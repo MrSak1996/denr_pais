@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'http://10.201.10.60:8000/api'
+const API_URL = 'http://10.201.10.99:8000/api'
 
 export const monitoringService = {
     async getMonthlyMonitoring(params: any) {
@@ -16,6 +16,13 @@ export const monitoringService = {
             params: filters
         })
 
+        return res.data
+    },
+    async getIECCEPAdata(filters:any = {})
+    {
+        const res = await axios.get(`${API_URL}/iec_cepa`,{
+            params: filters
+        })
         return res.data
     },
 

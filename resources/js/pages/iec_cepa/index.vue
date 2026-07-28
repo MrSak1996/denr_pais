@@ -43,7 +43,7 @@ const form = useForm({
 
 // ✅ CONFIRM
 const confirm = useConfirm()
-const activeView = ref<'tabular' | 'accomplishment'>('tabular');
+const activeView = ref<'accomplishment'>('accomplishment');
 
 const showInsertDialog = () => {
 
@@ -62,13 +62,12 @@ const {
     data,
     totals,
     loading,
-    fetchSubmissionMonitoring
+    getIEC
 } = useSubmissionMonitoring()
 
 // ✅ FETCH
 onMounted(() => {
-
-    fetchSubmissionMonitoring({
+    getIEC({
         year: new Date().getFullYear()
     })
 })
@@ -131,7 +130,7 @@ onMounted(() => {
                     <div class="flex items-center">
 
                         <Button @click="showInsertDialog"
-                            class="flex items-center gap-2 bg-[#1a6b45] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#145c3b] transition h-[32px]">
+                            class="flex items-center gap-2 text-white text-xs px-4 py-2 rounded-lg hover:bg-[#145c3b] transition h-[32px]" style="background-color: #004d40;">
 
                             <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white"
                                 stroke-width="2.5">
@@ -148,11 +147,8 @@ onMounted(() => {
             <!-- TABLE -->
             <div class="box">
                 <div class="flex flex-wrap gap-3">
-                    <Button label="Tabular Data" icon="pi pi-table"
-                        :severity="activeView === 'tabular' ? 'primary' : 'secondary'"
-                        @click="activeView = 'tabular'" />
                     <Button label="Consolidated IEC/CEPA Report" icon="pi pi-chart-bar"
-                        :severity="activeView === 'accomplishment' ? 'primary' : 'secondary'"
+                        style="background:#004d40"
                         @click="activeView = 'accomplishment'" />
                 </div>
                 <div v-if="activeView === 'accomplishment'" class="mt-4">

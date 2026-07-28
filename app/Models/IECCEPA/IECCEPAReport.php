@@ -3,6 +3,7 @@
 namespace App\Models\IECCEPA;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ProtectedArea\ProtectedAreaList;
 
 class IECCEPAReport extends Model
 {
@@ -18,4 +19,20 @@ class IECCEPAReport extends Model
         'created_at',
         'updated_at',
     ];
+
+     /**
+     * Protected Area
+     */
+    public function protectedArea()
+    {
+        return $this->belongsTo(ProtectedAreaList::class, 'pa_id', 'id');
+    }
+
+    /**
+     * Uploaded Files
+     */
+    public function uploadedFiles()
+    {
+        return $this->hasMany(IECCEPAModel::class, 'iec_cepa_id', 'id');
+    }
 }

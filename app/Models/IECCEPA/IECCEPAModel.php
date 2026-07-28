@@ -18,4 +18,8 @@ class IECCEPAModel extends Model
         'created_at',
         'updated_at',
     ];
+    public function report()
+    {
+        return $this->belongsTo(IECCEPAReport::class, 'iec_cepa_id', 'id');
+    }
 }

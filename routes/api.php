@@ -28,6 +28,9 @@ Route::get('/monthly-accomplishment', [DashboardController::class, 'monthlySubmi
 Route::get('/googlesheet', [DocumentsController::class, 'index']);
 Route::get('/lawin/data', [LawinPatrolController::class, 'getLawinData']);
 
+Route::get('/iec_cepa', [DashboardController::class, 'iec_cepa']);
+
+
 
 Route::get('/activities', [ActivityController::class, 'index']);
 Route::post('/activities', [ActivityController::class, 'store']);

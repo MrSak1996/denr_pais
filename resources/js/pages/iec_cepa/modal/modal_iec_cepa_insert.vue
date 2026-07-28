@@ -6,6 +6,7 @@ import Select from 'primevue/select';
 import Textarea from 'primevue/textarea';
 import { router } from '@inertiajs/vue3';
 import { ref, watch, toRef } from 'vue';
+import ProgressSpinner from 'primevue/progressspinner';
 
 const isLoading = ref(false);
 
@@ -189,8 +190,10 @@ const submitForm = async () => {
 
     } finally {
 
-        isLoading.value = false;
+        // Keep the loading state for 10 seconds
+        await new Promise(resolve => setTimeout(resolve, 10000));
 
+        isLoading.value = false;
     }
 };
 </script>
@@ -198,10 +201,22 @@ const submitForm = async () => {
 <template>
     <ConfirmDialog group="headless">
         <template #container="{ message, rejectCallback }">
-            <div class="w-[950px] max-w-[95vw] rounded-xl bg-white shadow-lg">
+            <div class="relative w-[950px] max-w-[95vw] rounded-xl bg-white shadow-lg">
+                <div v-if="isLoading" class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50">
+                    <div class="flex flex-col items-center rounded-xl bg-white p-8 shadow-2xl">
+                        <ProgressSpinner style="width:70px;height:70px" strokeWidth="5" />
 
+                        <p class="mt-4 text-lg font-semibold text-gray-800">
+                            Uploading images...
+                        </p>
+
+                        <small class="text-gray-500">
+                            Please wait. Do not close this window.
+                        </small>
+                    </div>
+                </div>
                 <!-- Header -->
-                <div class="relative rounded-t-xl bg-[#004d40] px-6 py-8 text-center text-white">
+                <div class="relative rounded-t-xl bg-[#004d40] px-6 py-8 text-center text-white" style="background-color: #004d40;">
 
                     <div
                         class="absolute left-1/2 top-full flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg">
@@ -315,10 +330,12 @@ const submitForm = async () => {
 
                     <Button label="Cancel" outlined @click="rejectCallback" :disabled="isLoading" />
 
-                    <Button label="Submit" icon="pi pi-check" @click="submitForm" style="background:#004d40"
-                        :disabled="isLoading" />
+                    <Button label="Submit" icon="pi pi-check" @click="submitForm" :loading="isLoading"
+                        :disabled="isLoading" style="background:#004d40" />
                 </div>
+
             </div>
+
         </template>
     </ConfirmDialog>
 </template>

@@ -14,6 +14,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Services\DATSService;
 use Carbon\Carbon;
+use App\Models\IECCEPA\IECCEPAReport;
 
 
 class DashboardController extends Controller
@@ -134,6 +135,16 @@ class DashboardController extends Controller
             ->get();
 
         return response()->json($data);
+    }
+
+    public function iec_cepa(Request $request)
+    {
+        $reports = IECCEPAReport::with([
+            'protectedArea:id,pa_code',
+            'uploadedFiles:id,iec_cepa_id,report_type,file_name,file_url'
+        ])->get();
+
+        return response()->json($reports);
     }
 
 

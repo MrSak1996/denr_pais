@@ -65,7 +65,24 @@ export function useSubmissionMonitoring() {
             loading.value = false
         }
     }
+    const getIEC = async (filters:any = {}) => {
+        loading.value = true
 
+        try {
+
+            const res = await monitoringService.getIECCEPAdata(filters)
+
+            data.value = res
+
+        } catch (error) {
+
+            console.error(error)
+
+        } finally {
+
+            loading.value = false
+        }
+    }
     // ✅ TOTALS
     const totals = computed(() => {
 
@@ -103,6 +120,7 @@ export function useSubmissionMonitoring() {
         data,
         totals,
         loading,
+        getIEC,
         fetchSubmissionMonitoring
     }
 }

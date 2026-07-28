@@ -122,11 +122,7 @@ onMounted(() => {
 
         <DataTable :value="filteredData" v-model:filters="filters" v-model:expandedRows="expandedRows" dataKey="id"
             stripedRows showGridlines paginator :rows="10" :rowsPerPageOptions="[5, 10, 25]" filterDisplay="menu"
-            responsiveLayout="scroll" class="w-full text-sm" :globalFilterFields="[
-                'protected_area_staff.name',
-                'protected_area_staff.protected_area.pa_code',
-                'month'
-            ]">
+            responsiveLayout="scroll" class="w-full text-sm" :globalFilterFields="[ 'protected_area_staff.name', 'protected_area_staff.protected_area.pa_code', 'month' ]">
 
             <!-- HEADER -->
             <template #header>
