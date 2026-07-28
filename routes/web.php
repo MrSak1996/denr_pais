@@ -63,6 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/monitoring/index', [ResolutionClearanceController::class, 'index'])->name('monitoring.index');
     Route::get('/monitoring/pending', [DashboardController::class, 'pendingMinutes'])->name('monitoring.pending');
+    Route::get('/monitoring/documents', [DashboardController::class, 'allDocuments'])->name('monitoring.documents');
     Route::get('/monitoring/completed', [DashboardController::class, 'completedMinutes'])->name('monitoring.completed');
     Route::get('/hired_staff/index', [AccomplishmentReportController::class, 'index'])->name('hired_staff.index');
     Route::get('/monitoring/form/insert', [ProtectedAreaList::class, 'index'])->name('monitoring.form.insert');

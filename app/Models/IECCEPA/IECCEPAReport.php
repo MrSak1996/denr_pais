@@ -15,6 +15,8 @@ class IECCEPAReport extends Model
         'quarter',
         'activities',
         'details',
+        'strategy',
+        'audience_type',
         'uploaded_by',
         'created_at',
         'updated_at',

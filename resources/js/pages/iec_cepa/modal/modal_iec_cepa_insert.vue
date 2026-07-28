@@ -7,6 +7,7 @@ import Textarea from 'primevue/textarea';
 import { router } from '@inertiajs/vue3';
 import { ref, watch, toRef } from 'vue';
 import ProgressSpinner from 'primevue/progressspinner';
+import MultiSelect from 'primevue/multiselect';
 
 const isLoading = ref(false);
 
@@ -56,6 +57,13 @@ const quarterOptions = [
     { label: '2nd Quarter', value: 2 },
     { label: '3rd Quarter', value: 3 },
     { label: '4th Quarter', value: 4 },
+]
+const strategy_opts = [
+    {label:'Information Exchange & Dissemination', value: 1},
+    {label:'Education Integration', value: 1},
+    {label:'Public Awareness & Social Marketing', value: 1},
+    {label:'Stakeholder Dialogue & Inclusive Participation', value: 1},
+    {label:'Monitoring and Evaluation', value: 1},
 ]
 /* ---------------- WATCH PROTECTED AREA ---------------- */
 const protected_area_id = toRef(props.form, 'protected_area_id');
@@ -216,7 +224,8 @@ const submitForm = async () => {
                     </div>
                 </div>
                 <!-- Header -->
-                <div class="relative rounded-t-xl bg-[#004d40] px-6 py-8 text-center text-white" style="background-color: #004d40;">
+                <div class="relative rounded-t-xl bg-[#004d40] px-6 py-8 text-center text-white"
+                    style="background-color: #004d40;">
 
                     <div
                         class="absolute left-1/2 top-full flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg">
@@ -255,6 +264,15 @@ const submitForm = async () => {
 
                             <Select class="w-full" :options="quarterOptions" optionLabel="label" optionValue="value"
                                 v-model="props.form.quarter" placeholder="Select Quarter" />
+                        </div>
+                        <div>
+                            <label class="mb-2 block text-sm font-semibold">
+                                Strategy
+                            </label>
+                            <MultiSelect class="w-full" filter :options="strategy_opts" optionLabel="name"
+                                optionValue="id" display="chip" v-model="props.form.strategy"
+                                placeholder="Select Staff" />
+                            
                         </div>
 
                         <!-- Activities -->

@@ -207,6 +207,52 @@ class DashboardController extends Controller
             'counts'    => $counts,
         ]);
     }
+     public function allDocuments(DATSService $datsService)
+    {
+        $documents = $datsService->getDocuments();
+
+        $startDate = Carbon::create(2026, 1, 1)->startOfDay();
+        $today = Carbon::today();
+
+        $filteredDocuments = $documents
+            ->filter(function ($row) use ($startDate, $today) {
+
+                $dateEncoded = trim($row['DATE ENCODED'] ?? '');
+
+                if (!$dateEncoded) {
+                    return false;
+                }
+
+                try {
+                    $date = Carbon::createFromFormat('n/j/Y', $dateEncoded);
+                } catch (\Exception $e) {
+                    return false;
+                }
+
+                return $date->betweenIncluded($startDate, $today);
+            })
+            ->sortByDesc(function ($row) {
+                return Carbon::createFromFormat('n/j/Y', trim($row['DATE ENCODED']));
+            })
+            ->values();
+
+        $counts = [
+            'minutes'      => $filteredDocuments->filter(fn($row) => str_contains(strtoupper($row['CATEGORY'] ?? ''), 'MINUTES'))->count(),
+            'bms'          => $filteredDocuments->filter(fn($row) => str_contains(strtoupper($row['CATEGORY'] ?? ''), 'BMS'))->count(),
+            'nipas'        => $filteredDocuments->filter(fn($row) => str_contains(strtoupper($row['CATEGORY'] ?? ''), 'NIPAS'))->count(),
+            'sapa'         => $filteredDocuments->filter(fn($row) => str_contains(strtoupper($row['CATEGORY'] ?? ''), 'SAPA'))->count(),
+            'aws'          => $filteredDocuments->filter(fn($row) => str_contains(strtoupper($row['CATEGORY'] ?? ''), 'AWS'))->count(),
+            'hired_staff'  => $filteredDocuments->filter(fn($row) => str_contains(strtoupper($row['CATEGORY'] ?? ''), 'HIRED STAFF'))->count(),
+            'pa_patrolling' => $filteredDocuments->filter(fn($row) => str_contains(strtoupper($row['CATEGORY'] ?? ''), 'PA PATROLLING'))->count(),
+            'total'        => $filteredDocuments->count(),
+        ];
+
+        return Inertia::render('monitoring/documents', [
+            'dats_documents' => $filteredDocuments,
+            'total'     => $filteredDocuments->count(),
+            'counts'    => $counts,
+        ]);
+    }
 
     public function completedMinutes(DATSService $datsService)
     {

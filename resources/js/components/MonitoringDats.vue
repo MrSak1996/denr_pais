@@ -39,7 +39,7 @@ defineProps({
 
                 
                 <p class="mt-2 text-xs text-gray-400">
-                    <Link href="/monitoring/records" class="text-blue-500 hover:text-blue-700 hover:underline">
+                    <Link href="/monitoring/documents" class="text-blue-500 hover:text-blue-700 hover:underline">
                     View More Details
                     </Link>
                 </p>
