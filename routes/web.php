@@ -72,6 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/resolution/update/{id}', [ResolutionClearanceController::class, 'update'])->name('resolution.update');
     Route::delete('/resolution/delete/{id}', [ResolutionClearanceController::class, 'destroy'])->name('resolution.delete');
     Route::get('/hired_staff/accomplishment/{id}/edit', [AccomplishmentReportController::class, 'edit'])->name('hired_staff/accomplishment.edit');
+    Route::get('/lawin_monitoring/{pa_id}', [ProtectedAreaList::class, 'getMap'])->name('lawin_monitoring.map');
 
 
     Route::get('/protected-areas', [ProtectedAreaList::class, 'index'])
@@ -89,6 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/iec-cepa/store', [GoogleDriveController::class, 'upload_iec'])
         ->name('iec_cepa.store');
+
 });
 
 
@@ -405,6 +407,7 @@ Route::get('/permit/{id}/preview', [PDFController::class, 'generateTable'])
 
 
 // ===========================================================================================
+
 
 
 require __DIR__ . '/settings.php';

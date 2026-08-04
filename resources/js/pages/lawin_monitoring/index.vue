@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import DataTable from 'primevue/datatable';
+import { Info } from 'lucide-vue-next';
 
 import Toast from 'primevue/toast'
 import Column from 'primevue/column'
@@ -12,7 +13,7 @@ import Select from 'primevue/select'
 import Button from 'primevue/button'
 import { type BreadcrumbItem } from '@/types';
 import { useConfirm } from 'primevue/useconfirm'
-import { Head, useForm, usePage } from '@inertiajs/vue3'
+import { Head, useForm, usePage, router } from '@inertiajs/vue3'
 import { useLawinMonitoring } from '@/composables/useMonitoring';
 import { FilterMatchMode } from '@primevue/core/api'
 import modal_patrol_plan from './modal/modal_patrol_plan.vue'
@@ -79,6 +80,10 @@ const filters = ref({
         matchMode: FilterMatchMode.EQUALS
     }
 })
+const viewMap = (id: number) => {
+    console.log(id);
+    router.get(`/lawin_monitoring/${id}`)
+}
 onMounted(() => {
     fetchLawinData();
 });
@@ -183,7 +188,19 @@ onMounted(() => {
 
                         </div>
                     </template>
+                    <Column header="Action" style="min-width: 10rem">
+                        <template #body="slotProps">
+                            <div data-v-46ac47fe=""
+                                style="display: flex; gap: 4px; align-items: center; justify-content: center; flex-wrap: wrap">
+                                <Button class="bg-[#1B5E20] hover:bg-[#2E7D32]" size="small"
+                                    @click="viewMap(slotProps.data.protected_area_id)">
+                                    <Info />
+                                </Button>
 
+
+                            </div>
+                        </template>
+                    </Column>
                     <!-- PA CODE -->
                     <Column field="protected_area.pa_code" header="PA Code" sortable filter
                         filterField="protected_area.pa_code" />

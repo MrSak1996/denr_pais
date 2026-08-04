@@ -276,7 +276,7 @@ import review_icon from '../../../images/icons/review.png';
 
                         <Column field="DATE RECEIVED BY PAMBCS" header="Date Received by PAMBCS"></Column>
 
-                        <Column field="DATE RECEIVED BY FOCAL PERSON" header="Date Received by Focal"></Column>
+                        <Column field="DATE RECEIVED BY PAMBCS FOCAL PERSON" header="Date Received by Focal"></Column>
 
 
                         <template #expansion="slotProps">

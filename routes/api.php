@@ -3,8 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProtectedArea\ProtectedAreaList;
-
-
 use App\Http\Controllers\ProtectedArea\DashboardController;
 use App\Http\Controllers\ProtectedArea\LawinPatrolController;
 use App\Http\Controllers\DATS\DocumentsController;
@@ -27,12 +25,11 @@ Route::get('/monthly-monitoring', [DashboardController::class, 'monthlyMonitorin
 Route::get('/monthly-accomplishment', [DashboardController::class, 'monthlySubmissionMonitoring']);
 Route::get('/googlesheet', [DocumentsController::class, 'index']);
 Route::get('/lawin/data', [LawinPatrolController::class, 'getLawinData']);
-
 Route::get('/iec_cepa', [DashboardController::class, 'iec_cepa']);
-
-
-
 Route::get('/activities', [ActivityController::class, 'index']);
 Route::post('/activities', [ActivityController::class, 'store']);
+
+
+
 
 });

@@ -26,6 +26,7 @@
         "vue-tsc": "^2.2.12"
     },
     "dependencies": {
+        "@arcgis/core": "^5.1.14",
         "@fullcalendar/daygrid": "^6.1.17",
         "@fullcalendar/vue3": "^6.1.17",
         "@inertiajs/vue3": "^2.0.0",

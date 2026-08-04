@@ -76,4 +76,45 @@ class ProtectedAreaList extends Controller
 
         return back()->with('success', 'Saved successfully');
     }
+
+    public function getMap($pa_id)
+    {
+        $areas = DB::table('tbl_protected_area')
+            ->where('id', $pa_id)
+            ->get();
+
+        $features = $areas->map(function ($area) {
+            return [
+                'type' => 'Feature',
+                'geometry' => json_decode($area->geometry, true),
+                'properties' => array_merge(
+                    json_decode($area->properties, true) ?? [],
+                    [
+                        'id' => $area->id,
+                        'site_id' => $area->site_id,
+                        'site_pid' => $area->site_pid,
+                        'pa_name' => $area->pa_name,
+                        'name' => $area->name,
+                        'designation' => $area->designation,
+                        'designation_type' => $area->designation_type,
+                        'iucn_cat' => $area->iucn_cat,
+                        'status' => $area->status,
+                        'status_year' => $area->status_year,
+                        'gov_type' => $area->gov_type,
+                        'management_authority' => $area->management_authority,
+                        'area' => $area->area,
+                    ]
+                )
+            ];
+        });
+        
+        return Inertia::render('lawin_monitoring/map', [
+            'geojson' => [
+                'type' => 'FeatureCollection',
+                'features' => $features->values(),
+            ],
+            'pa_id' => $pa_id,
+            'pa_code' => $areas->first()->pa_code ?? null,
+        ]);
+    }
 }

@@ -290,107 +290,261 @@ const chartDataCategoryList = computed(() => {
 
 const chartDataRoutedToPie = computed(() => {
 
+    // ==========================================================
+    // ROUTED TO LIST
+    // ==========================================================
+
+    const routedNames = [
+        "CRCH",
+        "KVA",
+        "DJAF",
+        "JAAE",
+        "MBP",
+        "MCY",
+        "AHP",
+        "RBR",
+        "MPB",
+        "MKS",
+        "CRFMS",
+        "RWRC",
+        "JGC",
+        "PFMS",
+        "ALL PA FOCAL",
+        "CJ",
+        "CRCJ"
+    ];
+
+
+    // ==========================================================
+    // PIE CHART COUNTS
+    // ==========================================================
+
     const map: Record<string, number> = {};
 
-    const summary = {
-        MKS: { SIMPLE: 0, COMPLEX: 0, TOTAL: 0, MATCHED_RECORDS: 0 },
-        CRCH: { SIMPLE: 0, COMPLEX: 0, TOTAL: 0, MATCHED_RECORDS: 0 }
-    };
+    routedNames.forEach((name) => {
+        map[name] = 0;
+    });
+
+
+    // ==========================================================
+    // SUMMARY
+    // ==========================================================
+
+    const summary: Record<string, {
+        SIMPLE: number;
+        COMPLEX: number;
+        TOTAL: number;
+        MATCHED_RECORDS: number;
+    }> = {};
+
+
+    routedNames.forEach((name) => {
+
+        summary[name] = {
+            SIMPLE: 0,
+            COMPLEX: 0,
+            TOTAL: 0,
+            MATCHED_RECORDS: 0
+        };
+
+    });
+
+
+    // ==========================================================
+    // PROCESS DATA
+    // ==========================================================
 
     datsData.value.forEach((item: any) => {
 
-        const date = new Date(item["DATE ENCODED"]);
-        if (isNaN(date.getTime())) return;
+        const date = new Date(
+            item["DATE ENCODED"]
+        );
+
+        if (isNaN(date.getTime())) {
+            return;
+        }
+
 
         const year = date.getFullYear();
         const month = date.getMonth();
 
-        // January to June 2026 only
-        if (year !== 2026 || month < 0 || month > 5) return;
 
-        const routedRaw = (item["ROUTED TO"] || "").toString();
-        const complexity = (item["LEVEL OF COMPLEXITY"] || "")
-            .toString()
-            .trim()
-            .toUpperCase();
+        // ======================================================
+        // JANUARY - JUNE 2026 ONLY
+        // ======================================================
 
-        // Split and remove duplicates
-        const routedList = [...new Set(
-            routedRaw
-                .split("/")
-                .map((r: string) => r.trim().toUpperCase())
-                .filter(Boolean)
-        )];
+        if (
+            year !== 2026 ||
+            month < 0 ||
+            month > 5
+        ) {
+            return;
+        }
 
-        // Pie chart counts
-        routedList.forEach((key) => {
-            map[key] = (map[key] || 0) + 1;
+
+        // ======================================================
+        // ROUTED TO
+        // ======================================================
+
+        const routedRaw =
+            (item["ROUTED TO"] || "")
+                .toString()
+                .trim()
+                .toUpperCase();
+
+
+        // ======================================================
+        // LEVEL OF COMPLEXITY
+        // ======================================================
+
+        const complexity =
+            (item["LEVEL OF COMPLEXITY"] || "")
+                .toString()
+                .trim()
+                .toUpperCase();
+
+
+        // ======================================================
+        // SPLIT ROUTED TO
+        //
+        // Examples:
+        //
+        // MKS/AHP
+        // CRCH/MKS
+        // JAAE/MBP
+        // ALL PA FOCAL
+        // ======================================================
+
+        const routedList = [
+            ...new Set(
+                routedRaw
+                    .split("/")
+                    .map((r: string) =>
+                        r.trim().toUpperCase()
+                    )
+                    .filter(Boolean)
+            )
+        ];
+
+
+        // ======================================================
+        // CHECK EACH ROUTED PERSON/GROUP
+        // ======================================================
+
+        routedNames.forEach((name) => {
+
+            if (!routedList.includes(name)) {
+                return;
+            }
+
+
+            // ==================================================
+            // PIE COUNT
+            // ==================================================
+
+            map[name] =
+                (map[name] || 0) + 1;
+
+
+            // ==================================================
+            // MATCHED RECORD
+            // ==================================================
+
+            summary[name].MATCHED_RECORDS++;
+
+            summary[name].TOTAL++;
+
+
+            // ==================================================
+            // SIMPLE
+            // ==================================================
+
+            if (
+                complexity === "SIMPLE"
+            ) {
+
+                summary[name].SIMPLE++;
+
+            }
+
+
+            // ==================================================
+            // COMPLEX
+            // ==================================================
+
+            else if (
+                complexity === "COMPLEX"
+            ) {
+
+                summary[name].COMPLEX++;
+
+            }
+
         });
 
-        // ===== MKS =====
-        if (routedList.includes("MKS")) {
-
-            // Counts records like:
-            // MKS
-            // MKS/AHP
-            // CRCH/MKS
-            // MKS/CRCH/AHP
-            summary.MKS.MATCHED_RECORDS++;
-
-            summary.MKS.TOTAL++;
-
-            if (complexity === "SIMPLE") {
-                summary.MKS.SIMPLE++;
-            } else if (complexity === "COMPLEX") {
-                summary.MKS.COMPLEX++;
-            }
-        }
-
-        // ===== CRCH =====
-        if (routedList.includes("CRCH")) {
-
-            summary.CRCH.MATCHED_RECORDS++;
-
-            summary.CRCH.TOTAL++;
-
-            if (complexity === "SIMPLE") {
-                summary.CRCH.SIMPLE++;
-            } else if (complexity === "COMPLEX") {
-                summary.CRCH.COMPLEX++;
-            }
-        }
     });
 
-    console.log("=== JANUARY TO JUNE 2026 SUMMARY ===");
 
-    console.table([
-        {
-            ROUTED_TO: "MKS",
-            MATCHED_RECORDS: summary.MKS.MATCHED_RECORDS,
-            SIMPLE: summary.MKS.SIMPLE,
-            COMPLEX: summary.MKS.COMPLEX,
-            TOTAL: summary.MKS.TOTAL
-        },
-        {
-            ROUTED_TO: "CRCH",
-            MATCHED_RECORDS: summary.CRCH.MATCHED_RECORDS,
-            SIMPLE: summary.CRCH.SIMPLE,
-            COMPLEX: summary.CRCH.COMPLEX,
-            TOTAL: summary.CRCH.TOTAL
-        }
-    ]);
+    // ==========================================================
+    // CONSOLE SUMMARY
+    // ==========================================================
+
+    console.log(
+        "=== JANUARY TO JUNE 2026 ROUTED TO SUMMARY ==="
+    );
+
+
+    console.table(
+        routedNames.map((name) => ({
+
+            ROUTED_TO: name,
+
+            MATCHED_RECORDS:
+                summary[name].MATCHED_RECORDS,
+
+            SIMPLE:
+                summary[name].SIMPLE,
+
+            COMPLEX:
+                summary[name].COMPLEX,
+
+            TOTAL:
+                summary[name].TOTAL
+
+        }))
+    );
+
+
+    // ==========================================================
+    // PIE CHART
+    // ==========================================================
 
     return {
-        labels: Object.keys(map),
+
+        labels: routedNames,
+
         datasets: [
+
             {
-                label: "Total No. of Documents Routed To",
-                data: Object.values(map),
-                backgroundColor: "#22C55E",
-                borderRadius: 8
+                label:
+                    "Total No. of Documents Routed To",
+
+                data:
+                    routedNames.map(
+                        (name) => map[name]
+                    ),
+
+                backgroundColor:
+                    "#22C55E",
+
+                borderRadius:
+                    8
             }
+
         ]
+
     };
+
 });
 
 const chartMonthOptions = {
