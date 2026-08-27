@@ -24,6 +24,12 @@ import TabPanel from 'primevue/tabpanel';
 import TabPanels from 'primevue/tabpanels';
 import Tabs from 'primevue/tabs';
 
+import quezon from '../../../images/quezon.png'
+import batangas from '../../../images/batangas.png'
+import laguna from '../../../images/laguna.png'
+import cavite from '../../../images/cavite.png'
+import rizal from '../../../images/rizal.png'
+
 /* Full Calendar */
 import dayGridPlugin from '@fullcalendar/daygrid';
 import FullCalendar from '@fullcalendar/vue3';
@@ -35,10 +41,98 @@ import SummaryCards from '@/components/SummaryCards.vue';
 import SummaryFilters from '@/components/SummaryFilters.vue';
 import ResolutionTable from './table/reso_tbl.vue';
 import MonitoringDats from '@/components/MonitoringDats.vue';
+import ProvinceMonitoring from '@/components/ProvinceMonitoring.vue';
+
 
 /* Composable */
 import { useMonitoring, useDATSMonitoring } from '@/composables/useMonitoring';
 
+
+// -------------- Field Offices Rating ------------------
+
+const protectedAreasByProvince = {
+    rizal: [
+        'UMRIP',
+        'HPL',
+        'IPL',
+        'KRFR',
+    ],
+
+    batangas: [
+        'TVPL',
+    ],
+
+    cavite: [
+        'MPMNGGPL',
+    ],
+
+    quezon: [
+        'QPL',
+        'BPL',
+        'MSPL',
+        'MBSCPL',
+        'PP 1636',
+        'APLS',
+        'POWFR',
+        'BWRFR',
+        'CWRFR',
+        'AWFR',
+        'MIGRBS',
+        'PMSFR',
+        'CPLS',
+        'SPL',
+        'UWR',
+        'CPLS',
+    ],
+};
+
+const municipalities = {
+    cavite: [
+        'Alfonso',
+        'Amadeo',
+        'Bacoor',
+        // ...
+    ],
+
+    laguna: [
+        'Alaminos',
+        'Bay',
+        'Biñan',
+        // ...
+    ],
+
+    batangas: [
+        'Agoncillo',
+        'Alitagtag',
+        'Balayan',
+        // ...
+    ],
+
+    rizal: [
+        'Angono',
+        'Antipolo',
+        'Baras',
+        // ...
+    ],
+
+    quezon: [
+        'Agdangan',
+        'Alabat',
+        'Atimonan',
+        // ...
+    ],
+};
+const selectedProvince = ref(null);
+
+const selectProvince = (province) => {
+    selectedProvince.value = province;
+};
+
+const backToOverview = () => {
+    selectedProvince.value = null;
+};
+
+// -------------- Field Offices Rating ------------------
 /* ------------------------------------------ */
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -50,7 +144,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 /* ------------------------------------------
    View Navigation
 ------------------------------------------ */
-const activeView = ref<'table' | 'dashboard' | 'chart' | 'resolution' | 'calendar'>('dashboard');
+const activeView = ref<'table' | 'dashboard' | 'chart' | 'resolution' | 'calendar' | 'field'>('dashboard');
 
 /* ------------------------------------------
    Calendar Tabs
@@ -67,6 +161,44 @@ const calendarOptions = {
     ],
 };
 
+const provinces = [
+    {
+        name: 'CAVITE',
+        key: 'cavite',
+        color: 'bg-[#065f46]',
+        text: 'text-white',
+        pa_count: 1
+    },
+    {
+        name: 'LAGUNA',
+        key: 'laguna',
+        color: 'bg-[#065f46]',
+        text: 'text-white',
+        pa_count: 3
+
+    },
+    {
+        name: 'BATANGAS',
+        key: 'batangas',
+        color: 'bg-[#2196f3]',
+        text: 'text-white',
+        pa_count: 1
+    },
+    {
+        name: 'RIZAL',
+        key: 'rizal',
+        color: 'bg-[#f4c430]',
+        text: 'text-black',
+        pa_count: 4
+    },
+    {
+        name: 'QUEZON',
+        key: 'quezon',
+        color: 'bg-[#28a745]',
+        text: 'text-white',
+        pa_count: 17
+    }
+]
 /* ------------------------------------------ */
 const protectedAreas = [
     'APLS',
@@ -618,7 +750,10 @@ const chartMonthOptions = {
                                 <Button label="DATS Dashboard" icon="pi pi-dashboard"
                                     :severity="activeView === 'dashboard' ? '#004d40' : 'secondary'"
                                     @click="activeView = 'dashboard'" />
-                                 <Button label="Calendar of Activities" icon="pi pi-calendar"
+                                <Button label="Field Offices" icon="pi pi-folder"
+                                    :severity="activeView === 'field' ? 'primary' : 'secondary'"
+                                    @click="activeView = 'field'" />
+                                <Button label="Calendar of Activities" icon="pi pi-calendar"
                                     :severity="activeView === 'calendar' ? 'primary' : 'secondary'"
                                     @click="activeView = 'calendar'" />
 
@@ -642,34 +777,380 @@ const chartMonthOptions = {
                             <div v-if="activeView === 'dashboard'"
                                 class="box flex flex-col  border border-sidebar-border/70 p-4 dark:border-sidebar-border">
                                 <!-- Content -->
-                                <MonitoringDats :dats="dats" :rows="data" :totals="totals" 
-                                    :chartData="chartDataMonthlist"
-                                    :chartOptions="chartMonthOptions"
+                                <MonitoringDats :dats="dats" :rows="data" :totals="totals"
+                                    :chartData="chartDataMonthlist" :chartOptions="chartMonthOptions"
                                     :chartDataCategoryList="chartDataCategoryList"
-                                    :chartDataRoutedToList="chartDataRoutedToPie"
-                                    />
+                                    :chartDataRoutedToList="chartDataRoutedToPie" />
                             </div>
 
+
+
+                            <div v-if="!selectedProvince && activeView === 'field'"
+                                class="box flex flex-col border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+
+                                <div class="w-full flex flex-col lg:flex-row">
+
+                                    <!-- COL-LG-8 -->
+                                    <div class="w-full lg:w-2/3 flex justify-center">
+
+                                        <div class="relative w-full max-w-[445px] aspect-square">
+
+                                            <img :src="quezon" class="absolute top-0 left-[68px] w-[445px] max-w-none"
+                                                alt="Quezon" />
+
+                                            <img :src="batangas" class="absolute top-0 left-0 w-[445px] max-w-none"
+                                                alt="Batangas" />
+
+                                            <img :src="laguna" class="absolute top-0 left-0 w-[445px] max-w-none"
+                                                alt="Laguna" />
+
+                                            <img :src="cavite" class="absolute top-0 left-0 w-[445px] max-w-none"
+                                                alt="Cavite" />
+
+                                            <img :src="rizal" class="absolute top-0 left-0 w-[445px] max-w-none"
+                                                alt="Rizal" />
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- COL-LG-4 -->
+                                    <div class="w-full lg:w-1/3">
+
+                                        <div class="bg-[#e8e8e8] p-[15px]">
+
+                                            <a v-for="province in provinces" :key="province.key" href="#"
+                                                @click.prevent="selectProvince(province.key)" :class="[
+                                                    'mb-1 flex min-h-[80px] items-center no-underline transition-transform duration-200 hover:scale-[1.02]',
+                                                    province.color,
+                                                    province.text
+                                                ]">
+
+                                                <span class="flex w-[60px] items-center justify-center text-2xl">
+                                                    <i class="fas fa-map-marker-alt"></i>
+                                                </span>
+
+                                                <div class="flex flex-col">
+
+                                                    <span class="text-sm">
+                                                        <b>{{ province.name }}</b>
+                                                        - Total Protected Areas
+                                                    </span>
+
+                                                    <span class="text-[20pt] font-bold leading-none">
+                                                        <!-- {{ reports[province.key] ?? 0 }} -->
+                                                        <b>{{ province.pa_count }}</b>
+                                                    </span>
+
+                                                </div>
+
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+
+                            <div v-if="selectedProvince && activeView === 'field'"
+                                class="box border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                                <!-- INDICATOR HEADER -->
+                                <div class="mb-4 overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm">
+
+                                    <!-- Indicator -->
+                                    <div class="flex border-b border-gray-300">
+                                        <div class="w-[120px] shrink-0 bg-gray-100 px-3 py-3 text-sm font-bold">
+                                            Indicator:
+                                        </div>
+
+                                        <div class="flex-1 px-3 py-3 text-sm">
+                                            <span class="font-semibold">
+                                                53 PAMB Resolutions signed with minutes of meeting approved by the PAMB
+                                                Chair (RED)
+                                                submitted to BMB within 30 working days after the PAMB meeting
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- CY 2026 -->
+                                    <div class="flex border-b border-gray-300">
+                                        <div class="w-[120px] shrink-0 bg-gray-100 px-3 py-3 text-sm font-bold">
+                                            CY 2026
+                                        </div>
+
+                                        <div class="flex-1 px-3 py-3 text-sm">
+                                            <span class="font-semibold">Legend:</span>
+                                            Q1 (Quantity - use SPMS Calcu to calculate the %)
+                                        </div>
+                                    </div>
+
+                                    <!-- Computation -->
+                                    <div class="flex">
+                                        <div class="w-[120px] shrink-0 bg-gray-100 px-3 py-3 text-sm font-bold">
+                                            &nbsp;
+                                        </div>
+
+                                        <div class="flex-1 px-3 py-3 text-sm">
+                                            <div class="flex flex-wrap gap-x-6 gap-y-1">
+                                                <span><b>1</b> - after conduct</span>
+                                                <span><b>3</b> - Fridays</span>
+                                                <span><b>1</b> - Holidays</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="w-full flex flex-col lg:flex-row">
+                                    <div class="w-full lg:w-2/3">
+                                        <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+
+                                            <!-- Province Monitoring -->
+                                            <div class="w-full">
+                                                <ProvinceMonitoring :province="selectedProvince"
+                                                    :municipalities="municipalities[selectedProvince] ?? []" />
+                                            </div>
+
+                                            <!-- Protected Areas -->
+                                            <div class="w-full">
+
+                                                <div class="rounded-lg border border-gray-300 bg-white shadow-sm">
+
+                                                    <div class="rounded-t-lg px-4 py-3 text-white"
+                                                        style="background-color: #009688;">
+                                                        <h5 class="m-0 text-sm font-semibold">
+                                                            PROTECTED AREAS -
+                                                            {{ selectedProvince.toUpperCase() }}
+                                                        </h5>
+                                                    </div>
+
+                                                    <div class="overflow-x-auto">
+
+                                                        <table class="w-full border-collapse text-xs">
+
+                                                            <thead>
+
+                                                                <tr class="bg-gray-100">
+
+                                                                    <th rowspan="2"
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        Office
+                                                                    </th>
+
+                                                                    <th colspan="2"
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        1ST SEMESTER
+                                                                    </th>
+
+                                                                    <th colspan="4"
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        RATING
+                                                                    </th>
+
+                                                                    <th rowspan="2"
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        Remarks
+                                                                    </th>
+
+                                                                </tr>
+
+                                                                <tr class="bg-gray-100">
+
+                                                                    <th
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        Target
+                                                                    </th>
+
+                                                                    <th
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        Accomplishment
+                                                                    </th>
+
+                                                                    <th
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        Q1
+                                                                    </th>
+
+                                                                    <th
+                                                                        class="border border-gray-400 bg-gray-200 px-2 py-2 text-center">
+                                                                        Q2
+                                                                    </th>
+
+                                                                    <th
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        T3
+                                                                    </th>
+
+                                                                    <th
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        A4
+                                                                    </th>
+
+                                                                </tr>
+
+                                                                <tr class="bg-gray-50 text-[10px] italic">
+
+                                                                    <th
+                                                                        class="border border-gray-400 px-2 py-1 text-center">
+                                                                        a</th>
+                                                                    <th
+                                                                        class="border border-gray-400 px-2 py-1 text-center">
+                                                                        b</th>
+                                                                    <th
+                                                                        class="border border-gray-400 px-2 py-1 text-center">
+                                                                        c</th>
+                                                                    <th
+                                                                        class="border border-gray-400 px-2 py-1 text-center">
+                                                                        d</th>
+                                                                    <th
+                                                                        class="border border-gray-400 bg-gray-200 px-2 py-1 text-center">
+                                                                        e</th>
+                                                                    <th
+                                                                        class="border border-gray-400 px-2 py-1 text-center">
+                                                                        f</th>
+                                                                    <th
+                                                                        class="border border-gray-400 px-2 py-1 text-center">
+                                                                        g</th>
+                                                                    <th
+                                                                        class="border border-gray-400 px-2 py-1 text-center">
+                                                                        h</th>
+
+                                                                </tr>
+
+                                                            </thead>
+
+                                                            <tbody>
+
+                                                                <tr v-for="area in protectedAreasByProvince[selectedProvince] ?? []"
+                                                                    :key="area" class="hover:bg-gray-50">
+
+                                                                    <td
+                                                                        class="border border-gray-400 px-2 py-2 font-semibold">
+                                                                        {{ area }}
+                                                                    </td>
+
+                                                                    <td
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        -</td>
+                                                                    <td
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        -</td>
+                                                                    <td
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        -</td>
+
+                                                                    <td
+                                                                        class="border border-gray-400 bg-gray-50 px-2 py-2 text-center">
+                                                                        -
+                                                                    </td>
+
+                                                                    <td
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        -</td>
+                                                                    <td
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        -</td>
+                                                                    <td
+                                                                        class="border border-gray-400 px-2 py-2 text-center">
+                                                                        -</td>
+
+                                                                </tr>
+
+                                                                <tr
+                                                                    v-if="!protectedAreasByProvince[selectedProvince]?.length">
+                                                                    <td colspan="8"
+                                                                        class="border border-gray-400 px-3 py-6 text-center text-gray-500">
+                                                                        No protected areas found for
+                                                                        {{ selectedProvince.toUpperCase() }}.
+                                                                    </td>
+                                                                </tr>
+
+                                                            </tbody>
+
+                                                        </table>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="w-full lg:w-1/3">
+
+                                        <div class="bg-[#e8e8e8] p-[15px]">
+
+                                            <a v-for="province in provinces" :key="province.key" href="#"
+                                                @click.prevent="selectProvince(province.key)" :class="[
+                                                    'mb-1 flex min-h-[80px] items-center no-underline transition-transform duration-200 hover:scale-[1.02]',
+                                                    province.color,
+                                                    province.text
+                                                ]">
+
+                                                <span class="flex w-[60px] items-center justify-center text-2xl">
+                                                    <i class="fas fa-map-marker-alt"></i>
+                                                </span>
+
+                                                <div class="flex flex-col">
+
+                                                    <span class="text-sm">
+                                                        <b>{{ province.name }}</b>
+                                                        - Total Protected Areas
+                                                    </span>
+
+                                                    <span class="text-[20pt] font-bold leading-none">
+                                                        <!-- {{ reports[province.key] ?? 0 }} -->
+                                                        <b>{{ province.pa_count }}</b>
+
+                                                    </span>
+
+                                                </div>
+
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <!-- BACK BUTTON -->
+
+                                <div class="mt-4">
+
+                                    <button type="button"
+                                        class="rounded bg-gray-600 px-4 py-2 text-white hover:bg-gray-700"
+                                        @click="backToOverview">
+                                        <i class="fas fa-arrow-left mr-1"></i>
+                                        Back to CALABARZON
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
                             <div v-if="activeView === 'calendar'"
-                            class="box flex flex-col  border border-sidebar-border/70 p-4 dark:border-sidebar-border">
+                                class="box flex flex-col  border border-sidebar-border/70 p-4 dark:border-sidebar-border">
                                 <FullCalendar :options="calendarOptions" />
 
                             </div>
 
-
-                            <!-- TABLE -->
                             <div v-if="activeView === 'table'">
                                 <SummaryCards :summary="summary" />
                                 <MonitoringTable :rows="data" :totals="totals" />
                             </div>
 
-                            <!-- CHART -->
                             <div v-if="activeView === 'chart'" class="h-[550px]">
                                 <MonitoringChart :chartData="chartData" :chartOptions="chartOptions" />
                             </div>
-
-                            <!-- CALENDAR -->
-                           
 
                             <div v-if="activeView === 'resolution'" class="h-[550px]">
                                 <ResolutionTable />

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'http://10.201.10.124:8000/api'
+const API_URL = 'http://10.201.10.140:8000/api'
 
 export const monitoringService = {
     async getMonthlyMonitoring(params: any) {

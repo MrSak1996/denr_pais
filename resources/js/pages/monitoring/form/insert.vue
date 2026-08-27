@@ -45,6 +45,8 @@ const form = useForm({
     alternate_focal: '',
     approved_pamb_clearance_no: '',
     reason: '',
+    date_conducted: '',
+    date_received_field_office: '',
     date_received_by_cdd: '',
     date_received_by_focal: '',
     date_received_by_oardts: '',
@@ -177,114 +179,107 @@ watch(checked, (val) => {
                 <div class="xl:col-span-3">
                     <div class="w-full">
                         <!-- Header -->
-                        <h2 class="mb-6 flex items-center gap-2 text-2xl font-bold"><Info /> Add New Resolution</h2>
+                        <h2 class="mb-6 flex items-center gap-2 text-2xl font-bold">
+                            <Info /> Add New Resolution
+                        </h2>
 
                         <!-- SECTION 1 -->
-                         <Panel>
+                        <Panel>
 
-                        <div class="mb-6 rounded-xl border-gray-300 p-6 shadow">
-                            <h3 class="mb-4 text-lg font-semibold">📌 Basic Information</h3>
+                            <div class="mb-6 rounded-xl border-gray-300 p-6">
+                                <h3 class="mb-4 text-lg font-semibold">📌 Basic Information</h3>
 
-                            <div class="grid gap-6 md:grid-cols-2">
-                                <Select
-                                    :filter="true"
-                                    :options="paOptions"
-                                    optionLabel="label"
-                                    optionValue="value"
-                                    v-model="form.protected_area_id"
-                                    placeholder="Select Protected Area"
-                                />
-                                <Input v-model="form.focal_person" placeholder="Focal Person" />
-                                <Input v-model="form.alternate_focal" placeholder="Alternate Focal Person" />
-                            </div>
-                            <div class="mt-3">
-                                <Button type="button" @click="addRow"> <CirclePlus /> Add Row </Button>
-                            </div>
-                            <div class="mt-6 grid gap-6 md:grid-cols-1">
-                                <table class="w-full border text-sm">
-                                    <thead class="bg-blue-900 text-white">
-                                        <tr>
-                                            <th class="px-3 py-2">Resolution No</th>
-                                            <th class="px-3 py-2">Type</th>
-                                            <th class="px-3 py-2">Date</th>
-                                            <th class="px-3 py-2">Title</th>
-                                            <th class="px-3 py-2 text-center">Action</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr v-for="(row, index) in form.resolutions" :key="index">
-                                            <td class="px-3 py-2">
-                                                <Input v-model="row.resolution_no" />
-                                            </td>
-
-                                            <td class="px-3 py-2">
-                                                <Input v-model="row.type_of_meeting" />
-                                            </td>
-
-                                            <td class="px-3 py-2">
-                                                <DatePicker v-model="row.date_of_meeting" dateFormat="yy-mm-dd" showIcon />
-                                            </td>
-
-                                            <td class="px-3 py-2">
-                                                <Textarea v-model="row.resolution_title" cols="70" />
-                                            </td>
-
-                                            <td class="px-3 py-2 text-center">
-                                                <Button variant="destructive" @click="removeRow(index)">
-                                                    <CircleMinus />
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="mt-6 grid gap-6 md:grid-cols-1">
-                                <div class="flex items-center gap-3">
-                                    <label>Has PAMB Clearance?</label>
-                                    <ToggleSwitch v-model="checked" />
+                                <div class="grid gap-6 md:grid-cols-2">
+                                    <Select :filter="true" :options="paOptions" optionLabel="label" optionValue="value"
+                                        v-model="form.protected_area_id" placeholder="Select Protected Area" />
+                                    <Input v-model="form.focal_person" placeholder="Focal Person" />
+                                    <Input v-model="form.alternate_focal" placeholder="Alternate Focal Person" />
                                 </div>
-                                <Input v-model="form.approved_pamb_clearance_no" placeholder="Approved PAMB Clearance No." :disabled="!checked" />
-                                <Input v-model="form.reason" placeholder="Reason (if deferred)" :disabled="!checked" />
-                            </div>
-                        </div>
-                        </Panel>
+                                <div class="mt-3">
+                                    <Button type="button" @click="addRow">
+                                        <CirclePlus /> Add Row
+                                    </Button>
+                                </div>
+                                <div class="mt-6 grid gap-6 md:grid-cols-1">
+                                    <table class="w-full border text-sm">
+                                        <thead class="bg-blue-900 text-white">
+                                            <tr>
+                                                <th class="px-3 py-2">Resolution No</th>
+                                                <th class="px-3 py-2">Type</th>
+                                                <th class="px-3 py-2">Date</th>
+                                                <th class="px-3 py-2">Title</th>
+                                                <th class="px-3 py-2 text-center">Action</th>
+                                            </tr>
+                                        </thead>
 
-                        <!-- SECTION 2 -->
-                        <div class="mb-6 rounded-xl bg-white p-6 shadow">
-                            <h3 class="mb-4 text-lg font-semibold">📌 Status & Evaluation</h3>
+                                        <tbody>
+                                            <tr v-for="(row, index) in form.resolutions" :key="index">
+                                                <td class="px-3 py-2">
+                                                    <Input v-model="row.resolution_no" />
+                                                </td>
+
+                                                <td class="px-3 py-2">
+                                                    <Input v-model="row.type_of_meeting" />
+                                                </td>
+
+                                                <td class="px-3 py-2">
+                                                    <DatePicker v-model="row.date_of_meeting" dateFormat="yy-mm-dd"
+                                                        showIcon />
+                                                </td>
+
+                                                <td class="px-3 py-2">
+                                                    <Textarea v-model="row.resolution_title" cols="70" />
+                                                </td>
+
+                                                <td class="px-3 py-2 text-center">
+                                                    <Button variant="destructive" @click="removeRow(index)">
+                                                        <CircleMinus />
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-6 grid gap-6 md:grid-cols-1">
+                                    <div class="flex items-center gap-3">
+                                        <label>Has PAMB Clearance?</label>
+                                        <ToggleSwitch v-model="checked" />
+                                    </div>
+                                    <Input v-model="form.approved_pamb_clearance_no"
+                                        placeholder="Approved PAMB Clearance No." :disabled="!checked" />
+                                    <Input v-model="form.reason" placeholder="Reason (if deferred)"
+                                        :disabled="!checked" />
+                                </div>
+                                <h3 class="mb-4 text-lg font-semibold mt-2">📌 Status & Evaluation</h3>
 
                             <div class="grid gap-6 md:grid-cols-2">
-                                <Select
-                                    :options="statusOptions"
-                                    optionLabel="label"
-                                    optionValue="value"
-                                    v-model="form.status"
-                                    placeholder="Select Status"
-                                />
+                                <Select :options="statusOptions" optionLabel="label" optionValue="value"
+                                    v-model="form.status" placeholder="Select Status" />
 
-                                <Select
-                                    :options="ratingOptions"
-                                    optionLabel="label"
-                                    optionValue="value"
-                                    v-model="form.rating"
-                                    placeholder="Select Rating"
-                                />
+                                <Select :options="ratingOptions" optionLabel="label" optionValue="value"
+                                    v-model="form.rating" placeholder="Select Rating" />
                             </div>
-                        </div>
+                            </div>
+                        </Panel>
 
                         <!-- SECTION 3 -->
                         <div class="rounded-xl bg-white p-6 shadow">
                             <h3 class="mb-4 text-lg font-semibold">📌 Timeline Tracking</h3>
 
                             <div class="grid gap-6 md:grid-cols-3">
+                                <DatePicker v-model="form.date_conducted" showIcon placeholder="Date Conducted" />
+                                <DatePicker v-model="form.date_received_field_office" showIcon
+                                    placeholder="Received (Field Office)" />
                                 <DatePicker v-model="form.date_received_by_cdd" showIcon placeholder="Received (CDD)" />
-                                <DatePicker v-model="form.date_received_by_focal" showIcon placeholder="Received (Focal)" />
+                                <DatePicker v-model="form.date_received_by_focal" showIcon
+                                    placeholder="Received (Focal)" />
                                 <DatePicker v-model="form.date_released_focal" showIcon placeholder="Released" />
-                                <DatePicker v-model="form.date_received_by_oardts" showIcon placeholder="Received (OARDTS)" />
+                                <DatePicker v-model="form.date_received_by_oardts" showIcon
+                                    placeholder="Received (OARDTS)" />
                                 <DatePicker v-model="form.date_approved_pamb" showIcon placeholder="Approved" />
                                 <DatePicker v-model="form.date_emailed_bmb" showIcon placeholder="Emailed (BMB)" />
-                                <DatePicker v-model="form.date_submitted_bmb" showIcon placeholder="Submitted (Hard Copy)" />
+                                <DatePicker v-model="form.date_submitted_bmb" showIcon
+                                    placeholder="Submitted (Hard Copy)" />
                             </div>
                         </div>
 

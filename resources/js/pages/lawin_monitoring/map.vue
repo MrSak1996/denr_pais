@@ -1,65 +1,115 @@
 <template>
 
     <Head title="DENR Online Protected Area Information System" />
+
     <AppLayout :breadcrumbs="breadcrumbs">
+
         <div class="space-y-6 p-4">
-                <div class="flex items-center justify-between flex-wrap gap-4">
 
-                    <!-- LEFT -->
-                    <div class="flex items-center gap-3">
+            <!-- =========================================================
+                 HEADER
+            ========================================================== -->
 
-                        <div class="w-9 h-9 rounded-lg bg-[#1a6b45] flex items-center justify-center shrink-0">
+            <div class="flex items-center justify-between flex-wrap gap-4">
 
-                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white"
-                                stroke-width="2.2">
+                <!-- LEFT -->
 
-                                <path
-                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
-                                </path>
-                            </svg>
-                        </div>
+                <div class="flex items-center gap-3">
 
-                        <div>
+                    <div class="w-9 h-9 rounded-lg bg-[#1a6b45] flex items-center justify-center shrink-0">
 
-                            <h5 class="text-[15px] font-bold text-gray-900">
-                                Monitoring of Protected Area Patrol Plans in {{ props.pa_code }}
-                            </h5>
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.2">
 
-                            <p class="text-xs text-gray-400 mt-0.5">
-                                Real-time tracking of patrol plans
-                            </p>
+                            <path
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 
-                        </div>
+                        </svg>
+
                     </div>
 
-                    <!-- RIGHT -->
-                    <div class="flex items-center">
+                    <div>
 
-                       
+                        <h5 class="text-[15px] font-bold text-gray-900">
+
+                            Monitoring of Protected Area Patrol Plans in
+                            {{ props.pa_code }}
+
+                        </h5>
+
+                        <p class="text-xs text-gray-400 mt-0.5">
+
+                            Real-time tracking of patrol plans
+
+                        </p>
+
                     </div>
+
                 </div>
+
+            </div>
+
+
+            <!-- =========================================================
+                 MAP
+            ========================================================== -->
+
             <div class="box">
+
                 <div ref="mapDiv" class="map-container">
 
-                    <!-- =========================================================
-             PATROL MAP LEGEND
-             ========================================================= -->
+                    <!-- =====================================================
+                         LEGEND
+                    ====================================================== -->
+
                     <div class="patrol-legend">
 
                         <div class="legend-title">
+
                             Patrol Map
+
                         </div>
+
+
+                        <!-- DAY 1 -->
 
                         <div class="legend-item">
 
-                            <span class="legend-line patrol-line"></span>
+                            <span class="legend-line day1-line"></span>
 
                             <span>
-                                Patrol / Transect Route
+                                Day 1 Patrol
                             </span>
 
                         </div>
 
+
+                        <!-- DAY 2 -->
+
+                        <div class="legend-item">
+
+                            <span class="legend-line day2-line"></span>
+
+                            <span>
+                                Day 2 Patrol
+                            </span>
+
+                        </div>
+
+
+                        <!-- SINGLE DAY -->
+
+                        <div class="legend-item">
+
+                            <span class="legend-line single-line"></span>
+
+                            <span>
+                                Single-Day Patrol
+                            </span>
+
+                        </div>
+
+
+                        <!-- START -->
 
                         <div class="legend-item">
 
@@ -72,6 +122,8 @@
                         </div>
 
 
+                        <!-- END -->
+
                         <div class="legend-item">
 
                             <span class="legend-circle end-circle"></span>
@@ -82,6 +134,8 @@
 
                         </div>
 
+
+                        <!-- PA -->
 
                         <div class="legend-item">
 
@@ -96,24 +150,32 @@
                     </div>
 
 
-                    <!-- =========================================================
-             MAP TITLE
-             ========================================================= -->
+                    <!-- =====================================================
+                         MAP TITLE
+                    ====================================================== -->
+
                     <div class="map-title">
 
                         <div class="map-title-main">
+
                             PATROL MAP
+
                         </div>
 
                         <div class="map-title-sub">
+
                             Protected Area Patrol / Transect Walk
+
                         </div>
 
                     </div>
 
                 </div>
+
             </div>
+
         </div>
+
     </AppLayout>
 
 </template>
@@ -121,11 +183,7 @@
 
 <script setup lang="ts">
 
-import {
-    ref,
-    onMounted
-} from "vue";
-
+import { ref, onMounted } from "vue";
 
 /*
 |--------------------------------------------------------------------------
@@ -134,15 +192,9 @@ import {
 */
 
 import Map from "@arcgis/core/Map";
-
-import MapView from
-    "@arcgis/core/views/MapView";
-
-import GraphicsLayer from
-    "@arcgis/core/layers/GraphicsLayer";
-
-import Graphic from
-    "@arcgis/core/Graphic";
+import MapView from "@arcgis/core/views/MapView";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import Graphic from "@arcgis/core/Graphic";
 
 
 /*
@@ -151,14 +203,9 @@ import Graphic from
 |--------------------------------------------------------------------------
 */
 
-import Polygon from
-    "@arcgis/core/geometry/Polygon";
-
-import Polyline from
-    "@arcgis/core/geometry/Polyline";
-
-import Point from
-    "@arcgis/core/geometry/Point";
+import Polygon from "@arcgis/core/geometry/Polygon";
+import Polyline from "@arcgis/core/geometry/Polyline";
+import Point from "@arcgis/core/geometry/Point";
 
 
 /*
@@ -167,14 +214,9 @@ import Point from
 |--------------------------------------------------------------------------
 */
 
-import SimpleFillSymbol from
-    "@arcgis/core/symbols/SimpleFillSymbol";
-
-import SimpleLineSymbol from
-    "@arcgis/core/symbols/SimpleLineSymbol";
-
-import SimpleMarkerSymbol from
-    "@arcgis/core/symbols/SimpleMarkerSymbol";
+import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
+import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
+import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol";
 
 
 /*
@@ -183,8 +225,18 @@ import SimpleMarkerSymbol from
 |--------------------------------------------------------------------------
 */
 
-import Zoom from
-    "@arcgis/core/widgets/Zoom";
+import Zoom from "@arcgis/core/widgets/Zoom";
+
+
+/*
+|--------------------------------------------------------------------------
+| Layout / Inertia
+|--------------------------------------------------------------------------
+*/
+
+import AppLayout from "@/layouts/AppLayout.vue";
+import { type BreadcrumbItem } from "@/types";
+import { Head } from "@inertiajs/vue3";
 
 
 /*
@@ -192,11 +244,11 @@ import Zoom from
 | PROPS
 |--------------------------------------------------------------------------
 */
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';const props = defineProps<{
+
+const props = defineProps<{
 
     pa_id: number;
+
     pa_code: string;
 
     geojson: {
@@ -209,11 +261,23 @@ import { Head } from '@inertiajs/vue3';const props = defineProps<{
 
 }>();
 
+
+/*
+|--------------------------------------------------------------------------
+| BREADCRUMBS
+|--------------------------------------------------------------------------
+*/
+
 const breadcrumbs: BreadcrumbItem[] = [
+
     {
-        title: 'Protected Area Patrol Monitoring',
-        href: '/lawin_monitoring/index',
+        title:
+            "Protected Area Patrol Monitoring",
+
+        href:
+            "/lawin_monitoring/index",
     },
+
 ];
 
 
@@ -235,76 +299,193 @@ let graphicsLayer:
 
 /*
 |--------------------------------------------------------------------------
-| FILES
-|--------------------------------------------------------------------------
-*/
-
-
-
-/*
-|--------------------------------------------------------------------------
-| PATROL GEOJSON BY PROTECTED AREA ID
+| PATROL GEOJSON FILES
 |--------------------------------------------------------------------------
 */
 
 const PATROL_FILES: Record<number, string[]> = {
 
-    // ============================================================
-    // PA ID 4
-    // Multiple patrol / transect GeoJSON files
-    // ============================================================
-    4: [
+    1: [
+        "/MBSCPL-JULY-LILIW1.json",
+        "/MBSCPL-JULY-LILIW2.json",
+        "/MBSCPL-JULY-MAJAYJAY1.json",
+        "/MBSCPL-JULY-MAJAYJAY2.json",
+        "/MBSCPL-JULY-NAGCARLAN1.json",
+        "/MBSCPL-JULY-NAGCARLAN2.json",
+        "/MBSCPL-JULY-SAN PABLO1.json",
+        "/MBSCPL-JULY-SAN PABLO2.json",
+        "/MBSCPL-JULY-RIZAL1.json",
+        "/MBSCPL-JULY-RIZAL2.json",
+        "/MBSCPL-JULY-RIZAL3.json",
+        "/MBSCPL-JULY-RIZAL4.json",
+
+        "/AWFR_JULY.json",
+        "/BPL_JULY.json",
+
         "/BRWFR-07072026.json",
         "/BRWFR-07162026.json",
-    ],
-    12:[
+
+        "/CIPLS_JULY.json",
         "/MIGRBS.json",
-    ],
+        "/CPLS-July.json",
+        "/CWFR_JULY.json",
+        "/HTPL-July.json",
+        "/IWFR_JULY.json",
+        "/MSPL-JULY.json",
 
-    // ============================================================
-    // PA ID 17
-    // ============================================================
-    17: [
         "/Rizal_2026_line.json",
+
+        "/MBSCPL_QUEZON-JULY.json",
+
+        "/PaWFR-JULY.json",
+
+        "/PMSFR-07112026.json",
+        "/PMSFR-07222026.json",
+
+        "/PPL-JULY.json",
+
+        "/SFPL_07012026.json",
+        "/SFPL_07022026.json",
+
+        "/UMRBPL_07102026_1.json",
+        "/UMRBPL_07102026_2.json",
+        "/UMRBPL_07132026_3.json",
+        "/UMRBPL_07172026_4.json",
+
+        "/URWR-JULY.json",
+
+        "/PoWFR-JULY.json",
     ],
 
-    // ============================================================
-    // Examples
-    // ============================================================
-    // 20: [
-    //     "/PA20-Day1.json",
-    //     "/PA20-Day2.json",
-    //     "/PA20-Day3.json",
-    // ],
+    2: [
+        "/AWFR_JULY.json",
+    ],
+
+    3: [ "/BPL_JULY.json", ],
+
+    4: [ "/BRWFR-07072026.json", "/BRWFR-07162026.json", ],
+    5: [
+
+        "/CIPLS_JULY.json",
+
+    ],
+
+    12: [
+
+        "/MIGRBS.json",
+
+    ],
+
+    6: [
+
+        "/CPLS-July.json",
+
+    ],
+
+    7: [
+
+        "/CWFR_JULY.json",
+
+    ],
+
+    8: [
+
+
+
+    ],
+    9: [
+        "/IWFR_JULY.json"
+    ],
+    14: [
+        "/MSPL-JULY.json"
+    ],
+
+    17: [
+
+        "/Rizal_2026_line.json",
+
+    ],
+    11: [
+        "/MBSCPL_QUEZON-JULY.json"
+    ],
+    15: [
+        "/PaWFR-JULY.json"
+    ],
+    16: [
+        "/PMSFR-07112026.json",
+        "/PMSFR-07222026.json",
+    ],
+    18:[
+        "/PPL-JULY.json",
+    ],
+    20:[
+        "/SFPL_07012026.json",
+        "/SFPL_07022026.json",
+    ],
+    22:[
+        "/UMRBPL_07102026_1.json",
+        "/UMRBPL_07102026_2.json",
+        "/UMRBPL_07132026_3.json",
+        "/UMRBPL_07172026_4.json",
+    ],
+    23:[
+        "/URWR-JULY.json",
+    ],
+    24:[
+        "/PoWFR-JULY.json",
+    ],
+    27: [
+        "/MBSCPL-JULY-LILIW1.json",
+        "/MBSCPL-JULY-LILIW2.json",
+        "/MBSCPL-JULY-MAJAYJAY1.json",
+        "/MBSCPL-JULY-MAJAYJAY2.json",
+        "/MBSCPL-JULY-NAGCARLAN1.json",
+        "/MBSCPL-JULY-NAGCARLAN2.json",
+        "/MBSCPL-JULY-SAN PABLO1.json",
+        "/MBSCPL-JULY-SAN PABLO2.json",
+        "/MBSCPL-JULY-RIZAL1.json",
+        "/MBSCPL-JULY-RIZAL2.json",
+        "/MBSCPL-JULY-RIZAL3.json",
+        "/MBSCPL-JULY-RIZAL4.json",
+    ]
 
 };
 
 
 /*
 |--------------------------------------------------------------------------
-| GET PATROL FILE FOR CURRENT PA
+| GET PATROL FILES
 |--------------------------------------------------------------------------
 */
 
 function getPatrolFiles(): string[] {
 
-    const files = PATROL_FILES[props.pa_id];
+    const files =
+        PATROL_FILES[props.pa_id];
 
-    if (!files || files.length === 0) {
+
+    if (
+        !files ||
+        files.length === 0
+    ) {
 
         console.warn(
             `No patrol GeoJSON configured for pa_id: ${props.pa_id}`
         );
 
         return [];
+
     }
+
 
     console.log(
         `PA ID ${props.pa_id} → ${files.length} patrol file(s)`,
         files
     );
 
+
     return files;
+
 }
 
 
@@ -313,17 +494,818 @@ function getPatrolFiles(): string[] {
 | COORDINATE SYSTEM
 |--------------------------------------------------------------------------
 |
-| Your patrol shapefile/map indicates:
+| Patrol and protected-area geometry:
 |
-| WGS 1984
-| UTM Zone 51N
+| EPSG:32651
+| WGS 84 / UTM Zone 51N
 |
-| EPSG / WKID = 32651
+| ArcGIS map:
 |
+| EPSG:4326
+| WGS 84
+|
+|--------------------------------------------------------------------------
 */
 
-const TRANSECT_WKID =
+const PATROL_WKID =
     32651;
+
+const MAP_WKID =
+    4326;
+
+
+/*
+|--------------------------------------------------------------------------
+| UTM 51N → WGS84 CONVERSION
+|--------------------------------------------------------------------------
+*/
+
+function utm51ToWgs84(
+    easting: number,
+    northing: number
+): [number, number] {
+
+    /*
+    |--------------------------------------------------------------------------
+    | WGS84 parameters
+    |--------------------------------------------------------------------------
+    */
+
+    const a =
+        6378137.0;
+
+    const eccSquared =
+        0.00669438;
+
+    const k0 =
+        0.9996;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UTM Zone 51
+    |--------------------------------------------------------------------------
+    */
+
+    const zoneNumber =
+        51;
+
+    const longOrigin =
+        (zoneNumber - 1) * 6 - 180 + 3;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Remove false easting
+    |--------------------------------------------------------------------------
+    */
+
+    const x =
+        easting - 500000.0;
+
+    let y =
+        northing;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Northern hemisphere
+    |--------------------------------------------------------------------------
+    */
+
+    const eccPrimeSquared =
+        eccSquared /
+        (1 - eccSquared);
+
+
+    const M =
+        y / k0;
+
+
+    const mu =
+        M /
+        (
+            a *
+            (
+                1 -
+                eccSquared / 4 -
+                3 *
+                eccSquared *
+                eccSquared /
+                64 -
+                5 *
+                eccSquared *
+                eccSquared *
+                eccSquared /
+                256
+            )
+        );
+
+
+    const e1 =
+        (
+            1 -
+            Math.sqrt(
+                1 - eccSquared
+            )
+        ) /
+        (
+            1 +
+            Math.sqrt(
+                1 - eccSquared
+            )
+        );
+
+
+    const J1 =
+        3 * e1 / 2 -
+        27 *
+        Math.pow(e1, 3) /
+        32;
+
+
+    const J2 =
+        21 *
+        Math.pow(e1, 2) /
+        16 -
+        55 *
+        Math.pow(e1, 4) /
+        32;
+
+
+    const J3 =
+        151 *
+        Math.pow(e1, 3) /
+        96;
+
+
+    const J4 =
+        1097 *
+        Math.pow(e1, 4) /
+        512;
+
+
+    const fp =
+        mu +
+        J1 *
+        Math.sin(2 * mu) +
+        J2 *
+        Math.sin(4 * mu) +
+        J3 *
+        Math.sin(6 * mu) +
+        J4 *
+        Math.sin(8 * mu);
+
+
+    const sinFp =
+        Math.sin(fp);
+
+
+    const cosFp =
+        Math.cos(fp);
+
+
+    const tanFp =
+        Math.tan(fp);
+
+
+    const C1 =
+        eccPrimeSquared *
+        cosFp *
+        cosFp;
+
+
+    const T1 =
+        tanFp *
+        tanFp;
+
+
+    const N1 =
+        a /
+        Math.sqrt(
+            1 -
+            eccSquared *
+            sinFp *
+            sinFp
+        );
+
+
+    const R1 =
+        a *
+        (
+            1 -
+            eccSquared
+        ) /
+        Math.pow(
+            1 -
+            eccSquared *
+            sinFp *
+            sinFp,
+            1.5
+        );
+
+
+    const D =
+        x /
+        (N1 * k0);
+
+
+    const lat =
+        fp -
+        (
+            N1 *
+            tanFp /
+            R1
+        ) *
+        (
+            D * D / 2 -
+            (
+                5 +
+                3 * T1 +
+                10 * C1 -
+                4 * C1 * C1 -
+                9 * eccPrimeSquared
+            ) *
+            Math.pow(D, 4) /
+            24 +
+            (
+                61 +
+                90 * T1 +
+                298 * C1 +
+                45 * T1 * T1 -
+                252 * eccPrimeSquared -
+                3 * C1 * C1
+            ) *
+            Math.pow(D, 6) /
+            720
+        );
+
+
+    const lon =
+        (
+            D -
+            (
+                1 +
+                2 * T1 +
+                C1
+            ) *
+            Math.pow(D, 3) /
+            6 +
+            (
+                5 -
+                2 * C1 +
+                28 * T1 -
+                3 * C1 * C1 +
+                8 * eccPrimeSquared +
+                24 * T1 * T1
+            ) *
+            Math.pow(D, 5) /
+            120
+        ) /
+        cosFp;
+
+
+    const latitude =
+        lat *
+        180 /
+        Math.PI;
+
+
+    const longitude =
+        longOrigin +
+        lon *
+        180 /
+        Math.PI;
+
+
+    return [
+        longitude,
+        latitude
+    ];
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| GENERIC COORDINATE CONVERTER
+|--------------------------------------------------------------------------
+|
+| Detects:
+|
+| 1. UTM Zone 51N
+| 2. WGS84 longitude / latitude
+|
+|--------------------------------------------------------------------------
+*/
+
+function convertCoordinate(
+    coordinate: number[]
+): number[] {
+
+    if (
+        !coordinate ||
+        coordinate.length < 2
+    ) {
+
+        return coordinate;
+
+    }
+
+
+    const x =
+        Number(coordinate[0]);
+
+    const y =
+        Number(coordinate[1]);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Validate numbers
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        !Number.isFinite(x) ||
+        !Number.isFinite(y)
+    ) {
+
+        console.warn(
+            "Invalid coordinate:",
+            coordinate
+        );
+
+        return coordinate;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Detect UTM coordinates
+    |--------------------------------------------------------------------------
+    |
+    | Example HTPL:
+    |
+    | 302692.283
+    | 1614317.621
+    |
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        x > 100000 &&
+        x < 900000 &&
+        y > 1000000 &&
+        y < 10000000
+    ) {
+
+        const converted =
+            utm51ToWgs84(
+                x,
+                y
+            );
+
+
+        return converted;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Already WGS84 longitude / latitude
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        Math.abs(x) <= 180 &&
+        Math.abs(y) <= 90
+    ) {
+
+        return [
+            x,
+            y
+        ];
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Unknown coordinate
+    |--------------------------------------------------------------------------
+    */
+
+    console.warn(
+        "Unknown coordinate system:",
+        coordinate
+    );
+
+
+    return [
+        x,
+        y
+    ];
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| BACKWARD COMPATIBILITY
+|--------------------------------------------------------------------------
+|
+| Existing patrol code uses convertPatrolCoordinate().
+|
+|--------------------------------------------------------------------------
+*/
+
+function convertPatrolCoordinate(
+    coordinate: number[]
+): number[] {
+
+    return convertCoordinate(
+        coordinate
+    );
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| CONVERT ENTIRE PATH
+|--------------------------------------------------------------------------
+*/
+
+function convertPatrolPath(
+    path: number[][]
+): number[][] {
+
+    return path.map(
+        (
+            coordinate
+        ) => {
+
+            return convertPatrolCoordinate(
+                coordinate
+            );
+
+        }
+    );
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| CONVERT POLYGON RINGS
+|--------------------------------------------------------------------------
+|
+| THIS IS THE IMPORTANT HTPL FIX.
+|
+| HTPL polygon coordinates are UTM Zone 51N.
+|
+| Example:
+|
+| [302692, 1614317]
+|
+| must become:
+|
+| [longitude, latitude]
+|
+|--------------------------------------------------------------------------
+*/
+
+function convertPolygonCoordinates(
+    coordinates: number[][][]
+): number[][][] {
+
+    return coordinates.map(
+        (
+            ring
+        ) => {
+
+            return ring.map(
+                (
+                    coordinate
+                ) => {
+
+                    return convertCoordinate(
+                        coordinate
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| CONVERT MULTIPOLYGON COORDINATES
+|--------------------------------------------------------------------------
+*/
+
+function convertMultiPolygonCoordinates(
+    coordinates: number[][][][]
+): number[][][][] {
+
+    return coordinates.map(
+        (
+            polygon
+        ) => {
+
+            return polygon.map(
+                (
+                    ring
+                ) => {
+
+                    return ring.map(
+                        (
+                            coordinate
+                        ) => {
+
+                            return convertCoordinate(
+                                coordinate
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| LOAD ALL PROTECTED AREAS - CALABARZON
+|--------------------------------------------------------------------------
+*/
+
+async function loadAllProtectedAreas() {
+
+    console.log(
+        "================================"
+    );
+
+    console.log(
+        "Loading ALL PA CALABARZON..."
+    );
+
+    console.log(
+        "================================"
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/all_pas_calabarzon.json"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Failed to load ALL PA CALABARZON: ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data ||
+            data.type !== "FeatureCollection" ||
+            !Array.isArray(
+                data.features
+            )
+        ) {
+
+            console.error(
+                "Invalid Protected Area GeoJSON:",
+                data
+            );
+
+            return;
+
+        }
+
+
+        const paGraphics:
+            Graphic[] = [];
+
+
+        data.features.forEach(
+            (
+                feature: any,
+                index: number
+            ) => {
+
+                if (
+                    !feature ||
+                    !feature.geometry
+                ) {
+
+                    console.warn(
+                        `PA feature ${index} has no geometry.`
+                    );
+
+                    return;
+
+                }
+
+
+                const geometry =
+                    feature.geometry;
+
+
+                const properties =
+                    feature.properties || {};
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | POLYGON
+                |--------------------------------------------------------------------------
+                */
+
+                if (
+                    geometry.type ===
+                    "Polygon"
+                ) {
+
+                    const convertedCoordinates =
+                        convertPolygonCoordinates(
+                            geometry.coordinates
+                        );
+
+
+                    const polygon =
+                        new Polygon({
+
+                            rings:
+                                convertedCoordinates,
+
+                            spatialReference: {
+                                wkid:
+                                    MAP_WKID
+                            }
+
+                        });
+
+
+                    const graphic =
+                        createProtectedAreaGraphic(
+                            polygon,
+                            properties
+                        );
+
+
+                    graphicsLayer.add(
+                        graphic
+                    );
+
+
+                    paGraphics.push(
+                        graphic
+                    );
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | MULTIPOLYGON
+                |--------------------------------------------------------------------------
+                */
+
+                else if (
+                    geometry.type ===
+                    "MultiPolygon"
+                ) {
+
+                    const convertedCoordinates =
+                        convertMultiPolygonCoordinates(
+                            geometry.coordinates
+                        );
+
+
+                    convertedCoordinates.forEach(
+                        (
+                            polygonCoordinates:
+                                number[][][]
+                        ) => {
+
+                            const polygon =
+                                new Polygon({
+
+                                    rings:
+                                        polygonCoordinates,
+
+                                    spatialReference: {
+                                        wkid:
+                                            MAP_WKID
+                                    }
+
+                                });
+
+
+                            const graphic =
+                                createProtectedAreaGraphic(
+                                    polygon,
+                                    properties
+                                );
+
+
+                            graphicsLayer.add(
+                                graphic
+                            );
+
+
+                            paGraphics.push(
+                                graphic
+                            );
+
+                        }
+                    );
+
+                }
+
+            }
+        );
+
+
+        console.log(
+            "ALL PA LOADED:",
+            paGraphics.length
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Zoom to all PAs
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            paGraphics.length
+        ) {
+
+            await view.goTo(
+                paGraphics,
+                {
+
+                    padding: {
+
+                        top:
+                            100,
+
+                        bottom:
+                            100,
+
+                        left:
+                            100,
+
+                        right:
+                            100
+
+                    },
+
+                    duration:
+                        1000
+
+                }
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Error loading ALL PA:",
+            error
+        );
+
+    }
+
+}
 
 
 /*
@@ -335,7 +1317,25 @@ const TRANSECT_WKID =
 async function loadProtectedArea() {
 
     console.log(
+        "================================"
+    );
+
+    console.log(
         "Loading protected area..."
+    );
+
+    console.log(
+        "PA ID:",
+        props.pa_id
+    );
+
+    console.log(
+        "PA Code:",
+        props.pa_code
+    );
+
+    console.log(
+        "================================"
     );
 
 
@@ -365,11 +1365,19 @@ async function loadProtectedArea() {
     */
 
     data.features.forEach(
-        (feature: any) => {
+        (
+            feature: any,
+            index: number
+        ) => {
 
             if (
+                !feature ||
                 !feature.geometry
             ) {
+
+                console.warn(
+                    `Protected area feature ${index} has no geometry.`
+                );
 
                 return;
 
@@ -384,6 +1392,12 @@ async function loadProtectedArea() {
                 feature.properties || {};
 
 
+            console.log(
+                `Protected area feature ${index}:`,
+                geometry.type
+            );
+
+
             /*
             |--------------------------------------------------------------------------
             | POLYGON
@@ -395,18 +1409,57 @@ async function loadProtectedArea() {
                 "Polygon"
             ) {
 
+                /*
+                |--------------------------------------------------------------------------
+                | IMPORTANT:
+                |
+                | Convert UTM 51N → WGS84
+                |--------------------------------------------------------------------------
+                */
+
+                const convertedCoordinates =
+                    convertPolygonCoordinates(
+                        geometry.coordinates
+                    );
+
+
+                console.log(
+                    "Original Polygon coordinates:",
+                    geometry.coordinates
+                );
+
+
+                console.log(
+                    "Converted Polygon coordinates:",
+                    convertedCoordinates
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Create ArcGIS Polygon
+                |--------------------------------------------------------------------------
+                */
+
                 const polygon =
                     new Polygon({
 
                         rings:
-                            geometry.coordinates,
+                            convertedCoordinates,
 
                         spatialReference: {
-                            wkid: 4326
+                            wkid:
+                                MAP_WKID
                         }
 
                     });
 
+
+                /*
+                |--------------------------------------------------------------------------
+                | Add to map
+                |--------------------------------------------------------------------------
+                */
 
                 addProtectedAreaGraphic(
                     polygon,
@@ -427,47 +1480,48 @@ async function loadProtectedArea() {
                 "MultiPolygon"
             ) {
 
-                const rings: any[] =
-                    [];
+                const convertedCoordinates =
+                    convertMultiPolygonCoordinates(
+                        geometry.coordinates
+                    );
 
 
-                geometry.coordinates.forEach(
-                    (polygon: any) => {
+                convertedCoordinates.forEach(
+                    (
+                        polygonCoordinates:
+                            number[][][]
+                    ) => {
 
-                        polygon.forEach(
-                            (ring: any) => {
+                        const polygon =
+                            new Polygon({
 
-                                rings.push(
-                                    ring
-                                );
+                                rings:
+                                    polygonCoordinates,
 
-                            }
+                                spatialReference: {
+                                    wkid:
+                                        MAP_WKID
+                                }
+
+                            });
+
+
+                        addProtectedAreaGraphic(
+                            polygon,
+                            properties
                         );
 
                     }
                 );
 
-
-                const polygon =
-                    new Polygon({
-
-                        rings:
-                            rings,
-
-                        spatialReference: {
-                            wkid: 4326
-                        }
-
-                    });
-
-
-                addProtectedAreaGraphic(
-                    polygon,
-                    properties
-                );
-
             }
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | UNSUPPORTED
+            |--------------------------------------------------------------------------
+            */
 
             else {
 
@@ -504,10 +1558,6 @@ function addProtectedAreaGraphic(
             symbol:
                 new SimpleFillSymbol({
 
-                    /*
-                    | Transparent fill
-                    */
-
                     color: [
                         120,
                         200,
@@ -516,11 +1566,10 @@ function addProtectedAreaGraphic(
                     ],
 
                     outline: {
-
                         color: [
-                            5,
-                            9,
-                            112,
+                            178,
+                            235,
+                            242,
                             1
                         ],
 
@@ -542,14 +1591,17 @@ function addProtectedAreaGraphic(
 
                     <b>Protected Area:</b>
                     {NAME}
+
                     <br><br>
 
                     <b>Designation:</b>
                     {DESIG}
+
                     <br>
 
                     <b>Status:</b>
                     {STATUS}
+
                     <br>
 
                     <b>Area:</b>
@@ -571,555 +1623,171 @@ function addProtectedAreaGraphic(
 
 /*
 |--------------------------------------------------------------------------
-| LOAD REAL PATROL ROUTES
+| CREATE PA GRAPHIC
 |--------------------------------------------------------------------------
 */
 
-async function loadTransects() {
+function createProtectedAreaGraphic(
+    polygon: Polygon,
+    properties: any
+): Graphic {
 
-    try {
+    return new Graphic({
 
-        console.log(
-            "================================"
-        );
+        geometry:
+            polygon,
 
-        console.log(
-            "Loading MULTIPLE patrol routes..."
-        );
+        symbol:
+            new SimpleFillSymbol({
 
-        console.log(
-            "================================"
-        );
+                color: [
+                    0,
+                    150,
+                    80,
+                    0.08
+                ],
 
+                outline:
+                    new SimpleLineSymbol({
 
-        const patrolFiles =
-            getPatrolFiles();
+                        color: [
+                            178,
+                            235,
+                            242,
+                            1
+                        ],
 
+                        width:
+                            2,
 
-        if (!patrolFiles.length) {
+                        style:
+                            "solid"
 
-            console.warn(
-                "No patrol files available for this protected area."
-            );
+                    })
 
-            return;
+            }),
 
-        }
+        attributes:
+            properties,
 
+        popupTemplate: {
 
-        let totalRoutes = 0;
+            title:
+                properties.NAME ||
+                properties.PA_NAME ||
+                "Protected Area",
 
+            content: [
 
-        /*
-        |--------------------------------------------------------------------------
-        | LOAD EVERY GEOJSON FILE
-        |--------------------------------------------------------------------------
-        */
+                {
 
-        for (
-            const patrolFile of patrolFiles
-        ) {
+                    type:
+                        "fields",
 
-            console.log(
-                "Loading patrol file:",
-                patrolFile
-            );
+                    fieldInfos: [
 
+                        {
 
-            try {
+                            fieldName:
+                                "NAME",
 
-                const response =
-                    await fetch(patrolFile);
+                            label:
+                                "Protected Area"
 
+                        },
 
-                if (!response.ok) {
+                        {
 
-                    console.error(
-                        `Failed to load ${patrolFile}: ${response.status}`
-                    );
+                            fieldName:
+                                "DESIG",
 
-                    continue;
+                            label:
+                                "Designation"
+
+                        },
+
+                        {
+
+                            fieldName:
+                                "STATUS",
+
+                            label:
+                                "Status"
+
+                        },
+
+                        {
+
+                            fieldName:
+                                "GIS_AREA",
+
+                            label:
+                                "Area"
+
+                        }
+
+                    ]
 
                 }
 
-
-                const data =
-                    await response.json();
-
-
-                if (
-                    !data.features ||
-                    !data.features.length
-                ) {
-
-                    console.warn(
-                        `No patrol routes found in ${patrolFile}`
-                    );
-
-                    continue;
-
-                }
-
-
-                console.log(
-                    `${patrolFile}: ${data.features.length} feature(s)`
-                );
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | DRAW EACH FEATURE
-                |--------------------------------------------------------------------------
-                */
-
-                data.features.forEach(
-                    (
-                        feature: any,
-                        index: number
-                    ) => {
-
-                        if (
-                            !feature.geometry
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        const geometry =
-                            feature.geometry;
-
-
-                        const properties =
-                            feature.properties || {};
-
-
-                        let polyline:
-                            Polyline | null =
-                            null;
-
-
-                        /*
-                        |--------------------------------------------------------------------------
-                        | LINESTRING
-                        |--------------------------------------------------------------------------
-                        */
-
-                        if (
-                            geometry.type ===
-                            "LineString"
-                        ) {
-
-                            polyline =
-                                new Polyline({
-
-                                    paths:
-                                        geometry.coordinates,
-
-                                    spatialReference: {
-
-                                        wkid:
-                                            TRANSECT_WKID
-
-                                    }
-
-                                });
-
-                        }
-
-
-                        /*
-                        |--------------------------------------------------------------------------
-                        | MULTILINESTRING
-                        |--------------------------------------------------------------------------
-                        */
-
-                        else if (
-                            geometry.type ===
-                            "MultiLineString"
-                        ) {
-
-                            polyline =
-                                new Polyline({
-
-                                    paths:
-                                        geometry.coordinates,
-
-                                    spatialReference: {
-
-                                        wkid:
-                                            TRANSECT_WKID
-
-                                    }
-
-                                });
-
-                        }
-
-
-                        else {
-
-                            console.warn(
-                                "Unsupported patrol geometry:",
-                                geometry.type,
-                                patrolFile
-                            );
-
-                            return;
-
-                        }
-
-
-                        if (!polyline) {
-
-                            return;
-
-                        }
-
-
-                        /*
-                        |--------------------------------------------------------------------------
-                        | DETERMINE PATROL COLOR
-                        |--------------------------------------------------------------------------
-                        |
-                        | You can customize this based on the file.
-                        |
-                        */
-
-                        let lineColor:
-                            number[];
-
-
-                        /*
-                        | Day 1
-                        */
-
-                        if (
-                            patrolFile.includes(
-                                "0707"
-                            )
-                        ) {
-
-                            lineColor = [
-                                255,
-                                0,
-                                0,
-                                1
-                            ];
-
-                        }
-
-                        /*
-                        | Day 2
-                        */
-
-                        else if (
-                            patrolFile.includes(
-                                "0716"
-                            )
-                        ) {
-
-                            lineColor = [
-                                0,
-                                90,
-                                255,
-                                1
-                            ];
-
-                        }
-
-                        /*
-                        | Default
-                        */
-
-                        else {
-
-                            lineColor = [
-                                7,
-                                77,
-                                23,
-                                1
-                            ];
-
-                        }
-
-
-                        /*
-                        |--------------------------------------------------------------------------
-                        | PATROL ROUTE
-                        |--------------------------------------------------------------------------
-                        */
-
-                        const graphic =
-                            new Graphic({
-
-                                geometry:
-                                    polyline,
-
-                                symbol:
-                                    new SimpleLineSymbol({
-
-                                        color:
-                                            lineColor,
-
-                                        width:
-                                            3,
-
-                                        style:
-                                            "solid"
-
-                                    }),
-
-                                attributes: {
-
-                                    ...properties,
-
-                                    source_file:
-                                        patrolFile,
-
-                                    pa_id:
-                                        props.pa_id
-
-                                },
-
-                                popupTemplate: {
-
-                                    title:
-                                        "Patrol / Transect Walk",
-
-                                    content: [
-
-                                        {
-
-                                            type:
-                                                "fields",
-
-                                            fieldInfos: [
-
-                                                {
-
-                                                    fieldName:
-                                                        "Patrol_ID",
-
-                                                    label:
-                                                        "Patrol ID"
-
-                                                },
-
-                                                {
-
-                                                    fieldName:
-                                                        "Patrol_Tra",
-
-                                                    label:
-                                                        "Patrol Type"
-
-                                                },
-
-                                                {
-
-                                                    fieldName:
-                                                        "Patrol_Sta",
-
-                                                    label:
-                                                        "Start Date"
-
-                                                },
-
-                                                {
-
-                                                    fieldName:
-                                                        "Patrol_End",
-
-                                                    label:
-                                                        "End Date"
-
-                                                },
-
-                                                {
-
-                                                    fieldName:
-                                                        "Patrol_Leg",
-
-                                                    label:
-                                                        "Patrol Leg"
-
-                                                },
-
-                                                {
-
-                                                    fieldName:
-                                                        "Team",
-
-                                                    label:
-                                                        "Team"
-
-                                                },
-
-                                                {
-
-                                                    fieldName:
-                                                        "Leader",
-
-                                                    label:
-                                                        "Leader"
-
-                                                },
-
-                                                {
-
-                                                    fieldName:
-                                                        "Mandate",
-
-                                                    label:
-                                                        "Mandate"
-
-                                                },
-
-                                                {
-
-                                                    fieldName:
-                                                        "source_file",
-
-                                                    label:
-                                                        "Source File"
-
-                                                }
-
-                                            ]
-
-                                        }
-
-                                    ]
-
-                                }
-
-                            });
-
-
-                        graphicsLayer.add(
-                            graphic
-                        );
-
-
-                        totalRoutes++;
-
-                    }
-                );
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    `Error loading patrol file ${patrolFile}:`,
-                    error
-                );
-
-            }
+            ]
 
         }
 
-
-        console.log(
-            "================================"
-        );
-
-        console.log(
-            "TOTAL PATROL ROUTES:",
-            totalRoutes
-        );
-
-        console.log(
-            "================================"
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Error loading patrol routes:",
-            error
-        );
-
-    }
+    });
 
 }
 
 
 /*
 |--------------------------------------------------------------------------
-| CREATE START / END MARKERS
+| LOAD PATROL ROUTES
 |--------------------------------------------------------------------------
-|
-| IMPORTANT:
-|
-| We get the first and last coordinate directly
-| from the REAL patrol line.
-|
-| This means the marker uses exactly the same
-| coordinate system as the route.
-|
 */
 
-async function loadPatrolStartEnd() {
+async function loadTransects() {
 
-    try {
-
-        console.log(
-            "================================"
-        );
-
-        console.log(
-            "Creating patrol start/end markers..."
-        );
-
-        console.log(
-            "================================"
-        );
+    const patrolFiles =
+        getPatrolFiles();
 
 
-        const patrolFiles =
-            getPatrolFiles();
+    if (
+        !patrolFiles.length
+    ) {
+
+        return;
+
+    }
 
 
-        if (!patrolFiles.length) {
-
-            return;
-
-        }
+    let totalRoutes =
+        0;
 
 
-        let startCount = 0;
-        let endCount = 0;
+    for (
+        const patrolFile of patrolFiles
+    ) {
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOAD EVERY PATROL FILE
-        |--------------------------------------------------------------------------
-        */
-
-        for (
-            const patrolFile of patrolFiles
-        ) {
+        try {
 
             console.log(
-                "Creating markers from:",
+                "Loading patrol:",
                 patrolFile
             );
 
 
             const response =
-                await fetch(patrolFile);
+                await fetch(
+                    patrolFile
+                );
 
 
-            if (!response.ok) {
+            if (
+                !response.ok
+            ) {
 
                 console.error(
-                    `Failed to load ${patrolFile}`
+                    `Failed to load ${patrolFile}: ${response.status}`
                 );
 
                 continue;
@@ -1132,20 +1800,631 @@ async function loadPatrolStartEnd() {
 
 
             if (
+                !data ||
                 !data.features ||
                 !data.features.length
             ) {
+
+                console.warn(
+                    `No features found in ${patrolFile}`
+                );
 
                 continue;
 
             }
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | PROCESS EVERY FEATURE
-            |--------------------------------------------------------------------------
-            */
+            data.features.forEach(
+                (
+                    feature: any
+                ) => {
+
+                    if (
+                        !feature.geometry
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const geometry =
+                        feature.geometry;
+
+
+                    const properties =
+                        feature.properties || {};
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | LINESTRING
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (
+                        geometry.type ===
+                        "LineString"
+                    ) {
+
+                        const path =
+                            convertPatrolPath(
+                                geometry.coordinates
+                            );
+
+
+                        addPatrolRoute(
+                            path,
+                            properties,
+                            patrolFile
+                        );
+
+
+                        totalRoutes++;
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | MULTILINESTRING
+                    |--------------------------------------------------------------------------
+                    */
+
+                    else if (
+                        geometry.type ===
+                        "MultiLineString"
+                    ) {
+
+                        const paths =
+                            geometry.coordinates.map(
+                                (
+                                    path: number[][]
+                                ) => {
+
+                                    return convertPatrolPath(
+                                        path
+                                    );
+
+                                }
+                            );
+
+
+                        addPatrolMultiRoute(
+                            paths,
+                            properties,
+                            patrolFile
+                        );
+
+
+                        totalRoutes++;
+
+                    }
+
+                }
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                `Error loading patrol ${patrolFile}:`,
+                error
+            );
+
+        }
+
+    }
+
+
+    console.log(
+        "TOTAL PATROL ROUTES:",
+        totalRoutes
+    );
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| PATROL COLOR
+|--------------------------------------------------------------------------
+*/
+function getPatrolColor(
+    patrolFile: string
+): number[] {
+
+    const file =
+        patrolFile.toLowerCase();
+
+    /*
+    |--------------------------------------------------------------------------
+    | DAY 1
+    |--------------------------------------------------------------------------
+    | Example:
+    | BRWFR-07072026.json
+    | BRWFR-07112026.json
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        file.includes("0707") ||
+        file.includes("0711") ||
+        file.includes("0701") ||
+        file.includes("0710")
+    
+    ) {
+
+        return [
+            255,    // Red
+            140,    // Green
+            0,      // Blue
+            1       // Opacity
+        ];
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DAY 2
+    |--------------------------------------------------------------------------
+    | Example:
+    | BRWFR-07162026.json
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        file.includes("0716") ||
+        file.includes("0722") ||
+        file.includes("0702") ||
+        file.includes("0713")
+    ) {
+
+        return [
+            0,
+            90,
+            255,
+            1
+        ];
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | OTHER PATROLS
+    |--------------------------------------------------------------------------
+    */
+
+    return [
+        255,
+        140,
+        0,
+        1
+    ];
+
+}
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| ADD PATROL ROUTE
+|--------------------------------------------------------------------------
+*/
+
+function addPatrolRoute(
+    path: number[][],
+    properties: any,
+    patrolFile: string
+) {
+
+    const polyline =
+        new Polyline({
+
+            paths: [
+                path
+            ],
+
+            spatialReference: {
+                wkid:
+                    MAP_WKID
+            }
+
+        });
+
+
+    const graphic =
+        new Graphic({
+
+            geometry:
+                polyline,
+
+            symbol:
+                new SimpleLineSymbol({
+
+                    color:
+                        getPatrolColor(
+                            patrolFile
+                        ),
+
+                    width:
+                        4,
+
+                    style:
+                        "solid"
+
+                }),
+
+            attributes: {
+
+                ...properties,
+
+                source_file:
+                    patrolFile,
+
+                pa_id:
+                    props.pa_id
+
+            },
+
+            popupTemplate: {
+
+                title:
+                    "Patrol / Transect Walk",
+
+                content: [
+
+                    {
+
+                        type:
+                            "fields",
+
+                        fieldInfos: [
+
+                            {
+
+                                fieldName:
+                                    "Patrol_ID",
+
+                                label:
+                                    "Patrol ID"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Patrol_Tra",
+
+                                label:
+                                    "Patrol Type"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Patrol_Sta",
+
+                                label:
+                                    "Start Date"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Patrol_End",
+
+                                label:
+                                    "End Date"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Patrol_Leg",
+
+                                label:
+                                    "Patrol Leg"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Team",
+
+                                label:
+                                    "Team"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Leader",
+
+                                label:
+                                    "Leader"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Mandate",
+
+                                label:
+                                    "Mandate"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "source_file",
+
+                                label:
+                                    "Source File"
+
+                            }
+
+                        ]
+
+                    }
+
+                ]
+
+            }
+
+        });
+
+
+    graphicsLayer.add(
+        graphic
+    );
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| ADD MULTI PATROL ROUTE
+|--------------------------------------------------------------------------
+*/
+
+function addPatrolMultiRoute(
+    paths: number[][][],
+    properties: any,
+    patrolFile: string
+) {
+
+    const polyline =
+        new Polyline({
+
+            paths:
+                paths,
+
+            spatialReference: {
+                wkid:
+                    MAP_WKID
+            }
+
+        });
+
+
+    const graphic =
+        new Graphic({
+
+            geometry:
+                polyline,
+
+            symbol:
+                new SimpleLineSymbol({
+
+                    color:
+                        getPatrolColor(
+                            patrolFile
+                        ),
+
+                    width:
+                        4,
+
+                    style:
+                        "solid"
+
+                }),
+
+            attributes: {
+
+                ...properties,
+
+                source_file:
+                    patrolFile,
+
+                pa_id:
+                    props.pa_id
+
+            },
+
+            popupTemplate: {
+
+                title:
+                    "Patrol / Transect Walk",
+
+                content: [
+
+                    {
+
+                        type:
+                            "fields",
+
+                        fieldInfos: [
+
+                            {
+
+                                fieldName:
+                                    "Patrol_ID",
+
+                                label:
+                                    "Patrol ID"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Patrol_Tra",
+
+                                label:
+                                    "Patrol Type"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Patrol_Sta",
+
+                                label:
+                                    "Start Date"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Patrol_End",
+
+                                label:
+                                    "End Date"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Patrol_Leg",
+
+                                label:
+                                    "Patrol Leg"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Team",
+
+                                label:
+                                    "Team"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Leader",
+
+                                label:
+                                    "Leader"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "Mandate",
+
+                                label:
+                                    "Mandate"
+
+                            },
+
+                            {
+
+                                fieldName:
+                                    "source_file",
+
+                                label:
+                                    "Source File"
+
+                            }
+
+                        ]
+
+                    }
+
+                ]
+
+            }
+
+        });
+
+
+    graphicsLayer.add(
+        graphic
+    );
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| LOAD PATROL START / END
+|--------------------------------------------------------------------------
+*/
+
+async function loadPatrolStartEnd() {
+
+    const patrolFiles =
+        getPatrolFiles();
+
+
+    for (
+        const patrolFile of patrolFiles
+    ) {
+
+        try {
+
+            const response =
+                await fetch(
+                    patrolFile
+                );
+
+
+            if (
+                !response.ok
+            ) {
+
+                console.warn(
+                    `Unable to load marker data: ${patrolFile}`
+                );
+
+                continue;
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !data.features
+            ) {
+
+                continue;
+
+            }
+
 
             data.features.forEach(
                 (
@@ -1170,7 +2449,7 @@ async function loadPatrolStartEnd() {
 
 
                     let paths:
-                        any[] = [];
+                        number[][][] = [];
 
 
                     /*
@@ -1185,7 +2464,9 @@ async function loadPatrolStartEnd() {
                     ) {
 
                         paths = [
+
                             geometry.coordinates
+
                         ];
 
                     }
@@ -1215,18 +2496,29 @@ async function loadPatrolStartEnd() {
                     }
 
 
-                    if (
-                        !paths.length
-                    ) {
+                    /*
+                    |--------------------------------------------------------------------------
+                    | CONVERT PATHS
+                    |--------------------------------------------------------------------------
+                    */
 
-                        return;
+                    const convertedPaths =
+                        paths.map(
+                            (
+                                path
+                            ) => {
 
-                    }
+                                return convertPatrolPath(
+                                    path
+                                );
+
+                            }
+                        );
 
 
                     /*
                     |--------------------------------------------------------------------------
-                    | FIND START
+                    | START
                     |--------------------------------------------------------------------------
                     */
 
@@ -1236,11 +2528,11 @@ async function loadPatrolStartEnd() {
 
 
                     for (
-                        const path of paths
+                        const path
+                        of convertedPaths
                     ) {
 
                         if (
-                            path &&
                             path.length
                         ) {
 
@@ -1256,7 +2548,7 @@ async function loadPatrolStartEnd() {
 
                     /*
                     |--------------------------------------------------------------------------
-                    | FIND END
+                    | END
                     |--------------------------------------------------------------------------
                     */
 
@@ -1267,7 +2559,7 @@ async function loadPatrolStartEnd() {
 
                     for (
                         let i =
-                            paths.length - 1;
+                            convertedPaths.length - 1;
 
                         i >= 0;
 
@@ -1275,17 +2567,16 @@ async function loadPatrolStartEnd() {
                     ) {
 
                         const path =
-                            paths[i];
+                            convertedPaths[i];
 
 
                         if (
-                            path &&
                             path.length
                         ) {
 
                             endCoordinate =
                                 path[
-                                    path.length - 1
+                                path.length - 1
                                 ];
 
                             break;
@@ -1297,211 +2588,25 @@ async function loadPatrolStartEnd() {
 
                     /*
                     |--------------------------------------------------------------------------
-                    | DETERMINE COLOR BASED ON FILE
-                    |--------------------------------------------------------------------------
-                    */
-
-                    let startColor:
-                        number[];
-
-                    let endColor:
-                        number[];
-
-
-                    if (
-                        patrolFile.includes(
-                            "0707"
-                        )
-                    ) {
-
-                        /*
-                        | Day 1
-                        | Green start
-                        | Dark red end
-                        */
-
-                        startColor = [
-                            0,
-                            200,
-                            80,
-                            1
-                        ];
-
-                        endColor = [
-                            180,
-                            0,
-                            0,
-                            1
-                        ];
-
-                    }
-
-                    else if (
-                        patrolFile.includes(
-                            "0716"
-                        )
-                    ) {
-
-                        /*
-                        | Day 2
-                        | Green start
-                        | Blue end
-                        */
-
-                        startColor = [
-                            0,
-                            200,
-                            80,
-                            1
-                        ];
-
-                        endColor = [
-                            0,
-                            70,
-                            255,
-                            1
-                        ];
-
-                    }
-
-                    else {
-
-                        startColor = [
-                            0,
-                            200,
-                            80,
-                            1
-                        ];
-
-                        endColor = [
-                            255,
-                            0,
-                            0,
-                            1
-                        ];
-
-                    }
-
-
-                    /*
-                    |--------------------------------------------------------------------------
                     | START MARKER
                     |--------------------------------------------------------------------------
                     */
 
                     if (
-                        startCoordinate &&
-                        startCoordinate.length >= 2
+                        startCoordinate
                     ) {
 
-                        const point =
-                            new Point({
+                        addPatrolMarker(
 
-                                x:
-                                    Number(
-                                        startCoordinate[0]
-                                    ),
+                            startCoordinate,
 
-                                y:
-                                    Number(
-                                        startCoordinate[1]
-                                    ),
+                            properties,
 
-                                spatialReference: {
+                            patrolFile,
 
-                                    wkid:
-                                        TRANSECT_WKID
+                            "Patrol Start"
 
-                                }
-
-                            });
-
-
-                        const graphic =
-                            new Graphic({
-
-                                geometry:
-                                    point,
-
-                                symbol:
-                                    new SimpleMarkerSymbol({
-
-                                        style:
-                                            "circle",
-
-                                        color:
-                                            startColor,
-
-                                        size:
-                                            13,
-
-                                        outline: {
-
-                                            color: [
-                                                255,
-                                                255,
-                                                255,
-                                                1
-                                            ],
-
-                                            width:
-                                                2
-
-                                        }
-
-                                    }),
-
-                                attributes: {
-
-                                    ...properties,
-
-                                    marker_type:
-                                        "Patrol Start",
-
-                                    source_file:
-                                        patrolFile
-
-                                },
-
-                                popupTemplate: {
-
-                                    title:
-                                        "🟢 Patrol Start",
-
-                                    content: `
-
-                                        <b>Patrol ID:</b>
-                                        ${properties.Patrol_ID ?? "-"}
-                                        <br>
-
-                                        <b>Team:</b>
-                                        ${properties.Team ?? "-"}
-                                        <br>
-
-                                        <b>Leader:</b>
-                                        ${properties.Leader ?? "-"}
-                                        <br>
-
-                                        <b>Start:</b>
-                                        ${properties.Patrol_Sta ?? "-"}
-                                        <br>
-
-                                        <b>File:</b>
-                                        ${patrolFile}
-
-                                    `
-
-                                }
-
-                            });
-
-
-                        graphicsLayer.add(
-                            graphic
                         );
-
-
-                        startCount++;
 
                     }
 
@@ -1513,118 +2618,20 @@ async function loadPatrolStartEnd() {
                     */
 
                     if (
-                        endCoordinate &&
-                        endCoordinate.length >= 2
+                        endCoordinate
                     ) {
 
-                        const point =
-                            new Point({
+                        addPatrolMarker(
 
-                                x:
-                                    Number(
-                                        endCoordinate[0]
-                                    ),
+                            endCoordinate,
 
-                                y:
-                                    Number(
-                                        endCoordinate[1]
-                                    ),
+                            properties,
 
-                                spatialReference: {
+                            patrolFile,
 
-                                    wkid:
-                                        TRANSECT_WKID
+                            "Patrol End"
 
-                                }
-
-                            });
-
-
-                        const graphic =
-                            new Graphic({
-
-                                geometry:
-                                    point,
-
-                                symbol:
-                                    new SimpleMarkerSymbol({
-
-                                        style:
-                                            "circle",
-
-                                        color:
-                                            endColor,
-
-                                        size:
-                                            13,
-
-                                        outline: {
-
-                                            color: [
-                                                255,
-                                                255,
-                                                255,
-                                                1
-                                            ],
-
-                                            width:
-                                                2
-
-                                        }
-
-                                    }),
-
-                                attributes: {
-
-                                    ...properties,
-
-                                    marker_type:
-                                        "Patrol End",
-
-                                    source_file:
-                                        patrolFile
-
-                                },
-
-                                popupTemplate: {
-
-                                    title:
-                                        "🔴 Patrol End",
-
-                                    content: `
-
-                                        <b>Patrol ID:</b>
-                                        ${properties.Patrol_ID ?? "-"}
-                                        <br>
-
-                                        <b>Team:</b>
-                                        ${properties.Team ?? "-"}
-                                        <br>
-
-                                        <b>Leader:</b>
-                                        ${properties.Leader ?? "-"}
-                                        <br>
-
-                                        <b>End:</b>
-                                        ${properties.Patrol_End ?? "-"}
-                                        <br>
-
-                                        <b>File:</b>
-                                        ${patrolFile}
-
-                                    `
-
-                                }
-
-                            });
-
-
-                        graphicsLayer.add(
-                            graphic
                         );
-
-
-                        endCount++;
 
                     }
 
@@ -1633,15 +2640,272 @@ async function loadPatrolStartEnd() {
 
         }
 
+        catch (error) {
+
+            console.error(
+                `Marker error: ${patrolFile}`,
+                error
+            );
+
+        }
+
+    }
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| ADD PATROL MARKER
+|--------------------------------------------------------------------------
+*/
+
+function addPatrolMarker(
+    coordinate: number[],
+    properties: any,
+    patrolFile: string,
+    markerType: string
+) {
+
+    const point =
+        new Point({
+
+            x:
+                coordinate[0],
+
+            y:
+                coordinate[1],
+
+            spatialReference: {
+                wkid:
+                    MAP_WKID
+            }
+
+        });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | START / END
+    |--------------------------------------------------------------------------
+    */
+
+    const isStart =
+        markerType === "Patrol Start";
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MARKER COLORS
+    |--------------------------------------------------------------------------
+    |
+    | START = GREEN
+    | END   = RED
+    |
+    | These colors are completely independent
+    | from the patrol route line color.
+    |--------------------------------------------------------------------------
+    */
+
+    const markerColor =
+        isStart
+
+            ? [
+                0,
+                200,
+                80,
+                1
+            ]
+
+            : [
+                255,
+                0,
+                0,
+                1
+            ];
+
+
+    const graphic =
+        new Graphic({
+
+            geometry:
+                point,
+
+            symbol:
+                new SimpleMarkerSymbol({
+
+                    style:
+                        "circle",
+
+                    color:
+                        markerColor,
+
+                    size:
+                        13,
+
+                    outline: {
+
+                        color: [
+                            255,
+                            255,
+                            255,
+                            1
+                        ],
+
+                        width:
+                            2
+
+                    }
+
+                }),
+
+            attributes: {
+
+                ...properties,
+
+                marker_type:
+                    markerType,
+
+                source_file:
+                    patrolFile
+
+            },
+
+            popupTemplate: {
+
+                title:
+                    markerType,
+
+                content: `
+
+                    <b>Patrol ID:</b>
+                    ${properties.Patrol_ID ?? "-"}
+
+                    <br>
+
+                    <b>Team:</b>
+                    ${properties.Team ?? "-"}
+
+                    <br>
+
+                    <b>Leader:</b>
+                    ${properties.Leader ?? "-"}
+
+                    <br>
+
+                    <b>Date:</b>
+                    ${
+                        isStart
+                            ? properties.Patrol_Sta ?? "-"
+                            : properties.Patrol_End ?? "-"
+                    }
+
+                    <br>
+
+                    <b>File:</b>
+                    ${patrolFile}
+
+                `
+
+            }
+
+        });
+
+
+    graphicsLayer.add(
+        graphic
+    );
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| ZOOM TO LOADED DATA
+|--------------------------------------------------------------------------
+*/
+
+async function zoomToLoadedData() {
+
+    try {
+
+        if (
+            !graphicsLayer ||
+            graphicsLayer.graphics.length === 0
+        ) {
+
+            console.warn(
+                "No graphics available for zoom."
+            );
+
+            return;
+
+        }
+
 
         console.log(
-            "Start markers:",
-            startCount
+            "================================"
         );
 
         console.log(
-            "End markers:",
-            endCount
+            "ZOOMING TO LOADED MAP DATA..."
+        );
+
+        console.log(
+            "Graphics:",
+            graphicsLayer.graphics.length
+        );
+
+        console.log(
+            "================================"
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Get all graphics
+        |--------------------------------------------------------------------------
+        */
+
+        const graphics =
+            graphicsLayer.graphics.toArray();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Zoom to all graphics
+        |--------------------------------------------------------------------------
+        */
+
+        await view.goTo(
+            graphics,
+            {
+
+                padding: {
+
+                    top:
+                        120,
+
+                    bottom:
+                        120,
+
+                    left:
+                        120,
+
+                    right:
+                        120
+
+                },
+
+                duration:
+                    1200
+
+            }
+        );
+
+
+        console.log(
+            "Map successfully zoomed to loaded data."
         );
 
     }
@@ -1649,7 +2913,7 @@ async function loadPatrolStartEnd() {
     catch (error) {
 
         console.error(
-            "Error creating patrol markers:",
+            "Error zooming to loaded data:",
             error
         );
 
@@ -1674,7 +2938,17 @@ onMounted(
             );
 
             console.log(
-                "INITIALIZING PATROL MAP"
+                "INITIALIZING PATROL MAP..."
+            );
+
+            console.log(
+                "PA ID:",
+                props.pa_id
+            );
+
+            console.log(
+                "PA CODE:",
+                props.pa_code
             );
 
             console.log(
@@ -1707,7 +2981,7 @@ onMounted(
                 new Map({
 
                     basemap:
-                        "streets-vector",
+                        "hybrid",
 
                     layers: [
 
@@ -1733,8 +3007,16 @@ onMounted(
                     map:
                         map,
 
+                    center: [
+
+                        121.0,
+
+                        13.0
+
+                    ],
+
                     zoom:
-                        10,
+                        6,
 
                     constraints: {
 
@@ -1783,9 +3065,14 @@ onMounted(
             |--------------------------------------------------------------------------
             | LOAD PROTECTED AREA
             |--------------------------------------------------------------------------
+            |
+            | HTPL polygon is converted from UTM 51N → WGS84
+            |
+            |--------------------------------------------------------------------------
             */
 
-            await loadProtectedArea();
+            await loadAllProtectedAreas();
+            //  await loadProtectedArea();
 
 
             /*
@@ -1799,7 +3086,7 @@ onMounted(
 
             /*
             |--------------------------------------------------------------------------
-            | LOAD START / END
+            | LOAD START / END MARKERS
             |--------------------------------------------------------------------------
             */
 
@@ -1808,68 +3095,11 @@ onMounted(
 
             /*
             |--------------------------------------------------------------------------
-            | FIND PROTECTED AREA GRAPHICS
+            | FINAL ZOOM
             |--------------------------------------------------------------------------
             */
 
-            const protectedAreaGraphics =
-                graphicsLayer.graphics.filter(
-                    (
-                        graphic: Graphic
-                    ) => {
-
-                        return (
-                            graphic.geometry &&
-                            graphic.geometry.type ===
-                            "polygon"
-                        );
-
-                    }
-                );
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | ZOOM TO PROTECTED AREA
-            |--------------------------------------------------------------------------
-            */
-
-            if (
-                protectedAreaGraphics.length
-            ) {
-
-                console.log(
-                    "Zooming to protected area..."
-                );
-
-
-                await view.goTo(
-                    protectedAreaGraphics,
-                    {
-
-                        padding: {
-
-                            top:
-                                100,
-
-                            bottom:
-                                80,
-
-                            left:
-                                80,
-
-                            right:
-                                80
-
-                        },
-
-                        duration:
-                            1200
-
-                    }
-                );
-
-            }
+            await zoomToLoadedData();
 
 
             console.log(
@@ -1884,8 +3114,9 @@ onMounted(
                 "================================"
             );
 
+        }
 
-        } catch (error) {
+        catch (error) {
 
             console.error(
                 "Error initializing map:",
@@ -1903,11 +3134,6 @@ onMounted(
 <style scoped>
 @import url('../../../css/style.css');
 
-:deep(.p-datatable .p-datatable-thead > tr > th) {
-    background-color: #1a3a6b;
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.1);
-}
 
 /*
 |--------------------------------------------------------------------------
@@ -1934,7 +3160,7 @@ onMounted(
 
 /*
 |--------------------------------------------------------------------------
-| PATROL MAP LEGEND
+| PATROL LEGEND
 |--------------------------------------------------------------------------
 */
 
@@ -2057,28 +3283,56 @@ onMounted(
 
 /*
 |--------------------------------------------------------------------------
-| PATROL LINE
+| DAY 1
 |--------------------------------------------------------------------------
 */
 
-.patrol-line {
+.day1-line {
 
     background:
-        #07551f;
+        #ff0000;
 
 }
 
 
 /*
 |--------------------------------------------------------------------------
-| PROTECTED AREA LINE
+| DAY 2
+|--------------------------------------------------------------------------
+*/
+
+.day2-line {
+
+    background:
+        #005aff;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| SINGLE DAY
+|--------------------------------------------------------------------------
+*/
+
+.single-line {
+
+    background:
+        #ff8c00;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| PROTECTED AREA
 |--------------------------------------------------------------------------
 */
 
 .protected-line {
 
     background:
-        #ff0000;
+        #b2ebf2;
 
 }
 

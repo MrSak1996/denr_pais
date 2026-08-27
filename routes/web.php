@@ -20,6 +20,7 @@ use App\Http\Controllers\HiredStaff\AccomplishmentReportController;
 use App\Http\Controllers\ProtectedArea\ProtectedAreaList;
 use App\Http\Controllers\ProtectedArea\LawinPatrolController;
 use App\Http\Controllers\GoogleDrive\GoogleDriveController;
+use App\Http\Controllers\Targets\TargetsController;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
@@ -62,6 +63,7 @@ Route::get('/monitoring/form/insert', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/monitoring/index', [ResolutionClearanceController::class, 'index'])->name('monitoring.index');
+    Route::get('/targets/index', [TargetsController::class, 'index'])->name('targets.index');
     Route::get('/monitoring/pending', [DashboardController::class, 'pendingMinutes'])->name('monitoring.pending');
     Route::get('/monitoring/documents', [DashboardController::class, 'allDocuments'])->name('monitoring.documents');
     Route::get('/monitoring/completed', [DashboardController::class, 'completedMinutes'])->name('monitoring.completed');
@@ -409,6 +411,6 @@ Route::get('/permit/{id}/preview', [PDFController::class, 'generateTable'])
 // ===========================================================================================
 
 
-
+require __DIR__ . '/targets.php';
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
