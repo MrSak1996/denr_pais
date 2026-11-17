@@ -15,9 +15,7 @@ import ReusableConfirmDialog from '../modal/endorsed_modal.vue';
 import { useApi } from '@/composables/useApi';
 import { useAppForm } from '@/composables/useAppForm';
 import { useFormHandler } from '@/composables/useFormHandler';
-import { updateChainsawForm } from '@/lib/chainsaw';
-import { ChainsawData } from '@/types/chainsaw';
-import LoadingSpinner from '../../LoadingSpinner.vue';
+
 import Chainsaw_applicationField from '../forms/chainsaw_applicationField.vue';
 import Chainsaw_companyField from '../forms/chainsaw_companyField.vue';
 import Chainsaw_operationField from '../forms/chainsaw_operationField.vue';

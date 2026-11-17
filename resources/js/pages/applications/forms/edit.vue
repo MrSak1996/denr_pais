@@ -9,7 +9,6 @@ import { Folder, Info, ShieldAlert } from 'lucide-vue-next';
 import Fieldset from 'primevue/fieldset';
 import { useToast } from 'primevue/usetoast';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
-import LoadingSpinner from '../../LoadingSpinner.vue';
 import { ProductService } from '../service/ProductService';
 import FileCard from './file_card.vue';
 /* ================================
