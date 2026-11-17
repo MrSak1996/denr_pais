@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { router, usePage } from '@inertiajs/vue3';
 import { FilterMatchMode } from '@primevue/core/api';
 import { FilterService } from '@primevue/core/api';
 import { FileCogIcon, Info, PrinterCheck } from 'lucide-vue-next';
@@ -15,10 +14,19 @@ import InputIcon from 'primevue/inputicon';
 import Select from 'primevue/select';
 import Tag from 'primevue/tag';
 
+import { Head, router, usePage } from '@inertiajs/vue3';
+import Button from 'primevue/button';
+import InputText from 'primevue/inputtext';
+
+import modal_dats from './modal/modal_dats.vue';
 import approved_icon from '../../../images/icons/approved.png';
 import reject_icon from '../../../images/icons/reject.png';
 import review_icon from '../../../images/icons/review.png';
-    const page = usePage();
+
+const page = usePage();
+const showDATSDialog = ref(false);
+
+
 
     import total_icon from '../../../images/icons/application.png';
 
@@ -91,6 +99,9 @@ import review_icon from '../../../images/icons/review.png';
 
         return colors[index];
     };
+    
+
+
 </script>
 
 <template>
@@ -236,6 +247,11 @@ import review_icon from '../../../images/icons/review.png';
 
                                         <span>Add / Insert</span>
                                     </Button>
+                                    <Button @click="showDATSDialog = true" 
+                                        class="flex items-center gap-2 bg-[#1a6b45] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#145c3b] transition h-[32px]">
+                                        <span>Generate DATS Report</span>
+                                    </Button>
+
                                 </div>
                             </div>
                         </template>
@@ -363,6 +379,8 @@ import review_icon from '../../../images/icons/review.png';
                 </div>
             </div>
         </div>
+                <modal_dats v-model:visible="showDATSDialog"/>
+
     </AppLayout>
 </template>
 

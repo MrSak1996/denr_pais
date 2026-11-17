@@ -12,7 +12,8 @@ import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
 import Select from 'primevue/select'
-
+import ExcelJS from 'exceljs'
+import { FileSpreadsheet } from 'lucide-vue-next'
 import { useDashboardStats } from '../../../composables/useDashboardStat'
 
 const { fetchDashboardData } = useDashboardStats()
@@ -74,6 +75,79 @@ const filteredData = computed(() => {
 
     return rows
 })
+
+const exportToExcel = async () => {
+    const allMonths = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ]
+
+    // Group filtered rows by PA + Staff + Position
+    const grouped: Record<string, any> = {}
+    filteredData.value.forEach((row) => {
+        const paCode = row.protected_area_staff?.protected_area?.pa_code ?? 'N/A'
+        const staffName = row.protected_area_staff?.name ?? 'N/A'
+        const position = row.protected_area_staff?.position ?? 'N/A'
+        const key = `${paCode}__${staffName}__${position}`
+
+        if (!grouped[key]) grouped[key] = { paCode, staffName, position, months: {} }
+        grouped[key].months[formatMonth(row.month)] = normalizeAccomplishments(row.accomplishments)
+    })
+
+    const groupedRows = Object.values(grouped)
+    const monthsPresent = allMonths.filter((m) =>
+        groupedRows.some((g: any) => g.months[m]?.length)
+    )
+
+    const workbook = new ExcelJS.Workbook()
+    const sheet = workbook.addWorksheet('Consolidated Accomplishment Report')
+
+    // Header row
+    const headerLabels = ['NAME OF PA', 'NAME OF HIRED STAFF', 'POSITION', ...monthsPresent.map((m) => m.toUpperCase())]
+    const headerRow = sheet.addRow(headerLabels)
+    headerRow.eachCell((cell) => {
+        cell.font = { bold: true }
+        cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true }
+        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+    })
+
+    // Data rows
+    groupedRows.forEach((g: any) => {
+        const rowValues = [
+            g.paCode,
+            g.staffName,
+            g.position,
+            ...monthsPresent.map((m) =>
+                (g.months[m] || []).map((item: string) => `•  ${item}`).join('\n')
+            )
+        ]
+        const row = sheet.addRow(rowValues)
+        row.eachCell((cell) => {
+            cell.alignment = { wrapText: true, vertical: 'top', horizontal: 'left' }
+            cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+        })
+        row.height = Math.max(20, ...rowValues.slice(3).map((v) => (v.split('\n').length * 15)))
+    })
+
+    // Column widths
+    sheet.columns = [
+        { width: 15 },
+        { width: 25 },
+        { width: 22 },
+        ...monthsPresent.map(() => ({ width: 55 }))
+    ]
+
+    const buffer = await workbook.xlsx.writeBuffer()
+    const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `Consolidated_Accomplishment_Report_${new Date().toISOString().slice(0, 10)}.xlsx`
+    a.click()
+    URL.revokeObjectURL(url)
+}
 
 /* ---------------------------
    HELPERS
@@ -145,6 +219,11 @@ onMounted(() => {
                         'PP 1636', 'PP 1636 - Rizal Side', 'PP 1636 - Laguna Side', 'PPL', 'QPL', 'SFPL', 'TVPL', 'UMRBPL', 'URWR'
                     ]" placeholder="Filter PA Code" class="w-full md:w-48" filter showClear />
 
+                    <Button class="bg-[#1B5E20] hover:bg-[#2E7D32] flex items-center gap-2" @click="exportToExcel">
+    <FileSpreadsheet class="w-4 h-4" />
+    Export to Excel
+</Button>
+
                 </div>
             </template>
 
@@ -158,6 +237,7 @@ onMounted(() => {
                         <Button class="bg-[#BF360C] hover:bg-[#B71C1C]" @click="editAccomplishmentReport(slotProps.data.id)">
                             <FileCogIcon />
                         </Button>
+                        
                        
                     </div>
                 </template>

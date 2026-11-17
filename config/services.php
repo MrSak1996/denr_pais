@@ -34,5 +34,12 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+     // Used by DATSService for the RDATS API login
+    'rdats' => [
+        'url'      => env('RDATS_URL'),
+        'username' => env('RDATS_USERNAME'),
+        'password' => env('RDATS_PASSWORD'),
+    ],
+
 
 ];

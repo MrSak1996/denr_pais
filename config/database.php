@@ -112,6 +112,21 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'region_dats' => [
+            'driver' => 'mysql',
+            'host' => env('RDATS_DB_HOST', '137.184.31.167'),
+            'port' => env('RDATS_DB_PORT', '3307'),
+            'database' => env('RDATS_DB_NAME', 'region_dats'),
+            'username' => env('RDATS_DB_USERNAME', 'dats'),
+            'password' => env('RDATS_DB_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
+
     ],
 
     /*
@@ -147,7 +162,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

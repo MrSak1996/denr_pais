@@ -343,13 +343,13 @@ const chartDataMonthlist = computed(() => {
             {
                 label: "Total Documents",
                 data: totalDocuments,
-                backgroundColor: "#3B82F6",
+                backgroundColor: "#2563eb",
                 borderRadius: 8
             },
             {
                 label: "Minutes (Completed)",
                 data: minutesReceived,
-                backgroundColor: "#22C55E",
+                backgroundColor: "#0f7a52",
                 borderRadius: 8
             }
         ]
@@ -667,7 +667,7 @@ const chartDataRoutedToPie = computed(() => {
                     ),
 
                 backgroundColor:
-                    "#22C55E",
+                    "#0f7a52",
 
                 borderRadius:
                     8
@@ -704,7 +704,7 @@ const chartMonthOptions = {
                 display: false
             },
             ticks: {
-                color: "#6B7280"
+                color: "#0f7a52"
             }
         },
 

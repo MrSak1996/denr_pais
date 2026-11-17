@@ -79,11 +79,7 @@ const mainNavItems = computed<NavItem[]>(() => [
         icon: Shrub ,
     },
       
-        {
-        title: 'PAMB Minutes',
-        href: '/minutes',
-        icon: Folder ,
-    },
+       
   
     
     {

@@ -11,13 +11,13 @@
 
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm, usePage} from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 
 const page = usePage()
 const toast = useToast();
-
+const props = defineProps<Props>();
 /* ------------------------------------------ */
 /* Breadcrumbs                                 */
 /* ------------------------------------------ */
@@ -31,12 +31,13 @@ const breadcrumbs: BreadcrumbItem[] = [
 /* ------------------------------------------ */
 /* Tabs                                        */
 /* ------------------------------------------ */
-type TabKey = 'report' | 'add';
+type TabKey = 'report' | 'cos_report' | 'add';
 
 const activeTab = ref<TabKey>('report');
 
 const tabs: { key: TabKey; label: string }[] = [
     { key: 'report', label: 'Performance Indicators Report' },
+    { key: 'cos_report', label: 'Performance Evaluation (COS)' },
     { key: 'add', label: 'Add Target / Measure' },
 ];
 
@@ -74,11 +75,35 @@ function initials(name: string) {
 /* ------------------------------------------ */
 /* Report table data                           */
 /* ------------------------------------------ */
+// interface Measure {
+//     text: string;
+//     firstSem?: string | number | null;
+//     secondSem?: string | number | null;
+//     total?: string | number | null;
+// }
+
+interface Props {
+    data: any;
+    categories: Category[];
+}
+
+interface Category {
+    label: string;
+    rows: ProgramRow[];
+}
+
+interface ProtectedArea {
+    id: number;
+    label: string;
+}
+
+
 interface Measure {
     text: string;
     firstSem?: string | number | null;
     secondSem?: string | number | null;
     total?: string | number | null;
+    remarks?: string | null;
 }
 
 interface ProgramRow {
@@ -86,10 +111,6 @@ interface ProgramRow {
     measures: Measure[];
 }
 
-interface Category {
-    label: string;
-    rows: ProgramRow[];
-}
 
 /**
  * Flattened row shape for rendering: one physical <tr> per measure.
@@ -107,166 +128,35 @@ interface FlatRow {
     measure: Measure;
 }
 
-const categories: Category[] = [
-    {
-        label: 'OPERATIONS',
-        rows: [
-            {
-                program: 'PAMB Resolutions',
-                measures: [
-                    {
-                        text: '6 signed PAMB Resolutions approved by PAMB Chair (RED) with minutes of meeting submitted to BMB within 15 working days after the PAMB meeting. (SFPL,URWR)',
-                        firstSem: 1,
-                        secondSem: 1,
-                        total: 2,
-                    },
-                ],
-            },
-            {
-                program: 'PAMB Meetings',
-                measures: [
-                    {
-                        text: '4 signed minutes of PAMB meeting endorsed to BMB 7 days after the review of the Regional Office. (SFPL,URWR)',
-                        firstSem: 2,
-                        secondSem: 2,
-                        total: 4,
-                    },
-                ],
-            },
-            {
-                program: 'Regular monitoring of all PA activities',
-                measures: [
-                    {
-                        text: '100% submission of Quarterly M&E report on programs and activities of PA endorsed to BMB every 15th day of the succeeding quarter',
-                        firstSem: 2,
-                        secondSem: 2,
-                        total: 4,
-                    },
-                ],
-            },
-            {
-                program: 'BMS monitoring',
-                measures: [
-                    {
-                        text: '100% BMS conducted semi-annually with reports submitted to BMB 7 working days after the review by the Regional Office (3 BMS sites).',
-                        firstSem: 2,
-                        secondSem: 2,
-                        total: 4,
-                    },
-                ],
-            },
-            {
-                program: 'Hiring of Staff',
-                measures: [
-                    {
-                        text: '100% Consolidated quarterly accomplishment reports of hired Protected Area Staff submitted on or before the 15th calendar day of succeeding quarter. (ALQUEREZ,SFPL,URWR)',
-                        firstSem: 2,
-                        secondSem: 2,
-                        total: 4,
-                    },
-                ],
-            },
-            {
-                program: 'Maintenance of Existing Facilities',
-                measures: [
-                    {
-                        text: '100% Consolidated quarterly accomplishment report of Maintenance of SFPL, ALQUEREZ and URWR every 15th calendar day of succeeding quarter.',
-                        firstSem: 2,
-                        secondSem: 2,
-                        total: null,
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        label: 'SUPPORT TO OPERATIONS',
-        rows: [
-            {
-                program: 'Digital Transformation and Environment and Natural Resources Information System',
-                measures: [
-                    {
-                        text: '100% of Statistical Reports reviewed, consolidated and submitted to concerned Office on prescribed deadline (PAWCZMS-every end of the month ensuing each quarter).',
-                        firstSem: 2,
-                        secondSem: 2,
-                        total: 4,
-                    },
-                    {
-                        text: 'Developed in-house information systems with reports submitted to the Chief PAMBCS',
-                        firstSem: null,
-                        secondSem: 1,
-                        total: 1,
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        label: 'GENERAL AND ADMINISTRATIVE SUPPORT (GAS)',
-        rows: [
-            {
-                program: 'Implementation of Good Governance Conditions',
-                measures: [
-                    {
-                        text: '100% SALN submitted to Regional Office-Administrative Division-Personnel Section based on Section 8 of RA 6713 on January 30, 2026',
-                        firstSem: 1,
-                        secondSem: null,
-                        total: 1,
-                    },
-                    {
-                        text: 'FY 2026 IPCRs Commitment (to December 2026) based on the approved DPCR submitted to the Regional Office-Administrative Division-Personnel Section by March 2026',
-                        firstSem: 1,
-                        secondSem: null,
-                        total: 1,
-                    },
-                    {
-                        text: 'FY 2025 2nd Semester IPCR Rating (July to December 2025) based on approved SPMS guidelines and commitment submitted to Regional Office-Administrative Division-Personnel Section on February 27, 2026',
-                        firstSem: 1,
-                        secondSem: null,
-                        total: 1,
-                    },
-                ],
-            },
-            {
-                program: 'Action on Documents/Requests',
-                measures: [
-                    {
-                        text: '100% documents acted upon with minor revision 7 working days for simple documents upon receipt.',
-                        firstSem: '100%',
-                        secondSem: '100%',
-                        total: '100%',
-                    },
-                    {
-                        text: '100% documents acted upon with minor revision 15 working days for complex documents upon receipt.',
-                        firstSem: '100%',
-                        secondSem: '100%',
-                        total: '100%',
-                    },
-                ],
-            },
-            {
-                program: 'Attendance to Meetings/Workshops/ Conferences',
-                measures: [
-                    {
-                        text: '100% of meetings/ workshops/ conferences with reports submitted to the RED through ARDTS 7 working days after attendance in local (inter-agency) meetings/workshops/conferences.',
-                        firstSem: '100%',
-                        secondSem: '100%',
-                        total: '100%',
-                    },
-                ],
-            },
-        ],
-    },
+const categories = computed<Category[]>(() => {
+    return props.categories ?? [];
+});
+
+const pa: ProtectedArea[] = [
+    { id: 1, label: 'Southern Foreshore Protected Landscape (SFPL)' },
+    { id: 2, label: 'Alquerez Watershed Reserve (ALQUEREZ)' },
+    { id: 3, label: 'Upper River Watershed Reserve (URWR)' },
 ];
+
+
 
 /* Flatten categories -> rows for straightforward, bug-free rowspan rendering */
 const flatRows = computed<FlatRow[]>(() => {
     const rows: FlatRow[] = [];
-    for (const category of categories) {
-        const categoryRowCount = category.rows.reduce((sum, r) => sum + r.measures.length, 0);
+
+    for (const category of categories.value) {
+
+        const categoryRowCount = category.rows.reduce(
+            (sum, r) => sum + r.measures.length,
+            0
+        );
+
         let categoryRowIndex = 0;
+
         for (const programRow of category.rows) {
+
             programRow.measures.forEach((measure, measureIndex) => {
+
                 rows.push({
                     category: category.label,
                     program: programRow.program,
@@ -276,10 +166,12 @@ const flatRows = computed<FlatRow[]>(() => {
                     categorySpan: categoryRowCount,
                     measure,
                 });
+
                 categoryRowIndex++;
             });
         }
     }
+
     return rows;
 });
 
@@ -289,10 +181,14 @@ const flatRows = computed<FlatRow[]>(() => {
 
 // Category options reuse the labels already used in the report above,
 // plus an "Other" escape hatch that reveals a free-text input.
-const categoryOptions = categories.map((c) => c.label);
-
+const categoryOptions = [
+    'OPERATIONS',
+    'SUPPORT TO OPERATIONS',
+    'GENERAL AND ADMINISTRATIVE SUPPORT (GAS)',
+];
 const form = useForm({
     category: categoryOptions[0] ?? '',
+    protected_area: pa[0]?.id ?? '',
     category_other: '',
     program: '',
     measure_text: '',
@@ -308,9 +204,42 @@ const showOtherCategory = computed(() => form.category === '__other__');
 // The field stays editable in case the real target isn't a simple sum
 // (e.g. "100%" style measures).
 function suggestTotal() {
-    const a = Number(form.first_sem);
-    const b = Number(form.second_sem);
-    if (form.first_sem !== '' && form.second_sem !== '' && !Number.isNaN(a) && !Number.isNaN(b)) {
+    const first = form.first_sem;
+    const second = form.second_sem;
+
+    // Both are empty
+    if (first === '' && second === '') {
+        form.total = '';
+        return;
+    }
+
+    // Only 1st semester has a value
+    if (first !== '' && second === '') {
+        const a = Number(first);
+
+        if (!Number.isNaN(a)) {
+            form.total = a;
+        }
+
+        return;
+    }
+
+    // Only 2nd semester has a value
+    if (first === '' && second !== '') {
+        const b = Number(second);
+
+        if (!Number.isNaN(b)) {
+            form.total = b;
+        }
+
+        return;
+    }
+
+    // Both semesters have values
+    const a = Number(first);
+    const b = Number(second);
+
+    if (!Number.isNaN(a) && !Number.isNaN(b)) {
         form.total = a + b;
     }
 }
@@ -346,6 +275,7 @@ function resetForm() {
 </script>
 
 <template>
+
     <Head title="DENR Online Protected Area Information System" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
@@ -353,7 +283,8 @@ function resetForm() {
             <div class="box">
                 <h2 class="title">Focal Person & Alternate Focal Person Targets and Activities</h2>
                 <p class="mb-4 text-gray-700">
-                    This section provides an overview of the hired staff monitoring system, including key metrics and insights
+                    This section provides an overview of the hired staff monitoring system, including key metrics and
+                    insights
                     related to staff performance and activities.
                 </p>
 
@@ -383,14 +314,8 @@ function resetForm() {
 
             <!-- Tab bar -->
             <div class="tab-bar">
-                <button
-                    v-for="tab in tabs"
-                    :key="tab.key"
-                    type="button"
-                    class="tab-btn"
-                    :class="{ 'tab-btn-active': activeTab === tab.key }"
-                    @click="activeTab = tab.key"
-                >
+                <button v-for="tab in tabs" :key="tab.key" type="button" class="tab-btn"
+                    :class="{ 'tab-btn-active': activeTab === tab.key }" @click="activeTab = tab.key">
                     {{ tab.label }}
                 </button>
             </div>
@@ -428,20 +353,84 @@ function resetForm() {
                                 <td v-if="row.isFirstOfProgram" :rowspan="row.programSpan" class="col-program">
                                     {{ row.program }}
                                 </td>
-                                <td class="measure-text">{{ row.measure.text }}</td>
-                                <td class="text-center">{{ row.measure.firstSem ?? '' }}</td>
-                                <td class="text-center">{{ row.measure.secondSem ?? '' }}</td>
-                                <td class="text-center font-semibold">{{ row.measure.total ?? '' }}</td>
+
+                                <td class="measure-text">
+                                    {{ row.measure.text }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ row.measure.firstSem ?? '' }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ row.measure.secondSem ?? '' }}
+                                </td>
+
+                                <td class="text-center font-semibold">
+                                    {{ row.measure.total ?? '' }}
+                                </td>
+
+                                <!-- Rating -->
                                 <td v-if="row.isFirstOfProgram" :rowspan="row.programSpan"></td>
                                 <td v-if="row.isFirstOfProgram" :rowspan="row.programSpan"></td>
                                 <td v-if="row.isFirstOfProgram" :rowspan="row.programSpan"></td>
-                                <td v-if="row.isFirstOfProgram" :rowspan="row.programSpan"></td>
+
+                                <!-- Remarks -->
+                                <td>
+                                    {{ row.measure.remarks ?? '' }}
+                                </td>
                             </tr>
                         </template>
                     </tbody>
                 </table>
             </div>
 
+            <!-- ============================== -->
+            <!-- TAB: Performance Evaluation (COS) -->
+            <!-- ============================== -->
+            <div v-else-if="activeTab === 'cos_report'" class="box overflow-x-auto">
+
+                <h2 class="title">Performance Evaluation (Targets + Measures)</h2>
+
+                <table class="report-table">
+
+                    <thead>
+                        <tr>
+                            <th rowspan="2" class="col-program">
+                                Specific Output under the Terms of Reference in the Contract
+                            </th>
+
+                            <th rowspan="2" class="col-performance">
+                                Performance Indicator
+                            </th>
+
+                            <th rowspan="2" class="col-accomplishment">
+                                Actual Accomplishments
+                            </th>
+
+                            <th colspan="4" class="col-rating-group">
+                                Rating
+                            </th>
+
+                            <th rowspan="2" class="col-remarks">
+                                Remarks
+                            </th>
+                        </tr>
+
+                        <tr>
+                            <th class="col-rating">Q1</th>
+                            <th class="col-rating">Q2</th>
+                            <th class="col-rating">T3</th>
+                            <th class="col-rating">A1</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <!-- Your rows here -->
+                    </tbody>
+
+                </table>
+            </div>
             <!-- ============================== -->
             <!-- TAB: Add Target / Measure       -->
             <!-- ============================== -->
@@ -459,57 +448,49 @@ function resetForm() {
                             </select>
                             <p v-if="form.errors.category" class="field-error">{{ form.errors.category }}</p>
                         </div>
+                        <div class="form-field">
+                            <label for="protected_area">Protected Area</label>
+                            <select id="protected_area" v-model="form.protected_area">
+                                <option v-for="opt in pa" :key="opt.id" :value="opt.id">{{ opt.label }}</option>
+                                <option value="__other__">Other (specify)&hellip;</option>
+                            </select>
+                            <p v-if="form.errors.protected_area" class="field-error">{{ form.errors.protected_area }}
+                            </p>
+                        </div>
 
                         <div v-if="showOtherCategory" class="form-field">
                             <label for="category_other">Specify Category</label>
-                            <input id="category_other" v-model="form.category_other" type="text" placeholder="e.g. CAPACITY BUILDING" />
+                            <input id="category_other" v-model="form.category_other" type="text"
+                                placeholder="e.g. CAPACITY BUILDING" />
                         </div>
 
                         <!-- Program / Project / Activity -->
                         <div class="form-field form-field-wide">
                             <label for="program">Program / Project / Activity (P/A/P)</label>
-                            <input
-                                id="program"
-                                v-model="form.program"
-                                type="text"
-                                placeholder="e.g. PAMB Resolutions"
-                            />
+                            <input id="program" v-model="form.program" type="text"
+                                placeholder="e.g. PAMB Resolutions" />
                             <p v-if="form.errors.program" class="field-error">{{ form.errors.program }}</p>
                         </div>
 
                         <!-- Measure text -->
                         <div class="form-field form-field-wide">
                             <label for="measure_text">Measure</label>
-                            <textarea
-                                id="measure_text"
-                                v-model="form.measure_text"
-                                rows="3"
-                                placeholder="Describe the performance indicator / target and its basis for measurement..."
-                            ></textarea>
+                            <textarea id="measure_text" v-model="form.measure_text" rows="3"
+                                placeholder="Describe the performance indicator / target and its basis for measurement..."></textarea>
                             <p v-if="form.errors.measure_text" class="field-error">{{ form.errors.measure_text }}</p>
                         </div>
 
                         <!-- Targets row -->
                         <div class="form-field">
                             <label for="first_sem">1st Sem Target</label>
-                            <input
-                                id="first_sem"
-                                v-model="form.first_sem"
-                                type="text"
-                                placeholder="e.g. 2 or 100%"
-                                @input="suggestTotal"
-                            />
+                            <input id="first_sem" v-model="form.first_sem" type="text" placeholder="e.g. 2 or 100%"
+                                @input="suggestTotal" />
                         </div>
 
                         <div class="form-field">
                             <label for="second_sem">2nd Sem Target</label>
-                            <input
-                                id="second_sem"
-                                v-model="form.second_sem"
-                                type="text"
-                                placeholder="e.g. 2 or 100%"
-                                @input="suggestTotal"
-                            />
+                            <input id="second_sem" v-model="form.second_sem" type="text" placeholder="e.g. 2 or 100%"
+                                @input="suggestTotal" />
                         </div>
 
                         <div class="form-field">
@@ -520,12 +501,8 @@ function resetForm() {
                         <!-- Remarks -->
                         <div class="form-field form-field-wide">
                             <label for="remarks">Remarks</label>
-                            <textarea
-                                id="remarks"
-                                v-model="form.remarks"
-                                rows="2"
-                                placeholder="Optional notes..."
-                            ></textarea>
+                            <textarea id="remarks" v-model="form.remarks" rows="2"
+                                placeholder="Optional notes..."></textarea>
                         </div>
                     </div>
 

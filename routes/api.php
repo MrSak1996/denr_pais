@@ -24,11 +24,16 @@ Route::get('/summary', [DashboardController::class, 'summary']);
 Route::get('/monthly-monitoring', [DashboardController::class, 'monthlyMonitoring']);
 Route::get('/monthly-accomplishment', [DashboardController::class, 'monthlySubmissionMonitoring']);
 Route::get('/googlesheet', [DocumentsController::class, 'index']);
+Route::get('/googlesheet/export', [DocumentsController::class, 'exportToSheet']);//working
+Route::get('/googlesheet/sync-rdats', [DocumentsController::class, 'syncFromRdats']);
+Route::get('/googlesheet/syncdatabase', [DocumentsController::class, 'syncFromRdats']);
+Route::get('/googlesheet/preview', [DocumentsController::class, 'previewFromRdats']);
+
+Route::post('/googlesheet', [DocumentsController::class, 'sendToSheet']);
 Route::get('/lawin/data', [LawinPatrolController::class, 'getLawinData']);
 Route::get('/iec_cepa', [DashboardController::class, 'iec_cepa']);
 Route::get('/activities', [ActivityController::class, 'index']);
 Route::post('/activities', [ActivityController::class, 'store']);
-
 
 
 
